@@ -22,7 +22,7 @@
 
             <v-divider></v-divider>
             <v-list>
-                <v-list-item link to ="homeMaster">
+                <v-list-item link to ="homeCS">
                     <v-list-item-icon>
                         <v-icon>mdi-home</v-icon>
                     </v-list-item-icon>
@@ -35,54 +35,22 @@
                     <v-list-item-icon>
                             <v-icon>mdi-database-plus</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>Data master</v-list-item-title>
+                    <v-list-item-title>Kelola Data</v-list-item-title>
                 </template>
-                        <v-list-item link to ="produk">
+                        <v-list-item link to ="customer">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>Produk</v-list-item-title>
+                            <v-list-item-title>Customer</v-list-item-title>
                             <v-icon>mdi-paw</v-icon>
                         </v-list-item>
 
-                        <v-list-item link to ="layanan">
+                        <v-list-item link to ="hewan">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>Layanan</v-list-item-title>
+                            <v-list-item-title>Hewan</v-list-item-title>
                             <v-icon>mdi-needle</v-icon>
-                        </v-list-item>
-
-                        <v-list-item link to ="supplier">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Supplier</v-list-item-title>
-                            <v-icon>mdi-human-greeting</v-icon>
-                        </v-list-item>
-
-                        <v-list-item link to ="pegawai">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Pegawai</v-list-item-title>
-                            <v-icon>mdi-human-male-female</v-icon>
-                        </v-list-item>
-
-                        <v-list-item link to ="jenisHewan">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Jenis Hewan</v-list-item-title>
-                            <v-icon>mdi-cow</v-icon>
-                        </v-list-item>
-
-                        <v-list-item link to ="ukuranHewan">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Ukuran Hewan</v-list-item-title>
-                            <v-icon>mdi-ruler</v-icon>
                         </v-list-item>
                 </v-list-group>
 
@@ -92,33 +60,50 @@
                     <v-list-item-icon>
                             <v-icon>mdi-cart</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>Pengadaan</v-list-item-title>
+                    <v-list-item-title>Transaksi Produk</v-list-item-title>
+                </template>
+                        <v-list-item link to ="/transaksiProduk">
+                            <v-list-item-icon>
+                                <v-icon></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>Tambah Transaksi</v-list-item-title>
+                            <v-icon>mdi-note-plus-outline</v-icon>
+                        </v-list-item>
+                        <v-list-item link to ="/historyProduk">
+                            <v-list-item-icon>
+                                <v-icon></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>Daftar Transaksi Produk</v-list-item-title>
+                            <v-icon>mdi-note-multiple-outline</v-icon>
+                        </v-list-item>
+                 </v-list-group>
+                 <v-list-group
+                >
+                <template v-slot:activator>
+                    <v-list-item-icon>
+                            <v-icon>mdi-cart-plus</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Transaksi Layanan</v-list-item-title>
                 </template>
                         <v-list-item link to ="">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>Daftar Pengadaan</v-list-item-title>
-                            <v-icon>mdi-gmail</v-icon>
+                            <v-list-item-title>Tambah Layanan</v-list-item-title>
+                            <v-icon>mdi-note-plus-outline</v-icon>
                         </v-list-item>
                         <v-list-item link to ="">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>History Pengadaan</v-list-item-title>
+                            <v-list-item-title>Daftar Transaksi Layanan</v-list-item-title>
                             <v-icon>mdi-note-multiple-outline</v-icon>
                         </v-list-item>
                  </v-list-group>
-                 <v-list-item link to ="">
-                    <v-list-item-icon>
-                        <v-icon>mdi-file-chart</v-icon>
-                    </v-list-item-icon>
-                <v-list-item-title>Laporan Data</v-list-item-title>
-                </v-list-item>
             </v-list>
         <template v-slot:append>
             <div class="pa-2">
-                <v-btn block color="green darken-3" link to="/profileMaster">Profile Account</v-btn>
+                <v-btn block color="green darken-3" link to="/profileCS">Profile Account</v-btn>
             </div>
             <div class="pa-2">
                 <v-btn block @click="logout()">Logout</v-btn>

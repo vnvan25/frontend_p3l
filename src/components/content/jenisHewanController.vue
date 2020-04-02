@@ -67,11 +67,13 @@
                 </v-card-title>
                 <v-card-text>
                 <v-container>
+                <v-form lazy-validation>
                     <v-row>
                         <v-col cols="12">
                             <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
                         </v-col>
                     </v-row>
+                </v-form>
                 </v-container>
                 <small>*indicates required field</small>
                 </v-card-text>
@@ -233,6 +235,18 @@ export default {
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>

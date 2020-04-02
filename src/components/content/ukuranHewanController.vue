@@ -233,6 +233,18 @@ export default {
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>

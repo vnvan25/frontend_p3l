@@ -22,32 +22,46 @@
 
             <v-divider></v-divider>
             <v-list>
-                <v-list-item link to ="home">
+                <v-list-item link to ="homeKasir">
                     <v-list-item-icon>
                         <v-icon>mdi-home</v-icon>
                     </v-list-item-icon>
                 <v-list-item-title>Home</v-list-item-title>
                 </v-list-item>
-            </v-list>
-            <v-list-item link to ="/listProduk">
+
+                <v-list-group
+                >
+                <template v-slot:activator>
+                    <v-list-item-icon>
+                            <v-icon>mdi-database-plus</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Pembayaran Transaksi</v-list-item-title>
+                </template>
+                        <v-list-item link to ="produk">
                             <v-list-item-icon>
-                            <v-icon>mdi-paw</v-icon>
+                                <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>Produk</v-list-item-title>
-                            
+                            <v-list-item-title>Transaksi Produk</v-list-item-title>
+                            <v-icon>mdi-paw</v-icon>
                         </v-list-item>
 
-                        <v-list-item link to ="listLayanan">
+                        <v-list-item link to ="layanan">
                             <v-list-item-icon>
-                             <v-icon>mdi-needle</v-icon>
+                                <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>Layanan</v-list-item-title>
-                            
-            </v-list-item>
-               
+                            <v-list-item-title>Transaksi Layanan</v-list-item-title>
+                            <v-icon>mdi-needle</v-icon>
+                        </v-list-item>
+                </v-list-group>
+
+                 
+            </v-list>
         <template v-slot:append>
             <div class="pa-2">
-                <v-btn block color="green darken-3" link to="/login">Login Account</v-btn>
+                <v-btn block color="green darken-3" link to="/profileKasir">Profile Account</v-btn>
+            </div>
+            <div class="pa-2">
+                <v-btn block @click="logout()">Logout</v-btn>
             </div>
         </template>
         </v-navigation-drawer>
@@ -61,24 +75,15 @@
             color="brown darken-2">
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-            
             <VSpacer />
+            
 
-            <v-tab router to="/home">Home</v-tab>
-            <v-tab router to="/listProduk">Produk</v-tab>
-            <v-tab router to="/listLayanan">Layanan</v-tab>
-
-             <v-divider
-                class="mx-4"
-                vertical
-                ></v-divider>
             <v-toolbar-title
                 style="font-size: 21px;"
                 class="white--text ml-2"
             >
                 Kouvee Pet Shop
             </v-toolbar-title>
-            
         </v-app-bar>
 
         <VContent>
@@ -103,6 +108,11 @@ export default {
 
         }
     },
-    
+    methods: {
+        logout(){
+            localStorage.clear();
+            this.$router.push({ name: "home" });
+        }
+    }
 }
 </script>

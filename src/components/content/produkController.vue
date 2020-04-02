@@ -41,7 +41,6 @@
                             <td>{{ item.stok }}</td>
                             <td>{{ item.satuan }}</td>
                             <td>{{ item.minimal }}</td>
-                            <td>{{ item.deskripsi }} </td>
                             <td><img :src="'http://127.0.0.1:5002/API2/upload/' + item.gambar" width="100px"></td>
                             <td class="text-center">
                                 <v-btn
@@ -75,10 +74,10 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                            <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Harga*" v-model="form.harga" required></v-text-field>
+                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <v-label>Gambar</v-label>
@@ -87,19 +86,16 @@
                             
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Stok*" v-model="form.stok" required></v-text-field>
+                            <v-text-field label="Stok*" v-model="form.stok" :rules="rules.stok" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-select :items="satuan" v-model="form.satuan" required label="Satuan*"></v-select>
+                            <v-select :items="satuan" v-model="form.satuan" :rules="rules.satuan" required label="Satuan*"></v-select>
                         </v-col>
                         <!-- <v-col cols="12">
                             <v-text-field label="Satuan*" v-model="form.satuan" required></v-text-field>
                         </v-col> -->
                         <v-col cols="12">
-                            <v-text-field label="Minimal*" v-model="form.minimal" required></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                            <v-textarea label="Deskripsi*" v-model="form.deskripsi" required></v-textarea>
+                            <v-text-field label="Minimal*" v-model="form.minimal" :rules="rules.minimal" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -138,6 +134,28 @@ export default {
             status:'',
             selectedFile: null,
             satuan: ['Pax','Botol', 'Sachet'],
+            rules: {
+                nama: [
+                     v => !!v || 'Name is required',
+                ],
+
+                harga: [
+                    v => !!v || 'harga is required',
+                    v => (v && v.length <= 0) || 'Harga tidak boleh minus',
+                ],
+                stok: [
+                    v => !!v || 'stok is required',
+                    v => (v && v.length < 0) || 'Input dengan benar',
+                ],
+                satuan: [
+                    v => !!v || 'satuan is required',
+                ],
+                minimal: [
+                    v => !!v || 'minimal is required',
+                    v => (v && v.length < 0) || 'Input dengan benar',
+                ],
+
+            },
             headers: [
                 {
                     text: 'No',
@@ -162,10 +180,6 @@ export default {
                 {
                     text: 'Minimal',
                     value: 'minimal',
-                },
-                {
-                    text: 'Deskripsi',
-                    value: 'deskripsi',
                 },
                 {
                     text: 'Gambar',
@@ -220,7 +234,6 @@ export default {
             this.produk.append('minimal', this.form.minimal);
             // this.produk.append('gambar', this.upload);
             this.produk.append('gambar', this.selectedFile, this.selectedFile.nama);
-            this.produk.append('deskripsi', this.form.deskripsi);
             var uri =this.$apiUrl + '/produk'
             this.load = true
             this.$http.post(uri, this.produk).then( (response) =>{
@@ -247,7 +260,6 @@ export default {
             this.produk.append('satuan', this.form.satuan);
             this.produk.append('minimal', this.form.minimal);
             this.produk.append('gambar', this.selectedFile, this.selectedFile.nama);
-            this.produk.append('deskripsi', this.form.deskripsi);
             var uri = this.$apiUrl + '/produk/' + this.updatedId;
             this.load = true
             this.$http.post(uri, this.produk).then( (response) =>{
@@ -347,6 +359,18 @@ export default {
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>

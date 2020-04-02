@@ -73,26 +73,26 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                            <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama"></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-date-picker label="Tanggal_Lahir*" v-model="form.tgl_lahir" required></v-date-picker>
+                            <v-date-picker label="Tanggal_Lahir*" v-model="form.tgl_lahir" :rules="rules.tgl" required></v-date-picker>
                         </v-col>
                         <v-col cols="12">
                             <!-- <v-select :items="ukuran_hewan" v-model="form.ukuran_hewan" required label="Ukuran_Hewan*"></v-select> -->
-                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" required>
+                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" :rules="rules.selected" required>
                                 <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ ukuran.nama }}</option>
                             </v-select>
                         </v-col>
                         <v-col cols="12">
                             <!-- <v-select :items="jenis_hewan" v-model="form.jenis_hewan" required label="Jenis_Hewan*"></v-select> -->
-                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" required>
+                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" :rules="rules.selected" required>
                                 <option v-for="jenis in jenisHewan" :key="jenis.id_jenis_hewan">{{ jenis.nama }}</option>
                             </v-select>
                         </v-col>
                         <v-col cols="12">
                             <!-- <v-text-field label="Customer*" v-model="form.customer" required></v-text-field> -->
-                            <v-select v-model="selectedCst" :items="cstHewan" item-value="id_customer" item-text="nama" label="Customer*" required>
+                            <v-select v-model="selectedCst" :items="cstHewan" item-value="id_customer" item-text="nama" label="Customer*" :rules="rules.selected" required>
                                 <option v-for="cst in cstHewan" :key="cst.id_customer">{{ cst.nama }}</option>
                             </v-select>
                         </v-col>
@@ -142,6 +142,19 @@ export default {
             ukuran: '',
             // ukuran_hewan: ['Small', 'Extra Large', 'Medium'],
             // jenis_hewan: ['Anjing', 'Kucing', 'Kambing'],
+            rules: {
+                nama: [
+                     v => !!v || 'Name is required',
+                ],
+
+                tgl: [
+                    v => !!v || 'Tanggal is required',
+                ],
+                selected: [
+                    v => !!v || 'Required',
+                ],
+
+            },
             headers: [
                 {
                     text: 'No',
@@ -343,6 +356,18 @@ export default {
         this.loadUkuranHewan();
         this.loadJenisHewan();
         this.loadCustomer();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              next()
+        }else if(localStorage.getItem("peran")=="Owner"){
+              window.location.replace('/homeMaster')
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>

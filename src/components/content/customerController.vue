@@ -72,16 +72,16 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                            <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-date-picker label="Tanggal_Lahir*" v-model="form.tgl_lahir" required></v-date-picker>
+                            <v-date-picker label="Tanggal_Lahir*" v-model="form.tgl_lahir" :rules="rules.tgl" required></v-date-picker>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Alamat*" v-model="form.alamat" required></v-text-field>
+                            <v-text-field label="Alamat*" v-model="form.alamat" :rules="rules.alamat" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="No_Telepon*" v-model="form.no_telp" required></v-text-field>
+                            <v-text-field label="No_Telepon*" v-model="form.no_telp" :rules="rules.telp" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -143,6 +143,22 @@ export default {
                     value: 'null',
                 },
             ],
+            rules: {
+                nama: [
+                     v => !!v || 'Name is required',
+                ],
+
+                tgl: [
+                    v => !!v || 'Tanggal is required',
+                ],
+                alamat: [
+                    v => !!v || 'Alamat is required',
+                ],
+                telp: [
+                    v => !!v || 'phone is required',
+                    v => /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v) || 'Nomor Telepon diawali dengan 0 atau + dan panjang minimal 11 Angka',
+                ],
+            },
             customers: [],
             snackbar: false,
             color: null,
@@ -269,6 +285,19 @@ export default {
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              next()
+        }else if(localStorage.getItem("peran")=="Owner"){
+              window.location.replace('/homeMaster')
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
+    
 }
 </script>

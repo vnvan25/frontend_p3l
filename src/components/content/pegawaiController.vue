@@ -74,26 +74,37 @@
                 <v-card-text>
                 <v-container>
                     <v-row>
-                        <v-col cols="16">
-                            <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                        <v-col cols="12">
+                            <v-text-field label="Nama*" v-model="form.nama" :rules="rule.nama"  required></v-text-field>
                         </v-col>
-                        <v-col cols="16">
-                            <v-text-field label="Tanggal_Lahir*" v-model="form.tgl_lahir" required></v-text-field>
+                        <v-col cols="12">
+                            <v-date-picker label="Tanggal_Lahir*" v-model="form.tgl_lahir" :rules="rule.tgl" required></v-date-picker>
                         </v-col>
-                        <v-col cols="16">
-                            <v-text-field label="Alamat*" v-model="form.alamat" required></v-text-field>
+                        <v-col cols="12">
+                            <v-text-field label="Alamat*" v-model="form.alamat" :rules="rule.alamat" required></v-text-field>
                         </v-col>
-                        <v-col cols="16">
-                            <v-select :items="peran" v-model="form.peran" required label="Peran*"></v-select>
+                        <v-col cols="12">
+                            <v-select :items="peran" v-model="form.peran" required label="Peran*" :rules="rule.peran"></v-select>
                         </v-col>
-                        <v-col cols="16">
-                            <v-text-field label="No_Telp*" v-model="form.no_telp" required></v-text-field>
+                        <v-col cols="12">
+                            <v-text-field label="No_Telp*" v-model="form.no_telp" :rules="rule.telp" required></v-text-field>
                         </v-col>
-                        <v-col cols="16">
-                            <v-text-field label="Username*" v-model="form.username" required></v-text-field>
+                        <v-col cols="12">
+                            <v-text-field label="Username*" v-model="form.username" :rules="rule.username" required></v-text-field>
                         </v-col>
-                        <v-col cols="16">
-                            <v-text-field label="Password*" v-model="form.password" required></v-text-field>
+                        <v-col cols="12">
+                            <v-text-field
+                                v-model="form.password"
+                                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                :rules="rule.password"
+                                :type="show1 ? 'text' : 'password'"
+                                name="input-10-1"
+                                label="Password*"
+                                hint="At least 5 characters"
+                                counter
+                                @click:append="show1 = !show1"
+                            ></v-text-field>
+                            <!-- <v-text-field label="Password*" v-model="form.password" :rules="rule.password" required></v-text-field> -->
                         </v-col>
                     </v-row>
                 </v-container>
@@ -186,6 +197,34 @@ export default {
             typeInput: 'new',
             errors : '',
             updatedId : '',
+            show1: false,
+            rule: {
+                nama: [
+                     v => !!v || 'Name is required',
+                ],
+
+                tgl: [
+                    v => !!v || 'Tanggal is required',
+                ],
+                alamat: [
+                    v => !!v || 'Alamat is required',
+                ],
+                peran: [
+                    v => !!v || 'Peran is required',
+                ],
+                telp: [
+                    v => !!v || 'phone is required',
+                    v => /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v) || 'Nomor Telepon diawali dengan 0 atau + dan panjang minimal 11 Angka',
+                ],
+                username: [
+                    v => !!v || 'Username is required',
+                ],
+                password: [
+                    v => !!v || 'Password is required',
+                    v => v.length >= 5 || 'Min 5 characters',
+                ],
+
+            },
         }
     },
     methods:{
@@ -301,12 +340,26 @@ export default {
                 tgl_lahir :'',
                 alamat: '',
                 peran: '',
-                no_telp: ''
+                no_telp: '',
+                username: '',
+                password: '',
             }
         }
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>

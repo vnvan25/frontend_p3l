@@ -98,155 +98,105 @@
             <br>
             <h1 class="display-2 text-center mb-4">Staff Kouvee Pet Shop</h1>
             <br>
-            <!-- Batas Timelines -->
-            <v-timeline :dense="$vuetify.breakpoint.smAndDown">
-                    <v-timeline-item
-                    color="blue lighten-2"
-                    fill-dot
-                    right
-                    >
-                    <v-card>
-                        <v-card-title class="blue lighten-2">
-                        <v-icon
-                            dark
-                            size="42"
-                            class="mr-4"
+            <v-row>
+                <!-- card 1 -->
+                    <v-card
+                            class="mx-auto"
+                            max-width="344"
                         >
-                            mdi-gender-male
-                        </v-icon>
-                        <h2 class="display-1 white--text font-weight-light">Bathara Febrian Laras</h2>
-                        </v-card-title>
-                        <v-container>
-                        <v-row>
-                            <v-col cols="12" md="10">
-                            170709141 - Bathara sebagai Web Engineer
-                            Mengelola semua kebutuhan pembangunan Website Kouvee Pet Shop
-                            </v-col>
-                            <v-col
-                            class="hidden-sm-and-down text-right"
-                            md="2"
-                            >
-                            <v-icon size="64">mdi-web</v-icon>
-                            </v-col>
-                        </v-row>
-                        </v-container>
-                    </v-card>
-                    </v-timeline-item>
+                            <v-img
+                            src="https://cdn.dribbble.com/users/269922/screenshots/1008644/files.jpg"
+                            height="200px"
+                            ></v-img>
 
-                    <v-timeline-item
-                    color="amber lighten-1"
-                    fill-dot
-                    left
-                    small
-                    >
-                    <v-card>
-                        <v-card-title class="amber lighten-1 justify-end">
-                        <h2 class="display-1 mr-4 white--text font-weight-light">Mathias Sebastian</h2>
-                        <v-icon
-                            dark
-                            size="42"
-                        >mdi-gender-male</v-icon>
-                        </v-card-title>
-                        <v-container>
-                        <v-row>
-                            <v-col cols="12" md="8">
-                            170709403 -  Mathias sebagai Web Engineer
-                            Mengelola semua kebutuhan pembangunan Website Kouvee Pet Shop bersama dengan staff yang lainnya
-                            </v-col>
-                            <v-col cols="12" md="4">
-                            </v-col>
-                        </v-row>
-                        </v-container>
-                    </v-card>
-                    </v-timeline-item>
+                            <v-card-title>
+                            Bathara Febrian Laras
+                            </v-card-title>
 
-                    <v-timeline-item
-                    color="purple lighten-1"
-                    fill-dot
-                    right
-                    >
-                    <v-card>
-                        <v-card-title class="purple lighten-1">
-                        <v-icon
-                            class="mr-4"
-                            dark
-                            size="42"
+                            <v-card-subtitle>
+                            170709381
+                            </v-card-subtitle>
+                        </v-card>
+
+                        <!-- card 2 -->
+                         <v-card
+                            class="mx-auto"
+                            max-width="344"
                         >
-                            mdi-gender-male
-                        </v-icon>
-                        <h2 class="display-1 white--text font-weight-light">Natte Vagonting Omang</h2>
-                        </v-card-title>
-                        <v-container>
-                        <v-row>
-                            <v-col
-                            cols="12"
-                            >
-                            170709248 - Natte sebagai Mobile Engineer specialist android
-                            Bertanggung jawab untuk membangun aplikasi Android untuk Kouvee Pet Shop
-                            </v-col>
-                        </v-row>
-                        </v-container>
-                    </v-card>
-                    </v-timeline-item>
+                            <v-img
+                            src="https://cdn.dribbble.com/users/269922/screenshots/1008644/files.jpg"
+                            height="200px"
+                            ></v-img>
 
-                    <v-timeline-item
-                    color="red lighten-1"
-                    fill-dot
-                    left
-                    small
-                    >
-                    <v-card>
-                        <v-card-title class="red lighten-1 justify-end">
-                        <h2 class="display-1 mr-4 white--text font-weight-light">Ruben Cahyadi</h2>
-                        <v-icon
-                            dark
-                            size="42"
-                        >
-                            mdi-gender-male
-                        </v-icon>
-                        </v-card-title>
-                        <v-container>
-                        <v-row>
-                            <v-col class="hidden-sm-and-down" md="2">
-                            <v-icon size="64">mdi-laptop</v-icon>
-                            </v-col>
-                            <v-col cols="12" md="10">
-                            170709550 - Ruben sebagai Specialist Desktop App
-                            Bertanggung jawab untuk membangun aplikasi berbasis desktop untuk mendukung proses transaksi di Kouvee Pet Shop
-                            </v-col>
-                        </v-row>
-                        </v-container>
-                    </v-card>
-                    </v-timeline-item>
+                            <v-card-title>
+                            Mathias Sebastian
+                            </v-card-title>
 
-                    <v-timeline-item
-                    color="green lighten-1"
-                    fill-dot
-                    right
-                    >
-                    <v-card>
-                        <v-card-title class="green lighten-1">
-                        <v-icon
-                            class="mr-4"
-                            dark
-                            size="42"
+                            <v-card-subtitle>
+                            170709403
+                            </v-card-subtitle>
+                        </v-card>
+            </v-row>
+            <v-row>
+            <br>
+            </v-row>
+            <v-row 
+             class="mb-6"
+            no-gutters>
+            <v-card
+                            class="mx-auto"
+                            max-width="344"
                         >
-                            mdi-gender-female
-                        </v-icon>
-                        <h2 class="display-1 white--text font-weight-light">Vanessa Angela Amei</h2>
-                        </v-card-title>
-                        <v-container>
-                        <v-row>
-                            <v-col>
-                            170709141 - Vanessa sebagai Mobile Engineer specialist android
-                            Bertanggung jawab untuk membangun aplikasi Android untuk Kouvee Pet Shop
-                            </v-col>
-                        </v-row>
-                        </v-container>
-                    </v-card>
-                    </v-timeline-item>
-                </v-timeline>
-            <!-- end of timelines -->
+                            <v-img
+                            src="https://icons.iconarchive.com/icons/danleech/simple/512/android-icon.png"
+                            height="200px"
+                            ></v-img>
+
+                            <v-card-title>
+                            Vanessa Angela Amei
+                            </v-card-title>
+
+                            <v-card-subtitle>
+                            170709141
+                            </v-card-subtitle>
+                        </v-card>
+                 <v-card
+                            class="mx-auto"
+                            max-width="344"
+                        >
+                            <v-img
+                            src="https://icons.iconarchive.com/icons/danleech/simple/512/android-icon.png"
+                            height="200px"
+                            ></v-img>
+
+                            <v-card-title>
+                             Natte Vagonting Omang
+                            </v-card-title>
+
+                            <v-card-subtitle>
+                            170709248
+                            </v-card-subtitle>
+                        </v-card>
+            </v-row>
+            <v-row>
+                <v-card
+                            class="mx-auto"
+                            max-width="344"
+                        >
+                            <v-img
+                            src="https://www.secretorange.co.uk/media/TagImage/c-sharp.png"
+                            height="200px"
+                            ></v-img>
+
+                            <v-card-title>
+                            Ruben Cahyadi
+                            </v-card-title>
+
+                            <v-card-subtitle>
+                           170709550
+                            </v-card-subtitle>
+                        </v-card>
+            </v-row>
         </v-container>
     </v-card>
 </div>
@@ -271,5 +221,19 @@
         ],
       }
     },
+    mounted(){
+    if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              window.location.replace('/homeMaster')
+        }
+    }
+    else{
+      next()
+    }
+    }
   }
 </script>

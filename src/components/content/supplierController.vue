@@ -39,7 +39,7 @@
                             <td>{{ item.nama }}</td>
                             <td>{{ item.no_telp }}</td>
                             <td>{{ item.alamat }}</td>
-                            <td class="text-center">
+                            <td>
                                 <v-btn
                                     icon
                                     color="indigo"
@@ -71,13 +71,13 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                            <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="No_Telepon*" v-model="form.no_telp" required></v-text-field>
+                            <v-text-field label="No_Telepon*" v-model="form.no_telp" :rules="rules.telp" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Alamat*" v-model="form.alamat" required></v-text-field>
+                            <v-text-field label="Alamat*" v-model="form.alamat" :rules="rules.alamat" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -135,6 +135,19 @@ export default {
                     value: 'null',
                 },
             ],
+            rules: {
+                nama: [
+                     v => !!v || 'Name is required',
+                ],
+                alamat: [
+                    v => !!v || 'Alamat is required',
+                ],
+                telp: [
+                    v => !!v || 'phone is required',
+                    v => /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v) || 'Nomor Telepon diawali dengan 0 atau + dan panjang minimal 11 Angka',
+                ],
+
+            },
             suppliers: [],
             snackbar: false,
             color: null,
@@ -256,6 +269,18 @@ export default {
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>

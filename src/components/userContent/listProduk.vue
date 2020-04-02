@@ -2,7 +2,17 @@
     <v-container>
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Data Produk</h2>
+                <v-carousel>
+                            <v-carousel-item
+                            v-for="(item,i) in items"
+                            :key="i"
+                            :src="item.src"
+                            reverse-transition="fade-transition"
+                            transition="fade-transition"
+                            ></v-carousel-item>
+                        </v-carousel>
+                        <br>
+                    <h1 class="text-md-center font-weight-black">PRODUK KOUVEE PET SHOP</h1>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6 class="text-right">
                         <v-text-field
@@ -26,17 +36,18 @@
                     <v-col
                         v-for="item in items"
                         :key="item.id_produk"
-                        cols="16"
+                        cols="10"
                         md="4"
                         >
                     <v-card class="mx-auto" max-width="455" outlined hover>
                     <v-list-item three-line>
                         <v-list-item-content>
-                        <v-list-item-title class="headline mb-2 text-center">{{ item.nama }}</v-list-item-title>
-                        <img :src="'http://127.0.0.1:5002/API2/upload/' + item.gambar" width="50px">
-                        <v-list-item-subtitle class="text-center">Harga  : {{ item.harga }}</v-list-item-subtitle>
-                        <v-list-item-subtitle class="text-center">Stok : {{ item.stok }} {{ item.satuan }}</v-list-item-subtitle>
-                        <v-list-item-subtitle class="text-center">{{ item.deskripsi }}</v-list-item-subtitle>
+                        <v-list-item-title class="headline mb-2 text-center font-weight-black">{{ item.nama }}</v-list-item-title>
+                        <img :src="'http://127.0.0.1:5002/API2/upload/' + item.gambar" width="200px"  height="200px">
+                        <div class="purple darken-2 text-center">
+                             <v-list-item-subtitle class="headline mb-0 font-weight-medium text-center white--text"> Rp.{{ item.harga }}</v-list-item-subtitle>
+                        </div>
+                        <v-list-item-subtitle class="text-center subtitle-1">Stok : {{ item.stok }} {{ item.satuan }}</v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
                     </v-card>
@@ -89,6 +100,17 @@
 export default {
     data() {
         return {
+            items: [
+            {
+                src: 'https://www.standuppouches.co.id/wp-content/uploads/2018/01/Pet-Food-Packaging.jpg',
+            },
+            {
+                src: 'https://www.standuppouches.co.id/wp-content/uploads/2019/06/Happy-and-Grumpy-Pet-Food-Packaging.jpg',
+            },
+            {
+                src: 'https://www.prima.dog/sites/default/files/styles/front_page_main_image_desktop/public/images/PrimaDog-frontpage-banner-1920x810_0.png?itok=oCWNZwC8',
+            },
+            ],
             dialog: false,
             keyword: '',
             status:'',
@@ -241,25 +263,21 @@ export default {
                 minimal: ''
             }
         }
-        // upload() {
-        //     this.file_data = $('#image').prop('files')[0];
-        //     this.form_data = new FormData();
-        //     this.form_data.append('file', this.file_data);
-        //     let url = "http://backend.xbanana.id/item/upload/do_upload";
-        //     var self = this
-        //         axios
-        //             .post(url, this.form_data).then((res) => {
-        //                 if (res.data.success) {
-        //                     $('#image-display').attr('src', res.data.success)
-        //                 }
-        //                 if (res.data.error) {
-        //                     $('#error').html(res.data.error)
-        //                 }
-        //             });
-        // }
     },
     mounted(){
         this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              window.location.replace('/homeMaster')
+        }
+    }
+    else{
+      next()
+    }
     },
 }
 </script>

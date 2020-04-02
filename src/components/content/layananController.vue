@@ -69,20 +69,20 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                            <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" required>
+                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" :rules="rules.selected" required>
                                 <option v-for="jenis in jenisHewan" :key="jenis.id_jenis_hewan">{{ jenis.nama }}</option>
                             </v-select>
                             </v-col>
                         <v-col cols="12">
-                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" required>
+                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" :rules="rules.selected" required>
                                 <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ ukuran.nama }}</option>
                             </v-select>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Harga*" v-model="form.harga" required></v-text-field>
+                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -143,6 +143,20 @@ export default {
                     value: 'null',
                 },
             ],
+            rules: {
+                nama: [
+                     v => !!v || 'Name is required',
+                ],
+
+                harga: [
+                    v => !!v || 'Harga is required',
+                    v => (v && v.length <= 0) || 'Harga tidak boleh minus',
+                ],
+                selected: [
+                    v => !!v || 'Required',
+                ],
+
+            },
             layanans: [],
             snackbar: false,
             color: null,
@@ -276,6 +290,18 @@ export default {
         this.getData();
         this.loadUkuranHewan();
         this.loadJenisHewan();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
     },
 }
 </script>
