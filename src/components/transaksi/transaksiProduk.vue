@@ -393,6 +393,8 @@ export default {
             jumlahDetail: 0,
             totalDetail: 0,
             transaksiID: 0,
+            idd: 0,
+            code: '',
         }
     },
     computed: {
@@ -409,8 +411,8 @@ export default {
         console.log(this.flen)
         for(this.i=0; this.i<this.flen; this.i++){
             if(this.details[this.i].produk == this.selectedProduk.nama){
-                console.log(this.details[this.i].produk)
-                console.log(this.details[this.i])
+                // console.log(this.details[this.i].produk)
+                // console.log(this.details[this.i])
                 this.cek='true';
                 this.id_temp = this.details[this.i].id_detail_tp;
                 this.tempDetail.kode = this.details[this.i].kode;
@@ -431,6 +433,20 @@ export default {
             this.$http.get(uri).then( (response) =>{
                 this.transaksiID=response.data  
                 //  alert('Customer: ' + this.transaksiID)
+            })  
+        },
+        getTransaksiID(){
+            if(this.countId>9){
+                var uri = this.$apiUrl + '/tp_detail/searchKode?kode='+this.kode+this.countId;
+            }else{
+                var uri = this.$apiUrl + '/tp_detail/searchKode?kode='+this.kode+'0'+(this.countId);
+            }
+             this.$http.get(uri).then( (response) =>{
+                this.idd=response.data[0].id_tp
+                this.idd=parseInt(this.idd,10)+parseInt(1,10)
+                console.log(uri)  
+                console.log(this.idd)
+               
             })  
         },
         selected(){
@@ -470,7 +486,7 @@ export default {
             // console.log(response.getData)
         },
         getDataDetail(){
-            var uri = this.$apiUrl + '/tp_detail?id_tp='+this.transaksiID;
+            var uri = this.$apiUrl + '/tp_detail?id_tp='+this.idd;
             console.log(uri)
             this.$http.get(uri).then( (response) =>{
                 this.details=response.data
@@ -513,8 +529,12 @@ export default {
             this.transaction.append('id_pegawai_cs', this.id_cs);
             if(this.countId+1>9){
                 this.transaction.append('kode', this.kode+(this.countId+1));
+                this.code = this.kode+(this.countId+1);
+                console.log(this.code)
             }else{
                 this.transaction.append('kode', this.kode+'0'+(this.countId+1));
+                this.code = this.kode+'0'+(this.countId+1);
+                console.log(this.code)
             }
             this.transaction.append('tanggal', this.tglTransaksi);
             this.transaction.append('status', this.status);
@@ -523,8 +543,8 @@ export default {
             this.transaction.append('created_by', this.cs);
             this.tempKode = '0'+(this.countId+1);
             this.temp = this.countId+1;
-            this.transaksiID++;
-            console.log(this.transaksiID)
+            // this.idd++;
+            // console.log(this.transaksiID)
             var uri =this.$apiUrl + '/transaksi_produk'
             this.load = true
             this.$http.post(uri, this.transaction).then(response =>{
@@ -534,7 +554,7 @@ export default {
                 console.log(response.data.message)
                 this.load = false;
                 this.dialog = false
-                this.getDataDetail();
+                // this.getDataDetail();
                 this.resetForm();
             }).catch(error =>{
                 this.errors = error
@@ -550,8 +570,10 @@ export default {
             this.transaction.append('id_pegawai_cs', this.id_cs);
             if(this.countId+1>9){
                 this.transaction.append('kode', this.kode+(this.countId+1));
+                this.code = this.kode+(this.countId+1);
             }else{
                 this.transaction.append('kode', this.kode+'0'+(this.countId+1));
+                this.code = this.kode+'0'+(this.countId+1);
             }
             // this.transaction.append('kode', this.kode+'0'+(this.countId+1));
             this.transaction.append('tanggal', this.tglTransaksi);
@@ -561,7 +583,7 @@ export default {
             this.transaction.append('created_by', this.cs);
             this.tempKode = '0'+(this.countId+1);
             this.temp = this.countId+1;
-            this.transaksiID++;
+            // this.transaksiID++;
             var uri =this.$apiUrl + '/transaksi_produk'
             this.load = true
             this.$http.post(uri, this.transaction).then(response =>{
@@ -571,7 +593,7 @@ export default {
                 console.log(response.data.message)
                 this.load = false;
                 this.dialog = false
-                this.getDataDetail();
+                // this.getDataDetail();
                 this.resetForm();
             }).catch(error =>{
                 this.errors = error
@@ -595,7 +617,7 @@ export default {
             this.transaction.append('sub_total', this.total);
             this.transaction.append('total_harga', this.totalall);
             this.transaction.append('created_by', this.cs);
-            var uri =this.$apiUrl + '/transaksi_produk/' + this.transaksiID;
+            var uri =this.$apiUrl + '/transaksi_produk/' + this.idd;
             console.log(this.kode+'0'+(this.countId))
             console.log(this.temp)
             console.log('link' + uri)
@@ -632,7 +654,7 @@ export default {
             this.transaction.append('sub_total', this.total);
             this.transaction.append('total_harga', this.totalall);
             this.transaction.append('created_by', this.cs);
-            var uri =this.$apiUrl + '/transaksi_produk/' + this.transaksiID;
+            var uri =this.$apiUrl + '/transaksi_produk/' + this.idd;
             console.log(this.kode+'0'+(this.countId))
             console.log(this.temp)
             console.log('link' + uri)
@@ -655,7 +677,7 @@ export default {
             })
         },
         sendDataDetail(){
-            this.dtl.append('id_tp', this.transaksiID);
+            this.dtl.append('id_tp', this.idd);
             this.dtl.append('id_produk', this.selectedProduk.id_produk);
             this.dtl.append('jumlah', this.form.jumlah);
             this.dtl.append('total', this.selectedProduk.harga*this.form.jumlah);
@@ -682,7 +704,7 @@ export default {
             })
         },
         updateDataDetail(){
-            this.dtl.append('id_tp', this.transaksiID);
+            this.dtl.append('id_tp', this.idd);
             this.dtl.append('id_produk', this.selectedProduk.id_produk);
             this.dtl.append('jumlah', this.form.jumlah);
             this.dtl.append('total', this.selectedProduk.harga*this.form.jumlah);
@@ -777,8 +799,15 @@ export default {
         setForm(){
             if(this.typeInput == 'new' && this.checked == ''){
                 this.sendDataTransaksi()
+                this.getTransaksiID()
+                console.log(this.idd)
+                this.getDataDetail()
+                
             }else if(this.typeInput == 'new' && this.checked == 'true'){
                 this.sendDataTransaksiCheckBox()
+                // this.getTransaksiID()
+                 this.getTransaksiID()
+                this.getDataDetail()
             }else if(this.typeInput != 'new' && this.checked == ''){
                 this.updateData()
             }else{
@@ -821,6 +850,7 @@ export default {
     },  
     mounted(){
         // this.getID();
+        this.getTransaksiID();
         this.getIdTp()
         this.getDataProduk();
         this.loadCS();
