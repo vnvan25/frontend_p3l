@@ -35,7 +35,7 @@
                     <tbody>
                         <tr v-for="(item,index) in items" :key="item.id_layanan">
                             <td>{{ index + 1 }}</td>
-                            <td>{{ item.namaLayanan }}</td>
+                            <td>{{ item.layanan }} {{item.jenis}} {{item.ukuran}}</td>
                             <td>{{ item.harga }}</td>
                             <td>
                                 <v-btn
@@ -72,13 +72,25 @@
                             <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" :rules="rules.selected" required>
+                            <!-- <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" :rules="rules.selected" required>
                                 <option v-for="jenis in jenisHewan" :key="jenis.id_jenis_hewan">{{ jenis.nama }}</option>
-                            </v-select>
+                            </v-select> -->
+                            <v-select
+                                v-model="selectedJenis"
+                                :items="jenisHewan"
+                                menu-props="auto"
+                                hide-details
+                                item-value="id_jenis_hewan" 
+                                item-text="nama" 
+                                :rules="rules.selected"
+                                label="Jenis Ukuran*"
+                                single-line
+                                v-on:change="changeRoute(`${selectedJenis.src}`)"
+                                ></v-select>
                             </v-col>
                         <v-col cols="12">
                             <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" :rules="rules.selected" required>
-                                <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ ukuran.nama }}</option>
+                                <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ selectedJenis.nama }}</option>
                             </v-select>
                         </v-col>
                         <v-col cols="12">
@@ -90,7 +102,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+                    <v-btn color="blue darken-1" text @click="dialog = false; resetForm()">Close</v-btn>
                     <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
                 </v-card-actions>
             </v-card>
@@ -150,7 +162,7 @@ export default {
 
                 harga: [
                     v => !!v || 'Harga is required',
-                    v => (v && v.length <= 0) || 'Harga tidak boleh minus',
+                    v => (v && v.length >= 0) || 'Harga tidak boleh minus',
                 ],
                 selected: [
                     v => !!v || 'Required',
@@ -173,6 +185,10 @@ export default {
         }
     },
     methods:{
+        changeRoute(a) {
+        //this.$router.push({path: a })
+        console.log(a)
+      },
         loadUkuranHewan(){
              var uri = this.$apiUrl + '/ukuranHewan'
             this.$http.get(uri).then( (response) =>{
@@ -248,10 +264,10 @@ export default {
         editHandler(item){
             this.typeInput = 'edit';
             this.dialog = true;
-            this.form.nama = item.nama;
+            this.form.nama = item.layanan;
             this.form.harga = item.harga;
-            this.selectedUkuran = item.ukuran_hewan;
-            this.selectedJenis = item.jenis_hewan;
+            this.selectedUkuran = item.ukuran;
+            this.selectedJenis = item.jenis;
             this.updatedId = item.id_layanan;
         },
         delData(deleteId){
@@ -280,7 +296,8 @@ export default {
         resetForm(){
             this.form = {
                 nama : '',
-                harga: '',
+                jenis: '',
+                ukuran: '',
                 selectedUkuran: '',
                 selectedJenis: ''
             }

@@ -77,7 +77,7 @@
                             <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" required></v-text-field>
+                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" type="number" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <v-label>Gambar</v-label>
@@ -86,7 +86,7 @@
                             
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Stok*" v-model="form.stok" :rules="rules.stok" required></v-text-field>
+                            <v-text-field label="Stok*" v-model="form.stok" :rules="rules.stok" type="number" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <v-select :items="satuan" v-model="form.satuan" :rules="rules.satuan" required label="Satuan*"></v-select>
@@ -95,7 +95,7 @@
                             <v-text-field label="Satuan*" v-model="form.satuan" required></v-text-field>
                         </v-col> -->
                         <v-col cols="12">
-                            <v-text-field label="Minimal*" v-model="form.minimal" :rules="rules.minimal" required></v-text-field>
+                            <v-text-field label="Minimal*" v-model="form.minimal" :rules="rules.minimal" type="number" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -103,7 +103,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+                    <v-btn color="blue darken-1" text @click="dialog = false; resetForm()">Close</v-btn>
                     <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
                 </v-card-actions>
             </v-card>
@@ -133,7 +133,7 @@ export default {
             keyword: '',
             status:'',
             selectedFile: null,
-            satuan: ['Pax','Botol', 'Sachet'],
+            satuan: ['Pax','Botol', 'Bungkus', 'Kotak'],
             rules: {
                 nama: [
                      v => !!v || 'Name is required',
@@ -141,18 +141,18 @@ export default {
 
                 harga: [
                     v => !!v || 'harga is required',
-                    v => (v && v.length <= 0) || 'Harga tidak boleh minus',
+                    v => (v && v.length >=0) || 'Harga tidak boleh minus',
                 ],
                 stok: [
                     v => !!v || 'stok is required',
-                    v => (v && v.length < 0) || 'Input dengan benar',
+                    v => (v && v.length >=0) || 'Input dengan benar',
                 ],
                 satuan: [
                     v => !!v || 'satuan is required',
                 ],
                 minimal: [
                     v => !!v || 'minimal is required',
-                    v => (v && v.length < 0) || 'Input dengan benar',
+                    v => (v && v.length >= 0) || 'Input dengan benar',
                 ],
 
             },
@@ -203,11 +203,13 @@ export default {
                 satuan: '',
                 minimal: '',
                 deskripsi: '',
+                rules:'',
             },
             produk : new FormData,
             typeInput: 'new',
             errors : '',
             updatedId : '',
+            tempGambar: '',
         }
     },
     methods:{
@@ -260,6 +262,7 @@ export default {
             this.produk.append('satuan', this.form.satuan);
             this.produk.append('minimal', this.form.minimal);
             this.produk.append('gambar', this.selectedFile, this.selectedFile.nama);
+            console.log(this.selectedFile.nama)
             var uri = this.$apiUrl + '/produk/' + this.updatedId;
             this.load = true
             this.$http.post(uri, this.produk).then( (response) =>{
