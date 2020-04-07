@@ -70,7 +70,7 @@
                         <option v-for="hew in hewan" :key="hew.id_hewan" >{{ hew.nama }}</option>
                     </v-select>
                     <v-input> Pemilik : - </v-input>
-                    <v-input> Hewan : - </v-input>
+                    <v-input> Jenis Hewan : - </v-input>
                     <v-input> Ukuran Hewan : - </v-input>
                 </div>
                 <div v-else>
@@ -243,8 +243,9 @@
                                 <v-autocomplete
                                     v-model="selectedProduk"
                                     :items="produks"
-                                    dense
                                     filled
+                                    :hint="value"
+                                    dense
                                     item-value="id_produk" item-text="nama"
                                     return-object
                                     label="Pilihan Produk*"
@@ -301,6 +302,7 @@ export default {
     data(){
         return {
             checked:'',
+            value:'',
             dialog: false,
             keyword: '',
             isHidden: true, 
@@ -772,6 +774,7 @@ export default {
         editHandlerDetail(item){
             this.type = 'edit';
             this.dialog = true;
+            this.value = item.produk;
             this.selectedProduk = this.selectedProduk;
             this.form.total = this.form.jumlah*this.selectedProduk.harga;
             this.form.jumlah = item.jumlah;

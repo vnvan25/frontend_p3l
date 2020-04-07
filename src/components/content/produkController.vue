@@ -89,7 +89,7 @@
                             <v-text-field label="Stok*" v-model="form.stok" :rules="rules.stok" type="number" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-select :items="satuan" v-model="form.satuan" :rules="rules.satuan" required label="Satuan*"></v-select>
+                            <v-select :items="satuan" v-model="form.satuan" :rules="rules.satuan" required :hint="stn" label="Satuan*"></v-select>
                         </v-col>
                         <!-- <v-col cols="12">
                             <v-text-field label="Satuan*" v-model="form.satuan" required></v-text-field>
@@ -132,6 +132,7 @@ export default {
             dialog: false,
             keyword: '',
             status:'',
+            stn: '',
             selectedFile: null,
             satuan: ['Pax','Botol', 'Bungkus', 'Kotak'],
             rules: {
@@ -291,6 +292,7 @@ export default {
             this.form.harga = item.harga;
             this.form.stok = item.stok;
             this.form.satuan = item.satuan;
+            this.stn = item.satuan;
             this.form.minimal = item.minimal;
             this.form.deskripsi =  item.deskripsi;
             this.form.gambar =  item.gambar;

@@ -42,7 +42,6 @@
                             <td>{{ item.peran }}</td>
                             <td>{{ item.no_telp }}</td>
                             <td>{{ item.username }}</td>
-                            <td>{{ item.password }}</td>
                             <td class="text-center">
                                 <v-btn
                                     icon
@@ -169,10 +168,6 @@ export default {
                 {
                     text: 'Username',
                     value: 'username',
-                },
-                {
-                    text: 'Password',
-                    value: 'password',
                 },
                 {
                     text: 'Aksi',

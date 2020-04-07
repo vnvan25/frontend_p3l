@@ -167,6 +167,7 @@
                                 <v-autocomplete
                                     v-model="selectedProduk"
                                     :items="produks"
+                                    :hint="value"
                                     dense
                                     filled
                                     item-value="id_produk" item-text="nama"
@@ -226,7 +227,7 @@
                                     <v-input hidden>Kode Transaksi : {{this.form.kode}}</v-input>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-select v-model="selectedHewan" :items="hewan" item-value="id_hewan" item-text="nama" label="Nama Hewan Pelanggan*" return-object required > 
+                                    <v-select v-model="selectedHewan" :items="hewan" item-value="id_hewan" :hint="hew" item-text="nama" label="Nama Hewan Pelanggan*" return-object required > 
                                         <option v-for="hew in hewan" :key="hew.id_hewan" >{{ hew.nama }}</option>
                                     </v-select>
                                     <v-input> Pemilik : {{ selectedHewan.customer }} </v-input>
@@ -415,6 +416,8 @@ export default {
             id_temp :'',
             jumlahDetail: 0,
             totalDetail: 0,
+            value:'',
+            hew: '',
         }
     },
     computed: {
@@ -768,6 +771,8 @@ export default {
                 this.dialogTransaksi = true;
                 this.form.id_hewan = this.selectedHewan,
                 this.form.id_pegawai_k = this.kasir,
+
+                this.hew = item.hewan,
                 this.form.id_pegawai_cs = item.id_pegawai_cs,
                 this.form.kode = item.kode,
                 this.form.tanggal = item.tanggal,
@@ -782,6 +787,7 @@ export default {
             this.dialogDetail = true;
             this.form.total = this.form.jumlah*this.selectedProduk.harga;
             this.selectedProduk = this.selectedProduk;
+            this.value= item.produk;
             console.log(this.selectedProduk)
             this.form.jumlah = item.jumlah;
             this.tempKode = this.tempKode;

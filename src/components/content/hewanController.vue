@@ -80,19 +80,19 @@
                         </v-col>
                         <v-col cols="12">
                             <!-- <v-select :items="ukuran_hewan" v-model="form.ukuran_hewan" required label="Ukuran_Hewan*"></v-select> -->
-                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" :rules="rules.selected" required>
+                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" :hint="ukuranHint" :rules="rules.selected" required>
                                 <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ ukuran.nama }}</option>
                             </v-select>
                         </v-col>
                         <v-col cols="12">
                             <!-- <v-select :items="jenis_hewan" v-model="form.jenis_hewan" required label="Jenis_Hewan*"></v-select> -->
-                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" :rules="rules.selected" required>
+                            <v-select  v-model="selectedJenis" :items="jenisHewan" item-value="id_jenis_hewan" item-text="nama" label="Jenis_Hewan*" :hint="jenis" :rules="rules.selected" required>
                                 <option v-for="jenis in jenisHewan" :key="jenis.id_jenis_hewan">{{ jenis.nama }}</option>
                             </v-select>
                         </v-col>
                         <v-col cols="12">
                             <!-- <v-text-field label="Customer*" v-model="form.customer" required></v-text-field> -->
-                            <v-select v-model="selectedCst" :items="cstHewan" item-value="id_customer" item-text="nama" label="Customer*" :rules="rules.selected" required>
+                            <v-select v-model="selectedCst" :items="cstHewan" item-value="id_customer" item-text="nama" label="Customer*" :hint="pemilik" :rules="rules.selected" required>
                                 <option v-for="cst in cstHewan" :key="cst.id_customer">{{ cst.nama }}</option>
                             </v-select>
                         </v-col>
@@ -140,6 +140,7 @@ export default {
             jenisHewan: [],
             cstHewan: [],
             ukuran: '',
+            pemilik: '',
             // ukuran_hewan: ['Small', 'Extra Large', 'Medium'],
             // jenis_hewan: ['Anjing', 'Kucing', 'Kambing'],
             rules: {
@@ -202,6 +203,8 @@ export default {
             typeInput: 'new',
             errors : '',
             updatedId : '',
+            ukuranHint: '',
+            jenis: '',
         }
     },
     methods:{
@@ -312,6 +315,9 @@ export default {
             this.form.tgl_lahir = item.tgl_lahir;
             this.selectedUkuran = item.ukuran_hewan;
             this.selectedJenis = item.jenis_hewan;
+            this.ukuranHint = item.ukuran_hewan;
+            this.jenis = item.jenis_hewan;
+            this.pemilik = item.customer;
             this.selectedCst = item.customer;
             this.updatedId = item.id_hewan;
         },

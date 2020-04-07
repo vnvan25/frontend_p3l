@@ -114,9 +114,11 @@
                                 <v-col cols="12">
                                 <v-autocomplete
                                     v-model="selectedProduk"
+                                    filled
+                                    :hint="value"
                                     :items="produks"
                                     dense
-                                    filled
+                                    hide-selected
                                     item-value="id_produk" item-text="nama"
                                     return-object
                                     label="Pilihan Produk*"
@@ -187,7 +189,7 @@
                                 color="white"
                                 width="650px"> 
                                 <span class="title">Data Customer</span>
-                                <v-divider :inset="inset"></v-divider>
+                                <v-divider></v-divider>
                                 <tr>
                                     <td>Nama Hewan</td>
                                     <td> : {{this.bayar.hewan}}</td>
@@ -291,7 +293,7 @@
                             <br>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="red darken-1">Bayar dan Cetak Nota</v-btn>
+                            <v-btn color="red darken-1" @click="selected(); selesaiHandler()">Bayar dan Cetak Nota</v-btn>
                             <v-btn color="blue darken-1" text @click="dialogBayar = false">Close</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -318,6 +320,7 @@ export default {
     data() {
         return {
             namakasir: localStorage.getItem("nama"),
+            id_kasir: localStorage.getItem("id_pegawai"),
             dialogBayar: false,
             dialogTransaksi: false,
             dialogDetail: false,
@@ -327,6 +330,7 @@ export default {
             percent: 0,
             diskon: 0,
             uang: 0,
+            value: '',
             selectedProduk: 0,
             selectedHewan: 0,
             max: {
@@ -460,6 +464,26 @@ export default {
                 cs : '',
                 hewan : '',
                 id_hewan: '',
+                sub_total: '',
+                id_tp: '',
+                id_pegawai_cs: '',
+            },
+            kurang: [{
+                nama : '',
+                jumlah : '',
+            }],
+            selesai: {
+                id_hewan: '',
+                id_pegawai_k: '',
+                id_pegawai_cs: '',
+                kode: '',
+                tanggal: '',
+                sub_total: '',
+                total_harga: '',
+                status: '',
+                created_by: '',
+                updated_by: '',
+                jumlah: '',
             },
             tp : new FormData,
             dtl : new FormData,
@@ -471,7 +495,7 @@ export default {
             updatedId : '',
             updatedIdDetail : '',
             tempKode: '',
-            konfirmasiId: '',
+            selesaiId: '',
             batalId: '',
             kasir: 0,
             totalall: '',
@@ -583,54 +607,63 @@ export default {
             this.totalBayar = parseInt(this.totalBeli2(), 10) - this.diskon;
         },
         updateStok(){
-            this.password.append('id_pegawai', localStorage.getItem("id_pegawai"));
-            this.password.append('password', this.pass.confirm);
-            var uri =this.$apiUrl + '/pegawai/changePassword'
-            this.load = true
-            this.$http.post(uri, this.password).then( (response) =>{
-               this.snackbar = true;
-                this.color = 'Green';
-                this.text = "Ubah Password Berhasil!";
-                localStorage.setItem("password", this.pass.confirm);
-                this.load = false;
-                this.dialog = false;
-                this.resetForm();
-            }).catch(error =>{
-                this.errors = error
-                this.snackbar = true;
-                this.text = 'Try Again';
-                this.color = 'red';
-                this.load = false;
-            })
-
+            this.flen= this.detailsTp.length;
+            for(let i=0; i<this.flen; i++){
+                    this.kurang.nama = this.detailsTp[i].produk;
+                    this.kurang.jumlah = this.detailsTp[i].jumlah;
+                    this.minus.append('nama', this.detailsTp[i].produk);
+                    this.minus.append('jumlah', this.detailsTp[i].jumlah);
+                    var uri =this.$apiUrl + '/transaksi_produk/kurangStok'
+                    this.load = true
+                    this.$http.post(uri, this.minus).then( (response) =>{
+                        this.load = false;
+                    }).catch(error =>{
+                        this.color = 'red';
+                        this.load = false;
+                    })
+            }
         },
-        konfirmasi(){
-            this.tp.append('id_hewan', this.form.id_hewan);
-            this.tp.append('id_pegawai_k', this.kasir);
-            this.tp.append('id_pegawai_cs', this.form.id_pegawai_cs);
-            this.tp.append('kode', this.form.kode);
-            this.tp.append('tanggal', this.form.tanggal);
-            this.tp.append('sub_total', this.form.sub_total);
-            this.tp.append('total_harga', this.form.total_harga);
-            this.tp.append('status', this.form.status);
+        updateKurang(){
+            // this.flen= this.detailsTp.length;
+             for(let i=0; this.detailsTp.length; i++){
+                this.minus.append('nama', this.detailsTp[i].produk);
+                this.minus.append('jumlah', this.detailsTp[i].jumlah);
+                var uri =this.$apiUrl + '/transaksi_produk/kurangStok'
+                this.load = true
+                this.$http.post(uri, this.minus).then( (response) =>{
+                    console.log(response.data)
+                    this.load = false;
+                }).catch(error =>{
+                    this.color = 'red';
+                    this.load = false;
+                })
+             }
+        },
+        selesaiBayar(){
+        this.$confirm("Yakin Menyelesaikan Pembayaran?").then(() => {
+            this.tp.append('id_hewan', this.selesai.id_hewan);
+            this.tp.append('id_pegawai_k', this.selesai.id_pegawai_k);
+            this.tp.append('id_pegawai_cs', this.selesai.id_pegawai_cs);
+            this.tp.append('kode', this.selesai.kode);
+            this.tp.append('tanggal', this.selesai.tanggal);
+            this.tp.append('sub_total', this.selesai.sub_total);
+            this.tp.append('total_harga', this.selesai.total_harga);
+            this.tp.append('status', this.selesai.status);
             // this.tp.append('updated_by', this.form.updated_by);
-            var uri = this.$apiUrl + '/transaksi_produk/' + this.konfirmasiId;
+            var uri = this.$apiUrl + '/transaksi_produk/' + this.selesaiId;
             this.load = true
             this.$http.post(uri, this.tp).then( (response) =>{
-                alert('Pesanan sudah di konfirmasi. Silahkan Lanjutkan ke Pembayaran')
                 this.load = false;
-                this.dialog = false
+                this.dialogBayar = false
                 this.getData();
                 this.resetForm();
                 this.typeInput = 'new';
             }).catch( error =>{
-                this.errors = error
-                this.snackbar = true;
-                this.text = 'Try Again';
                 this.color = 'red';
                 this.load = false;
                 this.typeInput = 'new';
             })
+            });
         },
         tempHandler(item){
             this.temp.hewan = item.hewan,
@@ -791,21 +824,30 @@ export default {
                 this.bayar.cs = id.customer_service;
                 this.bayar.tanggal = id.tanggal;
                 this.bayar.id_hewan = id.id_hewan;
+                this.bayar.id_tp = id.id_tp;
+                this.bayar.id_pegawai_cs = id.id_pegawai_cs;
                 this.tempKode = id.id_tp;
                 this.getDetailData();
                 this.loadHewanById();
         },
-        konfirmasiHandler(item){
-            this.form.id_hewan = item.id_hewan,
-            this.form.id_pegawai_k = this.kasir,
-            this.form.id_pegawai_cs = item.id_pegawai_cs,
-            this.form.kode = item.kode,
-            this.form.tanggal = item.tanggal,
-            this.form.sub_total = item.sub_total,
-            this.form.total_harga = item.total_harga,
-            this.form.status = 'pembayaran',
-            this.konfirmasiId = item.id_tp;
-            this.konfirmasi();
+        selesaiHandler(){
+            this.selesai.id_hewan = this.bayar.id_hewan,
+            this.selesai.id_pegawai_k = this.id_kasir,
+            this.selesai.id_pegawai_cs = this.bayar.id_pegawai_cs,
+            this.selesai.kode = this.bayar.kode,
+            this.selesai.tanggal = this.bayar.tanggal,
+            this.selesai.sub_total = this.temp.sub_total;
+            if(this.bayar.hewan == 'Guest'){
+                this.selesai.total_harga = this.temp.sub_total;
+            }else{
+                this.selesai.total_harga = this.temp.sub_total-(this.temp.sub_total*this.percent/100);
+            }
+            this.selesai.status = 'Selesai',
+            this.selesaiId = this.bayar.id_tp;
+            // this.updateStok();
+            this.selesaiBayar();
+            // this.createPDF();
+            
         },
         batalHandler(item){
             this.form.id_hewan = item.id_hewan,
@@ -823,8 +865,8 @@ export default {
             this.type = 'edit';
             this.dialogDetail = true;
             this.form.total = this.form.jumlah*this.selectedProduk.harga;
-            this.selectedProduk = this.selectedProduk;
-            console.log(this.selectedProduk)
+            this.value = item.produk;
+            console.log(this.value)
             this.form.jumlah = item.jumlah;
             this.tempKode = this.tempKode;
             this.updatedIdDetail = item.id_detail_tp;
@@ -896,7 +938,13 @@ export default {
                 deskripsi: '',
                 gambar: ''
             }
-        }
+        },
+        createPDF () {
+            let pdfName = 'test'; 
+            var doc = new jsPDF();
+            doc.text("Hello World", 10, 10);
+            doc.save(pdfName + '.pdf');
+        },
     },
     mounted(){
         this.loadHewanById();

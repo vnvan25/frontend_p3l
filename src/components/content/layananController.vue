@@ -78,18 +78,15 @@
                             <v-select
                                 v-model="selectedJenis"
                                 :items="jenisHewan"
-                                menu-props="auto"
-                                hide-details
                                 item-value="id_jenis_hewan" 
                                 item-text="nama" 
                                 :rules="rules.selected"
-                                label="Jenis Ukuran*"
-                                single-line
-                                v-on:change="changeRoute(`${selectedJenis.src}`)"
+                                :hint="jns"
+                                label="Jenis Hewan*"
                                 ></v-select>
                             </v-col>
                         <v-col cols="12">
-                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" label="Ukuran_Hewan*" :rules="rules.selected" required>
+                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" :hint="ukr" label="Ukuran_Hewan*" :rules="rules.selected" required>
                                 <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ selectedJenis.nama }}</option>
                             </v-select>
                         </v-col>
@@ -182,6 +179,8 @@ export default {
             typeInput: 'new',
             errors : '',
             updatedId : '',
+            jns: '',
+            ukr: '',
         }
     },
     methods:{
@@ -268,6 +267,8 @@ export default {
             this.form.harga = item.harga;
             this.selectedUkuran = item.ukuran;
             this.selectedJenis = item.jenis;
+            this.jns = item.jenis;
+            this.ukr = item.ukuran;
             this.updatedId = item.id_layanan;
         },
         delData(deleteId){
