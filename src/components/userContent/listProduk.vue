@@ -43,7 +43,7 @@
                     <v-list-item three-line>
                         <v-list-item-content>
                         <v-list-item-title class="headline mb-2 text-center font-weight-black">{{ item.nama }}</v-list-item-title>
-                        <img :src="'http://127.0.0.1:5002/API2/upload/' + item.gambar" width="200px"  height="200px">
+                        <img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="200px"  height="200px">
                         <div class="purple darken-2 text-center">
                              <v-list-item-subtitle class="headline mb-0 font-weight-medium text-center white--text"> Rp.{{ item.harga }}</v-list-item-subtitle>
                         </div>

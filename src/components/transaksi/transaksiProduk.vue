@@ -379,7 +379,7 @@ export default {
             updatedId : '',
             updatedIdTp: '',
             total: 0,
-            status: 'proses',
+            status: "penjualan",
             tempKode: '',
             jlh: 0,
             countId: '',
@@ -614,8 +614,8 @@ export default {
             }
             this.transaction.append('tanggal', this.tglTransaksi);
             this.transaction.append('status', this.status);
-            this.transaction.append('sub_total', this.total);
-            this.transaction.append('total_harga', this.totalall);
+            this.transaction.append('sub_total', this.totalall);
+            this.transaction.append('total_harga', this.total);
             this.transaction.append('created_by', this.cs);
             var uri =this.$apiUrl + '/transaksi_produk/' + this.idd;
             console.log(this.kode+'0'+(this.countId))
@@ -651,8 +651,8 @@ export default {
             // this.transaction.append('kode', this.kode+'0'+(this.temp));
             this.transaction.append('tanggal', this.tglTransaksi);
             this.transaction.append('status', this.status);
-            this.transaction.append('sub_total', this.total);
-            this.transaction.append('total_harga', this.totalall);
+            this.transaction.append('sub_total', this.totalall);
+            this.transaction.append('total_harga', this.total);
             this.transaction.append('created_by', this.cs);
             var uri =this.$apiUrl + '/transaksi_produk/' + this.idd;
             console.log(this.kode+'0'+(this.countId))
@@ -765,8 +765,8 @@ export default {
                 this.form.id_pegawai_cs = this.id_cs,
                 this.form.kode = this.kode+'0'+(this.countId),
                 this.form.tanggal = new Date().toLocaleString(),
-                this.form.total_harga = this.totalall,
-                this.form.status = this.status,
+                this.form.total = this.totalall,
+                this.form.status = 'Penjualan',
                 this.updatedIdTp = this.countId;
         },
         editHandlerDetail(item){

@@ -28,7 +28,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="/pembayaranProduk">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
 

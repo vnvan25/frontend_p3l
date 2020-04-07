@@ -37,7 +37,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Pembayaran Transaksi</v-list-item-title>
                 </template>
-                        <v-list-item link to ="produk">
+                        <v-list-item link to ="pembayaranProduk">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
@@ -45,7 +45,7 @@
                             <v-icon>mdi-paw</v-icon>
                         </v-list-item>
 
-                        <v-list-item link to ="layanan">
+                        <v-list-item link to ="">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>

@@ -94,7 +94,7 @@
                             </v-select>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" required></v-text-field>
+                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" required type="number"></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -162,7 +162,7 @@ export default {
 
                 harga: [
                     v => !!v || 'Harga is required',
-                    v => (v && v.length >= 0) || 'Harga tidak boleh minus',
+                    v => v>0 || 'Harga tidak boleh minus',
                 ],
                 selected: [
                     v => !!v || 'Required',
@@ -190,14 +190,14 @@ export default {
         console.log(a)
       },
         loadUkuranHewan(){
-             var uri = this.$apiUrl + '/ukuranHewan'
+             var uri = this.$apiUrl + '/ukuranhewan'
             this.$http.get(uri).then( (response) =>{
                 this.ukuranHewan=response.data
             })
             
         },
         loadJenisHewan(){
-             var uri = this.$apiUrl + '/jenisHewan'
+             var uri = this.$apiUrl + '/jenishewan'
             this.$http.get(uri).then( (response) =>{
                 this.jenisHewan=response.data
             })

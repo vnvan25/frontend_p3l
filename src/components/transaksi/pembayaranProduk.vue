@@ -1,36 +1,20 @@
 <template>
     <v-container>
-        <v-card>
+        <v-card >
              <v-toolbar
                 flat
-                color="brown lighten-3"
+                color="brown lighten-1"
                 >
-                <!-- <v-icon large>mdi-note-multiple-outline
-                </v-icon> -->
-                 <v-toolbar-title class=" text-center font-weight-bold" >     History Penjualan Produk Kouvee Pet Shop</v-toolbar-title>
+                 <v-toolbar-title class=" text-center font-weight-bold" > Menu Kasir : Pembayaran Produk</v-toolbar-title>
                 
              </v-toolbar>
             <v-container grid-list-md mb-0>
-                <!-- <h2 class="text-md-center">History Penjualan Produk Kouvee Pet Shop</h2> -->
                 <v-layout row wrap style="margin:10px">
-                    <v-flex xs6>
-                        <v-btn
-                        depressed
-                        dark
-                        rounded
-                        style="text-transform: none !important;"
-                        color="green accent-3"
-                        link to="/transaksiProduk">
-
-                        <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Transaksi Penjualan
-                        </v-btn>
-                    </v-flex>
                     <v-flex xs6 class="text-right">
                         <v-text-field
                         v-model="keyword"
                         append-icon="mdi-search"
-                        label="Search Produk"
+                        label="Search Transaksi"
                         hide-details
                     ></v-text-field>
                     </v-flex>
@@ -40,7 +24,8 @@
                     :headers="headers"
                     :items="transactions"
                     :search="keyword"
-                    :loading="load">
+                    :loading="load"
+                    >
                 <template v-slot:body="{ items }">
                     <tbody>
                         <tr v-for="(item,index) in items" :key="item.id_tp">
@@ -49,33 +34,14 @@
                             <td>{{ item.tanggal }}</td>
                             <td>{{ item.hewan }}</td>
                             <td>{{ item.customer_service }}</td>
-                            <!-- <td>{{ item.sub_total }}</td> -->
-                            <td>{{ item.total_harga }}</td>
+                            <td>{{ item.sub_total }}</td>
                             <td>
                                 <v-btn
-                                icon
-                                color="blue"
+                                color="blue lighten-3"
                                 light
-                                @click="konfirmasiHandler(item)"
+                                @click="bayarHandler(item)"
                                 >
-                                <v-icon>mdi-clipboard-text</v-icon> Konfirmasi
-                                </v-btn>
-                            </td>
-                            <td>
-                                <v-btn
-                                    icon
-                                    color="indigo"
-                                    light
-                                    @click="editHandler(item)">
-                                    <v-icon>mdi-pencil</v-icon>
-                                </v-btn>
-                                <v-btn
-                                icon
-                                color="error"
-                                light
-                                @click="batalHandler(item)"
-                                >
-                                <v-icon>mdi-delete</v-icon>
+                                Bayar
                                 </v-btn>
                             </td>
                         </tr>
@@ -87,23 +53,8 @@
         <v-dialog v-model="dialog" persistent max-width="700px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Data Detail Produk</span>
+                    <span class="headline">Data Detail Pembelian Produk</span>
                 </v-card-title>
-                <v-layout row wrap style="margin:10px">
-                    <v-flex xs6>
-                        <v-btn
-                        depressed
-                        dark
-                        rounded
-                        style="text-transform: none !important;"
-                        color="green accent-3"
-                        @click="dialogDetail = true">
-
-                        <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                        Tambah
-                        </v-btn>
-                    </v-flex>
-                </v-layout>
                 <v-data-table
                     :headers="headersDetail"
                     :items="detailsTp"
@@ -161,9 +112,6 @@
                                     <v-btn disabled>ID Transaksi : {{ this.tempKode }}</v-btn>
                                 </v-col>
                                 <v-col cols="12">
-                                <!-- <v-select v-model="selectedProduk" :items="produks" item-value="id_produk" item-text="nama" label="Pilihan Produk*" return-object required>
-                                    <option v-for="pro in produks" :key="pro.id_produk" >{{ pro.nama }}</option>
-                                </v-select> -->
                                 <v-autocomplete
                                     v-model="selectedProduk"
                                     :items="produks"
@@ -203,58 +151,148 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn color="blue darken-1" text @click="dialogDetail = false">Close</v-btn>
-                            <!-- <v-btn color="blue darken-1" text @click="Cek2()">Close</v-btn> -->
-                            <!-- pengecekan -->
-                            <!-- <div v-if="cek == true">  -->
                                 <v-btn color="blue darken-1" text @click="Cek2(); setFormDetail()">Save</v-btn>
-                            <!-- </div> -->
-                            <!-- <div v-else> -->
-                                <!-- <v-btn color="blue darken-1" text @click="setFormDetail()">Save</v-btn> -->
-                            <!-- </div> -->
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-                 <v-dialog v-model="dialogTransaksi" persistent max-width="600px">
+                <v-dialog v-model="dialogBayar" persistent max-width="800px">
                     <v-card>
                         <v-card-title>
-                            <span class="headline">Update Data Hewan</span>
+                            <span class="headline">PEMBAYARAN PRODUK</span>
                         </v-card-title>
-                        <v-card-text>
-                        <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-input hidden>Kode Transaksi : {{this.form.kode}}</v-input>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-select v-model="selectedHewan" :items="hewan" item-value="id_hewan" item-text="nama" label="Nama Hewan Pelanggan*" return-object required > 
-                                        <option v-for="hew in hewan" :key="hew.id_hewan" >{{ hew.nama }}</option>
-                                    </v-select>
-                                    <v-input> Pemilik : {{ selectedHewan.customer }} </v-input>
-                                    <v-input> Hewan : {{ selectedHewan.jenis_hewan }} </v-input>
-                                    <v-input> Ukuran Hewan : {{ selectedHewan.ukuran_hewan }} </v-input>
-                                </v-col>  
-                            </v-row>
-                        </v-container>
-                        <small>*Yang dapat diedit hanya nama hewan pelanggan</small>
-                        </v-card-text>
+                        <!-- data transaksi -->
+                              <v-card 
+                                class="pa-md-3 mx-lg-auto"
+                                color="white"
+                                width="650px"> 
+                                <span class="title">Transaksi No. {{this.bayar.kode}}</span>
+                                <v-divider></v-divider>
+                                <tr>
+                                    <td>Tanggal Transaksi</td>
+                                    <td> : {{this.bayar.tanggal}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Customer Service</td>
+                                    <td> : {{this.bayar.cs}} </td>
+                                </tr>
+                                <tr>
+                                    <td>Kasir</td>
+                                    <td> : {{ this.namakasir }} </td>
+                                </tr>
+                              </v-card>
+                            <br>
+                            <!-- data customer -->
+                              <v-card 
+                                class="pa-md-3 mx-lg-auto"
+                                color="white"
+                                width="650px"> 
+                                <span class="title">Data Customer</span>
+                                <v-divider :inset="inset"></v-divider>
+                                <tr>
+                                    <td>Nama Hewan</td>
+                                    <td> : {{this.bayar.hewan}}</td>
+                                </tr>
+                                <tr v-if="this.bayar.hewan=='Guest'">
+                                        <td>Pemilik</td>
+                                        <td> : Guest </td>
+                                </tr>
+                                <tr v-else>
+                                        <td>Pemilik</td>
+                                        <td> : {{this.customer}}</td>
+                                </tr>
+                                <tr v-if="this.bayar.hewan=='Guest'">
+                                        <td>Nomor Telepon</td>
+                                        <td> : 0 </td>
+                                </tr>
+                                 <tr v-else>
+                                        <td>Nomor Telepon</td>
+                                        <td> : {{this.no_telp}}</td>
+                                </tr>
+                              </v-card>
+                                <!-- data detail -->
+                                <br>
+                            <v-card
+                            class="pa-md-3 mx-lg-auto"
+                                color="white"
+                                width="650px">
+                                <span class="title">Data Produk</span>
+                                <v-simple-table>
+                                <template v-slot:default>
+                                <thead>
+                                    <tr>
+                                    <th class="text-left">No</th>
+                                    <th class="text-left">Nama Produk</th>
+                                    <th class="text-left">Jumlah</th>
+                                    <th class="text-left">Total Harga</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item,index) in detailsTp" :key="item.id_detail_tp">
+                                            <td>{{ index + 1 }}</td>
+                                            <td>{{ item.produk }}</td>
+                                            <td>{{ item.jumlah }}</td>
+                                            <td>{{ item.total }}</td>
+                                    </tr>
+                                </tbody>
+                                </template>
+                            </v-simple-table>
+                            </v-card>
+                            <br>
+                            <v-card
+                                class="pa-md-3 mx-lg-auto"
+                                color="white"
+                                width="650px">
+                                <span class="title">Kelola Diskon Member</span>
+                                <br>
+                            <div v-if="this.bayar.hewan=='Guest'">
+                                <v-text-field v-model="percent" label="Input Diskon" placeholder="% - Percent" disabled></v-text-field>
+                                <small class="text-weight-black">*Diskon hanya untuk member</small>
+                            </div>
+                            <div v-else>
+                                <v-text-field v-model="percent" label="Input Diskon" placeholder="% - Percent" type="number" :rules="rules.number"></v-text-field>
+                            </div>
+                            </v-card>
+                            <br>
+                            <v-card
+                                class="pa-md-3 mx-lg-auto"
+                                color="white"
+                                width="650px">
+                                <span class="title">Total Bayar</span>
+                                <br>
+                                <div class="blue lighten-4">
+                                <tr>
+                                    <td>Sub Total</td>
+                                    <td> : Rp.{{totalBeli}}</td>
+                                </tr>
+                                <tr v-if="this.bayar.hewan=='Guest'">
+                                    <td>Total</td>
+                                    <td> : Rp.{{totalBeli}} </td>
+                                </tr>
+                                <tr v-else>
+                                    <td>Total</td>
+                                    <td> : Rp.{{ totalBeli-(totalBeli*percent/100)}} </td>
+                                </tr>
+                                <tr>
+                                    <td>Diskon</td>
+                                    <td> : Rp.{{ (totalBeli*percent/100) }} </td>
+                                </tr>
+                                </div>
+                            </v-card>
+                            <br>
+                            <v-card
+                                class="pa-md-3 mx-lg-auto"
+                                color="white"
+                                width="650px">
+                                <span class="title">Uang Pembayaran</span>
+                                <br>
+                                <v-text-field v-model="uang" label="Input Uang Pembayaran" placeholder="Rp. XXXXXX" type="number" :rules="rules.uang"></v-text-field>
+                                <p>Kembalian : Rp.{{uang-(totalBeli-(totalBeli*percent/100))}}</p>
+                            </v-card>
+                            <br>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="dialogTransaksi = false">Close</v-btn>
-                            <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <v-dialog v-model="dialogGuest" persistent max-width="600px">
-                    <v-card>
-                        <v-card-title>
-                            <span class="headline">Update Data Hewan</span>
-                        </v-card-title>
-                        <v-card-text>
-                            Guest Tidak dapat melakukan update
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="dialogGuest = false">Close</v-btn>
+                            <v-btn color="red darken-1">Bayar dan Cetak Nota</v-btn>
+                            <v-btn color="blue darken-1" text @click="dialogBayar = false">Close</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -279,14 +317,22 @@
 export default {
     data() {
         return {
+            namakasir: localStorage.getItem("nama"),
+            dialogBayar: false,
             dialogTransaksi: false,
             dialogDetail: false,
-            dialogGuest: false,
             dialog: false,
             keyword: '',
             status:'',
+            percent: 0,
+            diskon: 0,
+            uang: 0,
             selectedProduk: 0,
             selectedHewan: 0,
+            max: {
+                type: Number,
+                default: 100
+            },
             headersDetail: [
                 {
                     text: 'No',
@@ -309,10 +355,31 @@ export default {
                     value: 'aksi',
                 }
             ],
+            headersDetailNota: [
+                {
+                    text: 'No',
+                    value: 'no',
+                },
+                {
+                    text: 'Produk',
+                    value: 'produk',
+                },
+                {
+                    text: 'Jumlah',
+                    value: 'jumlah',
+                },
+                {
+                    text: 'Total',
+                    value: 'total',
+                },
+            ],
             rules: {
                 age: [
                     val => val < this.selectedProduk.stok || 'Sesuai Stok',
-                ]
+                ],
+                number: [
+                     v => v < 100 && v > 0  || 'Rannge hanya max. 100',
+                ],
             },
             headers: [
                 {
@@ -324,7 +391,7 @@ export default {
                     value: 'kode',
                 },
                 {
-                    text: 'Tanggal',
+                    text: 'Tanggal Transaksi',
                     value: 'tanggal',
                 },
                 {
@@ -335,27 +402,20 @@ export default {
                     text: 'Customer Service',
                     value: 'customer_service',
                 },
-                // {
-                //     text: 'Sub Total',
-                //     value: 'sub_total',
-                // },
                 {
                     text: 'Total Harga',
-                    value: 'total_harga',
+                    value: 'sub_total',
                 },
                 {
                     text: 'Konfirmasi',
                     value: 'konfirmasi',
-                },
-                {
-                    text: 'Aksi',
-                    value: 'null',
                 },
             ],
             transactions: [],
             detailsTp: [],
             produks: [],
             hewan: [],
+            hewans: [],
             snackbar: false,
             color: null,
             text: '',
@@ -394,9 +454,17 @@ export default {
                 jumlah : '',
                 total: '',
             },
+            bayar:{
+                tanggal : '',
+                kode : '',
+                cs : '',
+                hewan : '',
+                id_hewan: '',
+            },
             tp : new FormData,
             dtl : new FormData,
             upd : new FormData,
+            minus : new FormData,
             typeInput: 'new',
             type: 'new',
             errors : '',
@@ -415,6 +483,10 @@ export default {
             id_temp :'',
             jumlahDetail: 0,
             totalDetail: 0,
+            customer: '',
+            no_telp:'',
+            totalBayar: 0,
+            
         }
     },
     computed: {
@@ -436,9 +508,9 @@ export default {
     methods:{
         Cek2(){
             console.log(this.selectedProduk.nama)
-        this.flen= this.detailsTp.length;
-        console.log(this.flen)
-        for(this.i=0; this.i<this.flen; this.i++){
+            this.flen= this.detailsTp.length;
+            console.log(this.flen)
+            for(this.i=0; this.i<this.flen; this.i++){
             if(this.detailsTp[this.i].produk == this.selectedProduk.nama){
                 console.log(this.detailsTp[this.i].produk)
                 console.log(this.detailsTp[this.i])
@@ -459,7 +531,7 @@ export default {
         },
         selected(){
             // if(this.temp.hewan != 'Guest'){
-                 this.temp.total_harga = this.totalBeli2()
+                 this.temp.sub_total = this.totalBeli2()
                 console.log(this.totalBeli2())
                 this.updateDataTemp()
             // }else{
@@ -469,8 +541,18 @@ export default {
             // }
             // alert('OK') 
         },
+        loadHewanById(){
+            var uri = this.$apiUrl + '/hewan?id_hewan='+this.bayar.id_hewan
+            this.$http.get(uri).then( (response) =>{
+                this.hewans=response.data
+                this.customer=response.data[0].nama
+                this.no_telp=response.data[0].no_telp
+                console.log(this.bayar.id_hewan)
+                console.log(this.hewans)
+            })
+        },
         loadHewan(){
-             var uri = this.$apiUrl + '/hewan'
+            var uri = this.$apiUrl + '/hewan'
             this.$http.get(uri).then( (response) =>{
                 this.hewan=response.data
             })
@@ -483,8 +565,8 @@ export default {
             })
             // console.log(response.getData)
         },
-        getData(){
-            var uri = this.$apiUrl + '/transaksi_produk'
+        getDataTransaksi(){
+            var uri = this.$apiUrl + '/transaksi_produk/dataBayar'
             this.$http.get(uri).then( (response) =>{
                 this.transactions=response.data
             })
@@ -496,25 +578,22 @@ export default {
                 this.detailsTp=response.data
             })
         },
-        sendData(){
-            this.produk.append('nama', this.form.nama);
-            this.produk.append('harga', this.form.harga);
-            this.produk.append('stok', this.form.stok);
-            this.produk.append('satuan', this.form.satuan);
-            this.produk.append('minimal', this.form.minimal);
-            // this.produk.append('gambar', this.upload);
-            this.produk.append('gambar', this.selectedFile, this.selectedFile.nama);
-            this.produk.append('deskripsi', this.form.deskripsi);
-            var uri =this.$apiUrl + '/produk'
+        hitungTotal(){
+            this.diskon = parseInt(this.percent)*parseInt(this.totalBeli2())
+            this.totalBayar = parseInt(this.totalBeli2(), 10) - this.diskon;
+        },
+        updateStok(){
+            this.password.append('id_pegawai', localStorage.getItem("id_pegawai"));
+            this.password.append('password', this.pass.confirm);
+            var uri =this.$apiUrl + '/pegawai/changePassword'
             this.load = true
-            this.$http.post(uri, this.produk).then( (response) =>{
-                this.snackbar = true;
-                this.color = 'green';
-                this.text = response.data.message;
-
+            this.$http.post(uri, this.password).then( (response) =>{
+               this.snackbar = true;
+                this.color = 'Green';
+                this.text = "Ubah Password Berhasil!";
+                localStorage.setItem("password", this.pass.confirm);
                 this.load = false;
-                this.dialog = false
-                this.getData();
+                this.dialog = false;
                 this.resetForm();
             }).catch(error =>{
                 this.errors = error
@@ -523,6 +602,7 @@ export default {
                 this.color = 'red';
                 this.load = false;
             })
+
         },
         konfirmasi(){
             this.tp.append('id_hewan', this.form.id_hewan);
@@ -538,34 +618,6 @@ export default {
             this.load = true
             this.$http.post(uri, this.tp).then( (response) =>{
                 alert('Pesanan sudah di konfirmasi. Silahkan Lanjutkan ke Pembayaran')
-                this.load = false;
-                this.dialog = false
-                this.getData();
-                this.resetForm();
-                this.typeInput = 'new';
-            }).catch( error =>{
-                this.errors = error
-                this.snackbar = true;
-                this.text = 'Try Again';
-                this.color = 'red';
-                this.load = false;
-                this.typeInput = 'new';
-            })
-        },
-        batal(){
-            this.tp.append('id_hewan', this.form.id_hewan);
-            this.tp.append('id_pegawai_k', this.kasir);
-            this.tp.append('id_pegawai_cs', this.form.id_pegawai_cs);
-            this.tp.append('kode', this.form.kode);
-            this.tp.append('tanggal', this.form.tanggal);
-            this.tp.append('sub_total', this.form.sub_total);
-            this.tp.append('total_harga', this.form.total_harga);
-            this.tp.append('status', this.form.status);
-            // this.tp.append('updated_by', this.form.updated_by);
-            var uri = this.$apiUrl + '/transaksi_produk/' + this.batalId;
-            this.load = true
-            this.$http.post(uri, this.tp).then( (response) =>{
-                alert('Pesanan dibatalkan')
                 this.load = false;
                 this.dialog = false
                 this.getData();
@@ -732,6 +784,17 @@ export default {
                 this.tempKode = id.id_tp;
                 this.getDetailData();
         },
+        bayarHandler(id){
+                this.bayar.hewan = id.hewan;
+                this.dialogBayar = true;
+                this.bayar.kode = id.kode;
+                this.bayar.cs = id.customer_service;
+                this.bayar.tanggal = id.tanggal;
+                this.bayar.id_hewan = id.id_hewan;
+                this.tempKode = id.id_tp;
+                this.getDetailData();
+                this.loadHewanById();
+        },
         konfirmasiHandler(item){
             this.form.id_hewan = item.id_hewan,
             this.form.id_pegawai_k = this.kasir,
@@ -755,24 +818,6 @@ export default {
             this.form.status = 'batal',
             this.batalId = item.id_tp;
             this.batal();
-        },
-        editHandler(item){
-            console.log(item.hewan)
-            if(item.hewan == 'Guest'){
-                this.dialogGuest = true;
-            }else{
-                this.typeInput = 'edit';
-                this.dialogTransaksi = true;
-                this.form.id_hewan = this.selectedHewan,
-                this.form.id_pegawai_k = this.kasir,
-                this.form.id_pegawai_cs = item.id_pegawai_cs,
-                this.form.kode = item.kode,
-                this.form.tanggal = item.tanggal,
-                this.form.sub_total = item.sub_total,
-                this.form.total_harga = item.total_harga,
-                this.form.status = 'proses',
-                this.updatedId = item.id_tp;
-            }
         },
         editHandlerDetail(item){
             this.type = 'edit';
@@ -854,15 +899,16 @@ export default {
         }
     },
     mounted(){
-        this.getData();
+        this.loadHewanById();
+        this.getDataTransaksi();
         this.getDetailData();
         this.getDataProduk();
         this.loadHewan();
         if (localStorage.getItem("token") != null) {
         if(localStorage.getItem("peran")=="Kasir"){
-              window.location.replace('/homeKasir')
+                next()
         }else if(localStorage.getItem("peran")=="Customer Service"){
-              next()
+              window.location.replace('/homeCS')
         }else if(localStorage.getItem("peran")=="Owner"){
               window.location.replace('/homeMaster')
         }

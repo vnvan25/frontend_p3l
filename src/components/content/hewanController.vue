@@ -217,14 +217,14 @@ export default {
         //     console.log(this.ukuranHewan)
         // },
         loadUkuranHewan(){
-             var uri = this.$apiUrl + '/ukuranHewan'
+             var uri = this.$apiUrl + '/ukuranhewan'
             this.$http.get(uri).then( (response) =>{
                 this.ukuranHewan=response.data
             })
             
         },
         loadJenisHewan(){
-             var uri = this.$apiUrl + '/jenisHewan'
+             var uri = this.$apiUrl + '/jenishewan'
             this.$http.get(uri).then( (response) =>{
                 this.jenisHewan=response.data
             })

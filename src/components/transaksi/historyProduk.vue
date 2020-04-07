@@ -50,7 +50,7 @@
                             <td>{{ item.hewan }}</td>
                             <td>{{ item.customer_service }}</td>
                             <!-- <td>{{ item.sub_total }}</td> -->
-                            <td>{{ item.total_harga }}</td>
+                            <td>{{ item.sub_total }}</td>
                             <td>
                                 <v-btn
                                 icon
@@ -341,7 +341,7 @@ export default {
                 // },
                 {
                     text: 'Total Harga',
-                    value: 'total_harga',
+                    value: 'sub_total',
                 },
                 {
                     text: 'Konfirmasi',
@@ -459,7 +459,7 @@ export default {
         },
         selected(){
             // if(this.temp.hewan != 'Guest'){
-                 this.temp.total_harga = this.totalBeli2()
+                 this.temp.sub_total = this.totalBeli2()
                 console.log(this.totalBeli2())
                 this.updateDataTemp()
             // }else{
@@ -525,6 +525,7 @@ export default {
             })
         },
         konfirmasi(){
+            this.$confirm("Yakin Selesai melakukan pembelian produk").then(() => {
             this.tp.append('id_hewan', this.form.id_hewan);
             this.tp.append('id_pegawai_k', this.kasir);
             this.tp.append('id_pegawai_cs', this.form.id_pegawai_cs);
@@ -537,7 +538,7 @@ export default {
             var uri = this.$apiUrl + '/transaksi_produk/' + this.konfirmasiId;
             this.load = true
             this.$http.post(uri, this.tp).then( (response) =>{
-                alert('Pesanan sudah di konfirmasi. Silahkan Lanjutkan ke Pembayaran')
+                // alert('Pesanan sudah di konfirmasi. Silahkan Lanjutkan ke Pembayaran')
                 this.load = false;
                 this.dialog = false
                 this.getData();
@@ -551,6 +552,7 @@ export default {
                 this.load = false;
                 this.typeInput = 'new';
             })
+            });
         },
         batal(){
             this.tp.append('id_hewan', this.form.id_hewan);
@@ -565,7 +567,8 @@ export default {
             var uri = this.$apiUrl + '/transaksi_produk/' + this.batalId;
             this.load = true
             this.$http.post(uri, this.tp).then( (response) =>{
-                alert('Pesanan dibatalkan')
+                // alert('Pesanan dibatalkan')
+                this.$alert("Pesanan di batalkan");
                 this.load = false;
                 this.dialog = false
                 this.getData();

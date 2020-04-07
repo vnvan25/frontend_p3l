@@ -64,9 +64,9 @@
             
             <VSpacer />
 
-            <v-tab router to="/home">Home</v-tab>
-            <v-tab router to="/listProduk">Produk</v-tab>
-            <v-tab router to="/listLayanan">Layanan</v-tab>
+            <!-- <v-tab link to="/home">Home</v-tab>
+            <v-tab link to="/listProduk">Produk</v-tab>
+            <v-tab link to="/listLayanan">Layanan</v-tab> -->
 
              <v-divider
                 class="mx-4"

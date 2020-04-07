@@ -138,7 +138,7 @@ export default {
     },
     methods:{
         getData(){
-            var uri = this.$apiUrl + '/ukuranHewan'
+            var uri = this.$apiUrl + '/ukuranhewan'
             this.$http.get(uri).then( (response) =>{
                 this.types=response.data
                 // console.log(response.data.message)
@@ -154,7 +154,7 @@ export default {
         //  },
         sendData(){
             this.ukuranHewan.append('nama', this.form.nama);
-            var uri =this.$apiUrl + '/ukuranHewan'
+            var uri =this.$apiUrl + '/ukuranhewan'
             this.load = true
             this.$http.post(uri, this.ukuranHewan).then( (response) =>{
                 this.snackbar = true;
@@ -175,7 +175,7 @@ export default {
         },
         updateData(){
             this.ukuranHewan.append('nama', this.form.nama);
-            var uri = this.$apiUrl + '/ukuranHewan/' + this.updatedId;
+            var uri = this.$apiUrl + '/ukuranhewan/' + this.updatedId;
             this.load = true
             this.$http.post(uri, this.ukuranHewan).then( (response) =>{
                 this.snackbar = true;
@@ -203,7 +203,7 @@ export default {
             this.updatedId = item.id_ukuran_hewan;
         },
         delData(deleteId){
-            var uri = this.$apiUrl + '/ukuranHewan/' + deleteId;
+            var uri = this.$apiUrl + '/ukuranhewan/' + deleteId;
             this.$http.delete(uri).then( response =>{
                 this.snackbar = true;
                 this.color = 'green';

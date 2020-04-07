@@ -41,7 +41,7 @@
                             <td>{{ item.stok }}</td>
                             <td>{{ item.satuan }}</td>
                             <td>{{ item.minimal }}</td>
-                            <td><img :src="'http://127.0.0.1:5002/API2/upload/' + item.gambar" width="100px"></td>
+                            <td><img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="100px"></td>
                             <td class="text-center">
                                 <v-btn
                                     icon
