@@ -69,6 +69,22 @@
                             <v-icon>mdi-human-male-female</v-icon>
                         </v-list-item>
 
+                        <v-list-item link to ="datacustomer">
+                            <v-list-item-icon>
+                                <v-icon></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>Customer</v-list-item-title>
+                            <v-icon>mdi-account-star</v-icon>
+                        </v-list-item>
+
+                        <v-list-item link to ="datahewan">
+                            <v-list-item-icon>
+                                <v-icon></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>Hewan</v-list-item-title>
+                            <v-icon>mdi-cat</v-icon>
+                        </v-list-item>
+
                         <v-list-item link to ="jenisHewan">
                             <v-list-item-icon>
                                 <v-icon></v-icon>

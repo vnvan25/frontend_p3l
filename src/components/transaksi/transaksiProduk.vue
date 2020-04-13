@@ -63,8 +63,6 @@
                 value="true"
                 v-model="checked"
                 ></v-checkbox>
-                <!-- <input type="checkbox" id="checkbox" v-model="checked">
-                <label for="checkbox">{{ checked }}</label> -->
                 <div v-if="checked === 'true'">
                      <v-select v-model="selectedHewan" :items="hewan" item-value="id_hewan" item-text="nama" label="Nama Hewan Pelanggan*" return-object required disabled> 
                         <option v-for="hew in hewan" :key="hew.id_hewan" >{{ hew.nama }}</option>
@@ -87,7 +85,7 @@
         </v-container>
          <v-layout row wrap style="margin:10px">
             <v-flex class="text-right" style="margin:10px">
-                <!-- condition kalau dia Guest -->
+                
                 <div v-if="checked === 'true'"> 
                     <v-btn
                     depressed
@@ -104,7 +102,6 @@
                         Simpan
                     </v-btn>
                 </div>
-                <!-- condition kalau dia bukan guest -->
                 <div v-else>
                     <v-btn
                     depressed
@@ -237,10 +234,8 @@
                                     <v-btn disabled>ID Transaksi : {{ this.tempKode }}</v-btn>
                                 </v-col>
                                 <v-col cols="12">
-                                <!-- <v-select v-model="selectedProduk" :items="produks" item-value="id_produk" item-text="nama" label="Pilihan Produk*" return-object required>
-                                    <option v-for="pro in produks" :key="pro.id_produk" >{{ pro.nama }}</option>
-                                </v-select> -->
-                                <v-autocomplete
+                                <div v-if="type == 'new'">
+                                    <v-autocomplete
                                     v-model="selectedProduk"
                                     :items="produks"
                                     filled
@@ -251,12 +246,26 @@
                                     label="Pilihan Produk*"
                                     required
                                 ></v-autocomplete>
+                                </div>
+                                <div v-else>
+                                    <v-text-field :value="value" label="Nama Produk" disabled></v-text-field>
+                                </div>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-btn color="orange darken-1"> Stok Tersisa Produk : {{selectedProduk.stok}}{{selectedProduk.satuan}} </v-btn>
+                                    <div v-if="type == 'new'">
+                                        <v-btn color="orange darken-3"> Stok Tersisa Produk : {{selectedProduk.stok}} {{selectedProduk.satuan}} </v-btn>
+                                    </div>
+                                    <div v-else>
+                                        <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}}</v-btn>
+                                    </div>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-input v-model="form.total">  Harga Satuan Produk: {{selectedProduk.harga}} </v-input>
+                                    <div v-if="type == 'new'">
+                                        <v-input v-model="form.total">  Harga Satuan Produk: {{selectedProduk.harga}} </v-input>
+                                    </div>
+                                    <div v-else>
+                                        <v-input v-model="form.total">  Harga Satuan Produk: {{valueharga}} </v-input>
+                                    </div>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-slider
@@ -381,7 +390,7 @@ export default {
             updatedId : '',
             updatedIdTp: '',
             total: 0,
-            status: "penjualan",
+            status: "Penjualan",
             tempKode: '',
             jlh: 0,
             countId: '',
@@ -397,6 +406,10 @@ export default {
             transaksiID: 0,
             idd: 0,
             code: '',
+            value: '',
+            valueID: '',
+            valueharga: '',
+            valuestok:'',
         }
     },
     computed: {
@@ -707,9 +720,9 @@ export default {
         },
         updateDataDetail(){
             this.dtl.append('id_tp', this.idd);
-            this.dtl.append('id_produk', this.selectedProduk.id_produk);
+            this.dtl.append('id_produk', this.valueID);
             this.dtl.append('jumlah', this.form.jumlah);
-            this.dtl.append('total', this.selectedProduk.harga*this.form.jumlah);
+            this.dtl.append('total', this.valueharga*this.form.jumlah);
             var uri = this.$apiUrl + '/tp_detail/' + this.updatedId;
             this.load = true
             this.$http.post(uri, this.dtl).then( (response) =>{
@@ -774,10 +787,13 @@ export default {
         editHandlerDetail(item){
             this.type = 'edit';
             this.dialog = true;
-            this.value = item.produk;
+            this.value= item.produk;
+            this.valueID = item.id_produk;
+            this.valueharga = item.harga;
+            this.valuestok = item.stok;
             this.selectedProduk = this.selectedProduk;
-            this.form.total = this.form.jumlah*this.selectedProduk.harga;
             this.form.jumlah = item.jumlah;
+            this.form.total = this.form.jumlah*item.harga;
             this.tempKode = this.tempKode;
             this.updatedId = item.id_detail_tp;
         },

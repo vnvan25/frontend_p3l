@@ -37,8 +37,10 @@
                             <td>{{ item.sub_total }}</td>
                             <td>
                                 <v-btn
-                                color="blue lighten-3"
+                                color="blue"
                                 light
+                                outlined
+                                small
                                 @click="bayarHandler(item)"
                                 >
                                 Bayar
@@ -50,6 +52,27 @@
                 </v-data-table>
             </v-container>
         </v-card>
+
+        <br>
+        <!-- card untuk cetak nota -->
+        <v-card class="pa-md-4 mx-lg-auto" color="#FFEFD5">
+            <v-card-title>
+                Lihat List Pembayaran yang selesai
+            </v-card-title>
+            <v-layout row wrap style="margin:10px">
+                    <v-flex xs6>
+                        <v-btn
+                        rounded
+                        class="text-black"
+                        color="#DEB887"
+                        link to="/selesaiPage">
+                            Telusuri Halaman
+                            <v-icon size="18" class="mr-2">mdi-arrow-right</v-icon>
+                        </v-btn>
+                    </v-flex>
+            </v-layout>
+        </v-card>
+
         <v-dialog v-model="dialog" persistent max-width="700px">
             <v-card>
                 <v-card-title>
@@ -61,6 +84,7 @@
                     :search="keyword"
                     :loading="load">
                 <template v-slot:body="{ items }">
+                    <!-- <table id="table"> -->
                     <tbody>
                         <tr v-for="(item,index) in items" :key="item.id_detail_tp">
                             <td>{{ index + 1 }}</td>
@@ -92,6 +116,7 @@
                             </td>
                         </tr>
                     </tbody>
+                    <!-- </table> -->
                 </template>
                 </v-data-table>
                 <v-card-actions>
@@ -112,7 +137,7 @@
                                     <v-btn disabled>ID Transaksi : {{ this.tempKode }}</v-btn>
                                 </v-col>
                                 <v-col cols="12">
-                                <v-autocomplete
+                                <!-- <v-autocomplete
                                     v-model="selectedProduk"
                                     filled
                                     :hint="value"
@@ -123,7 +148,8 @@
                                     return-object
                                     label="Pilihan Produk*"
                                     required
-                                ></v-autocomplete>
+                                ></v-autocomplete> -->
+                                <v-text-field :value="value" label="Nama Produk" disabled></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-btn color="orange darken-3"> Stok Tersisa Produk : {{selectedProduk.stok}}{{selectedProduk.satuan}} </v-btn>
@@ -294,7 +320,8 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn color="red darken-1" @click="selected(); selesaiHandler()">Bayar dan Cetak Nota</v-btn>
-                            <v-btn color="blue darken-1" text @click="dialogBayar = false">Close</v-btn>
+                            <v-btn color="blue darken-1" text  @click="dialogBayar = false">Close</v-btn>
+                            <!-- @click="dialogBayar = false" -->
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -316,9 +343,12 @@
     </v-container>
 </template>
 <script>
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
 export default {
     data() {
         return {
+            tglTransaksi: new Date().toLocaleString(),
             namakasir: localStorage.getItem("nama"),
             id_kasir: localStorage.getItem("id_pegawai"),
             dialogBayar: false,
@@ -331,6 +361,8 @@ export default {
             diskon: 0,
             uang: 0,
             value: '',
+            valueID: '',
+            valueharga: '',
             selectedProduk: 0,
             selectedHewan: 0,
             max: {
@@ -510,6 +542,7 @@ export default {
             customer: '',
             no_telp:'',
             totalBayar: 0,
+            data: '',
             
         }
     },
@@ -589,6 +622,13 @@ export default {
             })
             // console.log(response.getData)
         },
+        getDataPDF(){
+            var uri = this.$apiUrl + '/laporanpdf'
+            this.$http.get(uri).then( (response) =>{
+                this.data=response.data
+               
+            })
+        },
         getDataTransaksi(){
             var uri = this.$apiUrl + '/transaksi_produk/dataBayar'
             this.$http.get(uri).then( (response) =>{
@@ -640,30 +680,37 @@ export default {
              }
         },
         selesaiBayar(){
-        this.$confirm("Yakin Menyelesaikan Pembayaran?").then(() => {
-            this.tp.append('id_hewan', this.selesai.id_hewan);
-            this.tp.append('id_pegawai_k', this.selesai.id_pegawai_k);
-            this.tp.append('id_pegawai_cs', this.selesai.id_pegawai_cs);
-            this.tp.append('kode', this.selesai.kode);
-            this.tp.append('tanggal', this.selesai.tanggal);
-            this.tp.append('sub_total', this.selesai.sub_total);
-            this.tp.append('total_harga', this.selesai.total_harga);
-            this.tp.append('status', this.selesai.status);
-            // this.tp.append('updated_by', this.form.updated_by);
-            var uri = this.$apiUrl + '/transaksi_produk/' + this.selesaiId;
-            this.load = true
-            this.$http.post(uri, this.tp).then( (response) =>{
-                this.load = false;
-                this.dialogBayar = false
-                this.getData();
-                this.resetForm();
-                this.typeInput = 'new';
-            }).catch( error =>{
+        if(this.uang<this.selesai.total_harga){
+                this.snackbar = true;
                 this.color = 'red';
-                this.load = false;
-                this.typeInput = 'new';
-            })
-            });
+                this.text = "Uang Pembayaran Kurang";
+        }else{
+            this.$confirm("Yakin Menyelesaikan Pembayaran?").then(() => {
+                this.tp.append('id_hewan', this.selesai.id_hewan);
+                this.tp.append('id_pegawai_k', this.selesai.id_pegawai_k);
+                this.tp.append('id_pegawai_cs', this.selesai.id_pegawai_cs);
+                this.tp.append('kode', this.selesai.kode);
+                this.tp.append('tanggal', this.selesai.tanggal);
+                this.tp.append('sub_total', this.selesai.sub_total);
+                this.tp.append('total_harga', this.selesai.total_harga);
+                this.tp.append('status', this.selesai.status);
+                // this.tp.append('updated_by', this.form.updated_by);
+                var uri = this.$apiUrl + '/transaksi_produk/' + this.selesaiId;
+                this.load = true
+                this.$http.post(uri, this.tp).then( (response) =>{
+                    this.load = false;
+                    this.dialogBayar = false
+                    this.createPDF()
+                    this.getData();
+                    this.resetForm();
+                    this.typeInput = 'new';
+                }).catch( error =>{
+                    this.color = 'red';
+                    this.load = false;
+                    this.typeInput = 'new';
+                })
+                });
+            }
         },
         tempHandler(item){
             this.temp.hewan = item.hewan,
@@ -759,9 +806,9 @@ export default {
         },
         updateDataDetail(){
             this.dtl.append('id_tp', this.tempKode);
-            this.dtl.append('id_produk', this.selectedProduk.id_produk);
+            this.dtl.append('id_produk', this.valueID);
             this.dtl.append('jumlah', this.form.jumlah);
-            this.dtl.append('total', this.selectedProduk.harga*this.form.jumlah);
+            this.dtl.append('total', this.valueharga*this.form.jumlah);
             var uri = this.$apiUrl + '/tp_detail/' + this.updatedIdDetail;
             this.load = true
             this.$http.post(uri, this.dtl).then( (response) =>{
@@ -864,9 +911,10 @@ export default {
         editHandlerDetail(item){
             this.type = 'edit';
             this.dialogDetail = true;
-            this.form.total = this.form.jumlah*this.selectedProduk.harga;
-            this.value = item.produk;
-            console.log(this.value)
+             this.value= item.produk;
+            this.valueID = item.id_produk;
+            this.valueharga = item.harga;
+            this.form.total = this.form.jumlah*item.harga;
             this.form.jumlah = item.jumlah;
             this.tempKode = this.tempKode;
             this.updatedIdDetail = item.id_detail_tp;
@@ -889,7 +937,6 @@ export default {
         },
          delDataDetail(deleteId){
             var uri = this.$apiUrl + '/tp_detail/' + deleteId;
-            console.log(uri)
             this.$http.delete(uri).then( response =>{
                 alert('Berhasil Hapus Data')
                 this.deleteDialog = false
@@ -940,10 +987,96 @@ export default {
             }
         },
         createPDF () {
-            let pdfName = 'test'; 
-            var doc = new jsPDF();
-            doc.text("Hello World", 10, 10);
-            doc.save(pdfName + '.pdf');
+            let pdfName = this.bayar.kode; 
+            var doc = new jsPDF('2', 'pt', 'a5', true);
+            doc.setFontSize(20)
+            doc.text(117, 30, 'KOUVEE PET SHOP')
+            doc.setFontSize(12)
+            doc.text(80, 45, 'Jalan Moses GatotKaca No.22 Yogyakarta 55281')
+            doc.setFontSize(12)
+            doc.text(145, 60, 'Telp. (0274) 357735')
+            doc.setFontSize(12)
+            doc.text(125, 73, 'http://www.sayanghewan.com')
+            // urutan line(padding, titik awal garis, panjang, titik akhir)
+            doc.setLineWidth(0.5);
+            doc.line(0, 80, 420, 80);
+            doc.setFontSize(16)
+            doc.text(157, 95, 'NOTA LUNAS')
+            doc.setFontSize(10)
+            doc.text(this.tglTransaksi, 373, 115, null, null, "right");
+            doc.setFontSize(10)
+            doc.text(20, 115, this.bayar.kode)
+            doc.setFontSize(10)
+            doc.text(20, 130, "Member : "+this.customer+"("+this.bayar.hewan+")")
+            if(this.bayar.hewan=="Guest"){
+                doc.setFontSize(10)
+                doc.text(20, 145, "Telepon : 0")
+            }else{
+                doc.setFontSize(10)
+                doc.text(20, 145, "Telepon : "+this.no_telp)
+            }
+            doc.setFontSize(10)
+            doc.text(280, 130, "CS    : "+this.bayar.cs)
+            doc.setFontSize(10)
+            doc.text(280, 145, "Kasir : "+this.namakasir)
+            doc.setLineWidth(0.2);
+            doc.line(0, 152, 420, 152);
+            doc.setFontSize(12)
+            doc.text(185, 165, 'Produk')
+            doc.setLineWidth(0.2);
+            doc.line(0, 170, 420, 170);
+            doc.setFontSize(10)
+            doc.setFontStyle("bold");
+            doc.text(20, 195, "No")
+            doc.setFontSize(10)
+            doc.setFontStyle("bold");
+            doc.text(60, 195, "Nama Produk")
+            doc.setFontSize(10)
+            doc.setFontStyle("bold");
+            doc.text(250, 195, "Harga")
+            doc.setFontSize(10)
+            doc.setFontStyle("bold");
+            doc.text(305, 195, "Jumlah")
+            doc.setFontSize(10)
+            doc.setFontStyle("bold");
+            doc.text(360, 195, "Total")
+            doc.setLineWidth(0.2);
+            doc.line(20, 200, 400, 200);
+            doc.setFontStyle("normal");
+            let k=10;
+            for (let i = 0, j = 1; i < this.detailsTp.length; i++) {
+                var splitproduk = doc.splitTextToSize(this.detailsTp[i].produk, 180);
+                doc.text(22, 210+k , j.toString())
+                doc.text(60, 210+k , splitproduk)
+                doc.text(250, 210+k , this.detailsTp[i].harga)
+                doc.text(315, 210+k , this.detailsTp[i].jumlah)
+                doc.text(360, 210+k , this.detailsTp[i].total)
+                j++;
+                k+=28;
+            }
+
+            doc.setLineWidth(0.2);
+            doc.line(20, 210+k-21, 400, 210+k-21);
+            doc.text(280, 210+k, "Sub Total")
+            doc.text(345, 210+k, "Rp."+this.temp.sub_total.toString())
+            var diskon = this.temp.sub_total*this.percent/100
+            doc.text(280, 210+k+22, "Diskon")
+            doc.text(345, 210+k+22, "Rp."+diskon.toString())
+            doc.setFontStyle("bold");
+            doc.setFontSize(12)
+            var total = this.temp.sub_total-diskon
+            doc.text(280, 210+k+44, "Total")
+            doc.text(345, 210+k+44, "Rp."+total.toString())
+
+            doc.setProperties({
+                title: "Nota Transaksi No."+this.bayar.kode
+            });
+            var string = doc.output('dataurlnewwindow');
+            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
+            var x = window.open();
+            x.document.open();
+            x.document.write(embed);
+            x.document.close();
         },
     },
     mounted(){

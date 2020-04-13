@@ -2,7 +2,8 @@
 <div>
     <!-- <v-card> -->
         <v-container grid-list-md mb-0>
-           <v-card  class="pa-md-10 mx-lg-auto" max-width="600px">
+           <v-card class="pa-md-10 mx-lg-auto" max-width="600px">
+             <v-img :src="'https://kouvee.modifierisme.com/upload/logo.jpg'" aspect-ratio="2.5" contain></v-img>
                <h1 class="text-center">KOUVEE PET SHOP</h1>
                <h2 class="text-center">Halaman Login</h2>
                 <v-layout>
@@ -28,7 +29,7 @@
             <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" @click="login()" >LOGIN</v-btn>
-                    <v-btn color="red darken-1" >CANCEL</v-btn>
+                    <v-btn color="red darken-1" @click="resetform()" >CANCEL</v-btn>
             </v-card-actions>
                
            </v-card> 
@@ -102,6 +103,10 @@
           this.load = false;
         }
       });
+    },
+    resetform(){
+      this.username= '',
+      this.password=''
     }
   },
   mounted(){

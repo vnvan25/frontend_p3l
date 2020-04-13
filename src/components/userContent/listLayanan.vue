@@ -52,10 +52,11 @@
                         cols="18"
                         md="6"
                         >
-                    <v-card class="mx-auto" max-width="500" color="orange lighten-3" hover>
+                    <v-card class="mx-auto" max-width="500" color="#DEB887" hover>
                     <v-list-item five-line>
                         <v-list-item-content>
-                        <v-list-item-title class="title text-center" multiline>{{ item.layanan }} {{item.jenis}} {{item.ukuran}}</v-list-item-title>
+                        <v-list-item-title class="title text-center" multiline>{{ item.layanan }}</v-list-item-title>
+                        <v-list-item-subtitle class="subtitle text-center"> Ukuran :  {{item.ukuran}}</v-list-item-subtitle>
                          <v-divider class="mx-3"></v-divider>
                         <v-card-text class="black--text font-weight-black text-center subtitle-1">Harga : {{ item.harga }}</v-card-text>
                         </v-list-item-content>

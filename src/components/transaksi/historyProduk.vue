@@ -1,17 +1,14 @@
 <template>
     <v-container>
-        <v-card>
+        <v-card class="pa-md-4 mx-lg-auto" max-width="900">
              <v-toolbar
                 flat
-                color="brown lighten-3"
+                color="#DEAE8D"
                 >
-                <!-- <v-icon large>mdi-note-multiple-outline
-                </v-icon> -->
-                 <v-toolbar-title class=" text-center font-weight-bold" >     History Penjualan Produk Kouvee Pet Shop</v-toolbar-title>
+                 <v-toolbar-title class=" text-center font-weight-bold" >History Penjualan Produk Kouvee Pet Shop</v-toolbar-title>
                 
              </v-toolbar>
-            <v-container grid-list-md mb-0>
-                <!-- <h2 class="text-md-center">History Penjualan Produk Kouvee Pet Shop</h2> -->
+             <br>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
                         <v-btn
@@ -21,7 +18,6 @@
                         style="text-transform: none !important;"
                         color="green accent-3"
                         link to="/transaksiProduk">
-
                         <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
                             Tambah Transaksi Penjualan
                         </v-btn>
@@ -45,44 +41,70 @@
                     <tbody>
                         <tr v-for="(item,index) in items" :key="item.id_tp">
                             <td>{{ index + 1 }}</td>
-                            <td><v-btn @click="showHandler(item); tempHandler(item)">{{ item.kode }}</v-btn></td>
+                            <td>{{ item.kode }}</td>
                             <td>{{ item.tanggal }}</td>
                             <td>{{ item.hewan }}</td>
                             <td>{{ item.customer_service }}</td>
                             <!-- <td>{{ item.sub_total }}</td> -->
                             <td>{{ item.sub_total }}</td>
                             <td>
-                                <v-btn
-                                icon
-                                color="blue"
-                                light
-                                @click="konfirmasiHandler(item)"
-                                >
-                                <v-icon>mdi-clipboard-text</v-icon> Konfirmasi
-                                </v-btn>
-                            </td>
-                            <td>
-                                <v-btn
-                                    icon
-                                    color="indigo"
-                                    light
-                                    @click="editHandler(item)">
-                                    <v-icon>mdi-pencil</v-icon>
-                                </v-btn>
-                                <v-btn
-                                icon
-                                color="error"
-                                light
-                                @click="batalHandler(item)"
-                                >
-                                <v-icon>mdi-delete</v-icon>
-                                </v-btn>
+                                <div>
+                                        <v-menu>
+                                        <template v-slot:activator="{ on: menu }">
+                                            <v-tooltip bottom>
+                                            <template v-slot:activator="{ on: tooltip }">
+                                                <v-btn
+                                                color="primary"
+                                                dark
+                                                text
+                                                v-on="{ ...tooltip, ...menu }"
+                                                >:</v-btn>
+                                            </template>
+                                            <span>Aksi Transaksi</span>
+                                            </v-tooltip>
+                                        </template>
+                                        <v-list>
+                                            <v-list-item>
+                                            <v-list-item-title  @click="showHandler(item); tempHandler(item)">Details</v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-list-item-title @click="konfirmasiHandler(item)">Konfirmasi</v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-list-item-title @click="editHandler(item)">Edit</v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-list-item-title @click="batalHandler(item)">Batalkan</v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                        </v-menu>
+                                    </div>
                             </td>
                         </tr>
                     </tbody>
                 </template>
                 </v-data-table>
-            </v-container>
+            <!-- </v-container> -->
+        </v-card>
+         <!-- </div> -->
+        <br>
+        <!-- card untuk yang dibatalin -->
+        <v-card class="pa-md-4 mx-lg-auto" color="#FFE4E1" max-width="900">
+            <v-card-title>
+                Lihat List Pemesanan yang dibatalkan
+            </v-card-title>
+            <v-layout row wrap style="margin:10px">
+                    <v-flex xs6>
+                        <v-btn
+                        rounded
+                        class="text-black"
+                        color="#B0C4DE"
+                        link to="/batalPage">
+                            Telusuri Halaman
+                            <v-icon size="18" class="mr-2">mdi-arrow-right</v-icon>
+                        </v-btn>
+                    </v-flex>
+            </v-layout>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="700px">
             <v-card>
@@ -161,26 +183,38 @@
                                     <v-btn disabled>ID Transaksi : {{ this.tempKode }}</v-btn>
                                 </v-col>
                                 <v-col cols="12">
-                                <!-- <v-select v-model="selectedProduk" :items="produks" item-value="id_produk" item-text="nama" label="Pilihan Produk*" return-object required>
-                                    <option v-for="pro in produks" :key="pro.id_produk" >{{ pro.nama }}</option>
-                                </v-select> -->
-                                <v-autocomplete
+                                <div v-if="type == 'new'">
+                                    <v-autocomplete
                                     v-model="selectedProduk"
                                     :items="produks"
+                                    filled
                                     :hint="value"
                                     dense
-                                    filled
                                     item-value="id_produk" item-text="nama"
                                     return-object
                                     label="Pilihan Produk*"
                                     required
                                 ></v-autocomplete>
+                                </div>
+                                <div v-else>
+                                    <v-text-field :value="value" label="Nama Produk" disabled></v-text-field>
+                                </div>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-btn color="orange darken-3"> Stok Tersisa Produk : {{selectedProduk.stok}}{{selectedProduk.satuan}} </v-btn>
+                                    <div v-if="type == 'new'">
+                                        <v-btn color="orange darken-3"> Stok Tersisa Produk : {{selectedProduk.stok}} {{selectedProduk.satuan}} </v-btn>
+                                    </div>
+                                    <div v-else>
+                                        <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}}</v-btn>
+                                    </div>
                                 </v-col>
                                  <v-col cols="12">
-                                    <v-input v-model="form.total">  Harga Satuan : {{selectedProduk.harga}} </v-input>
+                                    <div v-if="type == 'new'">
+                                        <v-input v-model="form.total">  Harga Satuan Produk: {{selectedProduk.harga}} </v-input>
+                                    </div>
+                                    <div v-else>
+                                        <v-input v-model="form.total">  Harga Satuan Produk: {{valueharga}} </v-input>
+                                    </div>
                                 </v-col>
                                 <v-col cols="12">
                                     <!-- <v-text-field label="Jumlah*" v-model="form.jumlah"  required></v-text-field> -->
@@ -329,7 +363,7 @@ export default {
                     value: 'tanggal',
                 },
                 {
-                    text: 'Nama Hewan Pelanggan',
+                    text: 'Pelanggan',
                     value: 'hewan',
                 },
                 {
@@ -344,10 +378,10 @@ export default {
                     text: 'Total Harga',
                     value: 'sub_total',
                 },
-                {
-                    text: 'Konfirmasi',
-                    value: 'konfirmasi',
-                },
+                // {
+                //     text: 'Konfirmasi',
+                //     value: 'konfirmasi',
+                // },
                 {
                     text: 'Aksi',
                     value: 'null',
@@ -417,6 +451,9 @@ export default {
             jumlahDetail: 0,
             totalDetail: 0,
             value:'',
+            valueID: '',
+            valueharga: '',
+            valuestok: '',
             hew: '',
         }
     },
@@ -558,6 +595,7 @@ export default {
             });
         },
         batal(){
+        this.$confirm("Yakin ingin membatalkan transaksi No. "+this.form.kode+" ?").then(() => {
             this.tp.append('id_hewan', this.form.id_hewan);
             this.tp.append('id_pegawai_k', this.kasir);
             this.tp.append('id_pegawai_cs', this.form.id_pegawai_cs);
@@ -585,6 +623,7 @@ export default {
                 this.load = false;
                 this.typeInput = 'new';
             })
+            });
         },
         tempHandler(item){
             this.temp.hewan = item.hewan,
@@ -680,9 +719,9 @@ export default {
         },
         updateDataDetail(){
             this.dtl.append('id_tp', this.tempKode);
-            this.dtl.append('id_produk', this.selectedProduk.id_produk);
+            this.dtl.append('id_produk', this.valueID);
             this.dtl.append('jumlah', this.form.jumlah);
-            this.dtl.append('total', this.selectedProduk.harga*this.form.jumlah);
+            this.dtl.append('total', this.valueharga*this.form.jumlah);
             var uri = this.$apiUrl + '/tp_detail/' + this.updatedIdDetail;
             this.load = true
             this.$http.post(uri, this.dtl).then( (response) =>{
@@ -746,7 +785,7 @@ export default {
             this.form.tanggal = item.tanggal,
             this.form.sub_total = item.sub_total,
             this.form.total_harga = item.total_harga,
-            this.form.status = 'pembayaran',
+            this.form.status = 'Pembayaran',
             this.konfirmasiId = item.id_tp;
             this.konfirmasi();
         },
@@ -778,16 +817,19 @@ export default {
                 this.form.tanggal = item.tanggal,
                 this.form.sub_total = item.sub_total,
                 this.form.total_harga = item.total_harga,
-                this.form.status = 'proses',
+                this.form.status = 'Penjualan',
                 this.updatedId = item.id_tp;
             }
         },
         editHandlerDetail(item){
             this.type = 'edit';
             this.dialogDetail = true;
-            this.form.total = this.form.jumlah*this.selectedProduk.harga;
             this.selectedProduk = this.selectedProduk;
             this.value= item.produk;
+            this.valueID = item.id_produk;
+            this.valueharga = item.harga;
+            this.valuestok = item.stok;
+            this.form.total = this.form.jumlah*item.harga;
             console.log(this.selectedProduk)
             this.form.jumlah = item.jumlah;
             this.tempKode = this.tempKode;

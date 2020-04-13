@@ -101,6 +101,7 @@
                     <v-btn  link to ="pegawai">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
+
                 <v-card
                     class="mx-auto"
                     max-width="324"
@@ -146,6 +147,59 @@
                     </v-card-actions>
                 </v-card>
            </v-row>
+            <br>
+           <v-row>
+               <v-col>
+               <v-card
+                    class="mx-auto"
+                    max-width="324"
+                    outlined
+                >
+                    <v-list-item three-line>
+                    <v-list-item-content>
+                        <v-list-item-title class="headline mb-1">Customer</v-list-item-title>
+                        <v-list-item-subtitle>Kelola data customer</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-avatar
+                    size="80"
+                    color="#BC8F8F">
+                        <v-icon large dark>mdi-account-star</v-icon>
+                        </v-avatar>
+                    </v-list-item>
+
+                    <v-card-actions>
+                    <v-btn  link to ="datacustomer">Kelola</v-btn>
+                    </v-card-actions>
+                </v-card>
+               </v-col>
+               <v-col>
+                <v-card
+                    class="mx-auto"
+                    max-width="324"
+                    outlined
+                >
+                    <v-list-item three-line>
+                    <v-list-item-content>
+                        <v-list-item-title class="headline mb-1">Hewan</v-list-item-title>
+                        <v-list-item-subtitle>Kelola data hewan Kouvee Pet Shop</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-avatar
+                    size="80"
+                    color="#4682B4">
+                        <v-icon large dark>mdi-cat</v-icon>
+                        </v-avatar>
+                    </v-list-item>
+
+                    <v-card-actions>
+                    <v-btn  link to ="datahewan">Kelola</v-btn>
+                    </v-card-actions>
+                </v-card>
+               </v-col>
+               <v-col>
+               </v-col>
+           </v-row>
         </v-card>
         <br>
         <v-card class="pa-md-4 mx-lg-auto brown lighten-3">
@@ -153,6 +207,7 @@
            <v-card-title>Data Pengadaan Produk Kouvee Pet Shop</v-card-title>
             </div>
            <v-row>
+               <v-col>
                <v-card
                     class="mx-auto"
                     max-width="344"
@@ -175,6 +230,8 @@
                     <v-btn>Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
+               </v-col>
+               <v-col>
                 <v-card
                     class="mx-auto"
                     max-width="344"
@@ -197,6 +254,9 @@
                     <v-btn >Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
+               </v-col>
+               <v-col>
+               </v-col>
            </v-row>
         </v-card>
         

@@ -2,7 +2,7 @@
     <v-container>
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Data Layanan</h2>
+                <h2 class="text-md-center">Data Customer</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
                         <v-btn
@@ -14,7 +14,7 @@
                         @click="dialog = true">
 
                         <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Layanan
+                            Tambah Customer
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right">
@@ -26,18 +26,21 @@
                     ></v-text-field>
                     </v-flex>
                 </v-layout>
+
                 <v-data-table
                     :headers="headers"
-                    :items="layanans"
+                    :items="customers"
                     :search="keyword"
                     :loading="load">
                 <template v-slot:body="{ items }">
                     <tbody>
-                        <tr v-for="(item,index) in items" :key="item.id_layanan">
+                        <tr v-for="(item,index) in items" :key="item.id_customer">
                             <td>{{ index + 1 }}</td>
-                            <td>{{ item.layanan }} {{item.ukuran}}</td>
-                            <td>{{ item.harga }}</td>
-                            <td>
+                            <td>{{ item.nama }}</td>
+                            <td>{{ item.tgl_lahir }}</td>
+                            <td>{{ item.alamat }}</td>
+                            <td>{{ item.no_telp }}</td>
+                            <td class="text-center">
                                 <v-btn
                                     icon
                                     color="indigo"
@@ -49,7 +52,7 @@
                                 icon
                                 color="error"
                                 light
-                                @click="delData(item.id_layanan)"
+                                @click="delData(item.id_customer)"
                                 >
                                 <v-icon>mdi-delete</v-icon>
                                 </v-btn>
@@ -63,7 +66,7 @@
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Data layanan</span>
+                    <span class="headline">Data customer</span>
                 </v-card-title>
                 <v-card-text>
                 <v-container>
@@ -72,12 +75,13 @@
                             <v-text-field label="Nama*" v-model="form.nama" :rules="rules.nama" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-select  v-model="selectedUkuran" :items="ukuranHewan" item-value="id_ukuran_hewan" item-text="nama" :hint="ukr" label="Ukuran_Hewan*" :rules="rules.selected" required>
-                                <option v-for="ukuran in ukuranHewan" :key="ukuran.id_ukuran_hewan">{{ selectedUkuran.nama }}</option>
-                            </v-select>
+                            <v-date-picker label="Tanggal_Lahir*" v-model="form.tgl_lahir" :rules="rules.tgl" required></v-date-picker>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Harga*" v-model="form.harga" :rules="rules.harga" required type="number"></v-text-field>
+                            <v-text-field label="Alamat*" v-model="form.alamat" :rules="rules.alamat" required></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field label="No_Telepon*" v-model="form.no_telp" :rules="rules.telp" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -113,29 +117,30 @@ export default {
         return {
             dialog: false,
             keyword: '',
-            selectedUkuran: 0,
-            selectedJenis: 0,
-            ukuranHewan: [{
-                id_ukuran_hewan: 0,
-                nama: ''
-            }],
-            jenisHewan: [],
             headers: [
                 {
                     text: 'No',
-                    value: 'ukuran',
+                    value: 'no',
                 },
                 {
                     text: 'Nama',
-                    value: 'layanan',
+                    value: 'nama',
                 },
                 {
-                    text: 'Harga',
-                    value: 'harga',
+                    text: 'Tanggal_Lahir',
+                    value: 'tgl_lahir',
+                },
+                {
+                    text: 'Alamat',
+                    value: 'alamat',
+                },
+                {
+                    text: 'No_Telepon',
+                    value: 'no_telp',
                 },
                 {
                     text: 'Aksi',
-                    value: 'jenis',
+                    value: 'null',
                 },
             ],
             rules: {
@@ -143,59 +148,58 @@ export default {
                      v => !!v || 'Name is required',
                 ],
 
-                harga: [
-                    v => !!v || 'Harga is required',
-                    v => v>0 || 'Harga tidak boleh minus',
+                tgl: [
+                    v => !!v || 'Tanggal is required',
                 ],
-                selected: [
-                    v => !!v || 'Required',
+                alamat: [
+                    v => !!v || 'Alamat is required',
                 ],
-
+                telp: [
+                    v => !!v || 'phone is required',
+                    v => /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v) || 'Nomor Telepon diawali dengan 0 atau + dan panjang minimal 11 Angka',
+                ],
             },
-            layanans: [],
+            customers: [],
             snackbar: false,
             color: null,
             text: '',
             load: false,
             form: {
                 nama: '',
-                harga:''
+                tgl_lahir: '',
+                alamat: '',
+                no_telp: ''
             },
-            layanan : new FormData,
+            customer : new FormData,
             typeInput: 'new',
             errors : '',
             updatedId : '',
-            jns: '',
-            ukr: '',
         }
     },
     methods:{
-        changeRoute(a) {
-        //this.$router.push({path: a })
-        console.log(a)
-      },
-        loadUkuranHewan(){
-             var uri = this.$apiUrl + '/ukuranhewan'
-            this.$http.get(uri).then( (response) =>{
-                this.ukuranHewan=response.data
-            })
-            
-        },
         getData(){
-            var uri = this.$apiUrl + '/layanan'
+            var uri = this.$apiUrl + '/customer'
             this.$http.get(uri).then( (response) =>{
-                this.layanans=response.data
+                this.customers=response.data
                 // console.log(response.data.message)
             })
             // console.log(response.getData)
         },
+        // getData(){
+        // axios.get('http://localhost:5002/API2/index.php').then(res => {
+        // this.customers = res.data //respon dari rest api dimasukan ke users
+        //     }).catch ((err) => {
+        //         console.log(err);
+        //     })
+        //  },
         sendData(){
-            this.layanan.append('nama', this.form.nama);
-            this.layanan.append('harga', this.form.harga);
-            this.layanan.append('id_ukuran_hewan', this.selectedUkuran);
-            var uri =this.$apiUrl + '/layanan'
+            this.customer.append('nama', this.form.nama);
+            this.customer.append('tgl_lahir', this.form.tgl_lahir);
+            this.customer.append('alamat', this.form.alamat);
+            this.customer.append('no_telp', this.form.no_telp);
+            var uri =this.$apiUrl + '/customer'
             this.load = true
-            this.$http.post(uri, this.layanan).then( (response) =>{
+            this.$http.post(uri, this.customer).then( (response) =>{
                 this.snackbar = true;
                 this.color = 'green';
                 this.text = response.data.message;
@@ -213,12 +217,13 @@ export default {
             })
         },
         updateData(){
-            this.layanan.append('nama', this.form.nama);
-            this.layanan.append('harga', this.form.harga);
-            this.layanan.append('id_ukuran_hewan', this.selectedUkuran);
-            var uri = this.$apiUrl + '/layanan/' + this.updatedId;
+            this.customer.append('nama', this.form.nama);
+            this.customer.append('tgl_lahir', this.form.tgl_lahir);
+            this.customer.append('alamat', this.form.alamat);
+            this.customer.append('no_telp', this.form.no_telp);
+            var uri = this.$apiUrl + '/customer/' + this.updatedId;
             this.load = true
-            this.$http.post(uri, this.layanan).then( (response) =>{
+            this.$http.post(uri, this.customer).then( (response) =>{
                 this.snackbar = true;
                 this.color = 'green';
                 this.text = response.data.message;
@@ -240,14 +245,14 @@ export default {
         editHandler(item){
             this.typeInput = 'edit';
             this.dialog = true;
-            this.form.nama = item.layanan;
-            this.form.harga = item.harga;
-            this.selectedUkuran = item.ukuran;
-            this.ukr = item.ukuran;
-            this.updatedId = item.id_layanan;
+            this.form.nama = item.nama;
+            this.form.tgl_lahir = item.tgl_lahir;
+            this.form.alamat = item.alamat;
+            this.form.no_telp = item.no_telp;
+            this.updatedId = item.id_customer;
         },
         delData(deleteId){
-            var uri = this.$apiUrl + '/layanan/' + deleteId;
+            var uri = this.$apiUrl + '/customer/' + deleteId;
             this.$http.delete(uri).then( response =>{
                 this.snackbar = true;
                 this.color = 'green';
@@ -272,16 +277,14 @@ export default {
         resetForm(){
             this.form = {
                 nama : '',
-                jenis: '',
-                ukuran: '',
-                selectedUkuran: '',
-                selectedJenis: ''
+                tgl_lahir :'',
+                alamat: '',
+                no_telp: ''
             }
         }
     },
     mounted(){
         this.getData();
-        this.loadUkuranHewan();
         if (localStorage.getItem("token") != null) {
         if(localStorage.getItem("peran")=="Kasir"){
               window.location.replace('/homeKasir')
@@ -295,5 +298,6 @@ export default {
       window.location.replace('/home')
     }
     },
+    
 }
 </script>
