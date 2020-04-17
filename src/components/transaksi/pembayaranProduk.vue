@@ -1,9 +1,9 @@
 <template>
     <v-container>
-        <v-card >
+        <v-card  class="pa-md-4 mx-lg-auto" max-width="900">
              <v-toolbar
                 flat
-                color="brown lighten-1"
+                color="#D2B48C"
                 >
                  <v-toolbar-title class=" text-center font-weight-bold" > Menu Kasir : Pembayaran Produk</v-toolbar-title>
                 
@@ -19,7 +19,17 @@
                     ></v-text-field>
                     </v-flex>
                 </v-layout>
-
+                <div v-if="this.getDataTransaksi.length==0">
+                    <v-data-table>
+                        <template v-slot:no-data>
+                            <v-alert :value="true" border="left" color="red lighten-2" dark>
+                                <v-icon>mdi-close-octagon</v-icon>
+                                Sorry, nothing to display here :(
+                            </v-alert>
+                        </template>
+                    </v-data-table>
+                </div>
+                <div v-else>
                 <v-data-table
                     :headers="headers"
                     :items="transactions"
@@ -30,32 +40,48 @@
                     <tbody>
                         <tr v-for="(item,index) in items" :key="item.id_tp">
                             <td>{{ index + 1 }}</td>
-                            <td><v-btn @click="showHandler(item); tempHandler(item)">{{ item.kode }}</v-btn></td>
+                            <td>{{ item.kode }}</td>
                             <td>{{ item.tanggal }}</td>
                             <td>{{ item.hewan }}</td>
                             <td>{{ item.customer_service }}</td>
                             <td>{{ item.sub_total }}</td>
                             <td>
-                                <v-btn
-                                color="blue"
-                                light
-                                outlined
-                                small
-                                @click="bayarHandler(item)"
-                                >
-                                Bayar
-                                </v-btn>
+                                <v-menu>
+                                        <template v-slot:activator="{ on: menu }">
+                                            <v-tooltip bottom>
+                                            <template v-slot:activator="{ on: tooltip }">
+                                                <v-btn
+                                                color="primary"
+                                                dark
+                                                text
+                                                v-on="{ ...tooltip, ...menu }"
+                                                class="font-weight-bold title"
+                                                >:</v-btn>
+                                            </template>
+                                            <span>Aksi Transaksi</span>
+                                            </v-tooltip>
+                                        </template>
+                                        <v-list>
+                                            <v-list-item>
+                                            <v-btn text @click="showHandler(item); tempHandler(item)">Details</v-btn>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-btn text @click="bayarHandler(item)">Bayar Transaksi</v-btn>
+                                            </v-list-item>
+                                        </v-list>
+                                        </v-menu>
                             </td>
                         </tr>
                     </tbody>
                 </template>
                 </v-data-table>
+                </div>
             </v-container>
         </v-card>
 
         <br>
         <!-- card untuk cetak nota -->
-        <v-card class="pa-md-4 mx-lg-auto" color="#FFEFD5">
+        <v-card class="pa-md-4 mx-lg-auto" max-width="900" color="#FFEFD5">
             <v-card-title>
                 Lihat List Pembayaran yang selesai
             </v-card-title>
@@ -137,28 +163,16 @@
                                     <v-btn disabled>ID Transaksi : {{ this.tempKode }}</v-btn>
                                 </v-col>
                                 <v-col cols="12">
-                                <!-- <v-autocomplete
-                                    v-model="selectedProduk"
-                                    filled
-                                    :hint="value"
-                                    :items="produks"
-                                    dense
-                                    hide-selected
-                                    item-value="id_produk" item-text="nama"
-                                    return-object
-                                    label="Pilihan Produk*"
-                                    required
-                                ></v-autocomplete> -->
                                 <v-text-field :value="value" label="Nama Produk" disabled></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-btn color="orange darken-3"> Stok Tersisa Produk : {{selectedProduk.stok}}{{selectedProduk.satuan}} </v-btn>
+                                    <!-- checkpoint -->
+                                    <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}}  </v-btn>
                                 </v-col>
                                  <v-col cols="12">
-                                    <v-input v-model="form.total">  Harga Satuan : {{selectedProduk.harga}} </v-input>
+                                    <v-input v-model="form.total">  Harga Satuan : {{valueharga}}</v-input>
                                 </v-col>
                                 <v-col cols="12">
-                                    <!-- <v-text-field label="Jumlah*" v-model="form.jumlah"  required></v-text-field> -->
                                     <v-slider
                                             v-model="form.jumlah"
                                             :rules="rules.age"
@@ -362,6 +376,7 @@ export default {
             uang: 0,
             value: '',
             valueID: '',
+            valuestok: '',
             valueharga: '',
             selectedProduk: 0,
             selectedHewan: 0,
@@ -416,6 +431,9 @@ export default {
                 number: [
                      v => v < 100 && v > 0  || 'Rannge hanya max. 100',
                 ],
+                uang: [
+                     v => v > 0  || 'Tidak boleh minus',
+                ],
             },
             headers: [
                 {
@@ -431,7 +449,7 @@ export default {
                     value: 'tanggal',
                 },
                 {
-                    text: 'Nama Hewan Pelanggan',
+                    text: 'Pelanggan',
                     value: 'hewan',
                 },
                 {
@@ -587,16 +605,9 @@ export default {
             }, 0)
         },
         selected(){
-            // if(this.temp.hewan != 'Guest'){
-                 this.temp.sub_total = this.totalBeli2()
+                this.temp.sub_total = this.totalBeli2()
                 console.log(this.totalBeli2())
-                this.updateDataTemp()
-            // }else{
-            //     //  this.totalall = this.totalBeli2()
-            //     console.log('aaaaa')
-            //     // this.updateDataCheck()
-            // }
-            // alert('OK') 
+                this.updateDataTemp() 
         },
         loadHewanById(){
             var uri = this.$apiUrl + '/hewan?id_hewan='+this.bayar.id_hewan
@@ -701,7 +712,7 @@ export default {
                     this.load = false;
                     this.dialogBayar = false
                     this.createPDF()
-                    this.getData();
+                    this.getDataTransaksi();
                     this.resetForm();
                     this.typeInput = 'new';
                 }).catch( error =>{
@@ -742,7 +753,7 @@ export default {
             this.$http.post(uri, this.tp).then( (response) =>{
                 this.load = false;
                 this.dialogTransaksi = false
-                this.getData();
+                this.getDataTransaksi();
                 this.resetForm();
                 this.typeInput = 'new';
             }).catch( error =>{
@@ -914,6 +925,7 @@ export default {
              this.value= item.produk;
             this.valueID = item.id_produk;
             this.valueharga = item.harga;
+            this.valuestok = item.stok;
             this.form.total = this.form.jumlah*item.harga;
             this.form.jumlah = item.jumlah;
             this.tempKode = this.tempKode;
@@ -936,6 +948,7 @@ export default {
             })
         },
          delDataDetail(deleteId){
+            this.$confirm("Hapus Produk?").then(() => {
             var uri = this.$apiUrl + '/tp_detail/' + deleteId;
             this.$http.delete(uri).then( response =>{
                 alert('Berhasil Hapus Data')
@@ -946,6 +959,7 @@ export default {
                 this.errors = error
                 console.log(this.errors)
             })
+            });
         },
         setForm(){
             if(this.typeInput == 'new'){

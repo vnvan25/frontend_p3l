@@ -45,7 +45,7 @@
                             <v-icon>mdi-paw</v-icon>
                         </v-list-item>
 
-                        <v-list-item link to ="">
+                        <v-list-item link to ="pembayaranLayanan">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>

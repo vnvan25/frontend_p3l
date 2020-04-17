@@ -85,14 +85,14 @@
                     </v-list-item-icon>
                     <v-list-item-title>Transaksi Layanan</v-list-item-title>
                 </template>
-                        <v-list-item link to ="">
+                        <v-list-item link to ="daftarLayanan">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
                             <v-list-item-title>Tambah Layanan</v-list-item-title>
                             <v-icon>mdi-note-plus-outline</v-icon>
                         </v-list-item>
-                        <v-list-item link to ="">
+                        <v-list-item link to ="historyLayanan">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>

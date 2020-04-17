@@ -697,8 +697,6 @@ export default {
             this.dtl.append('jumlah', this.form.jumlah);
             this.dtl.append('total', this.selectedProduk.harga*this.form.jumlah);
             console.log(this.totalall)
-            // console.log(this.totalBeli)
-            // console.log(this.totalBeli())
             var uri =this.$apiUrl + '/tp_detail'
             this.load = true
             this.$http.post(uri, this.dtl).then(response =>{

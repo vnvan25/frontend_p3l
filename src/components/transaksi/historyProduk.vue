@@ -99,7 +99,7 @@
                         rounded
                         class="text-black"
                         color="#B0C4DE"
-                        link to="/batalPage">
+                        link to="/listBatalProduk">
                             Telusuri Halaman
                             <v-icon size="18" class="mr-2">mdi-arrow-right</v-icon>
                         </v-btn>

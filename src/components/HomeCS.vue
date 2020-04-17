@@ -108,6 +108,58 @@
                 </v-card>
            </v-row>
         </v-card>
+        <br>
+        <v-card class="pa-md-4 mx-lg-auto orange lighten-3">
+            <div>
+           <v-card-title>Data Transaksi Layanan Kouvee Pet Shop</v-card-title>
+            </div>
+           <v-row>
+               <v-card
+                    class="mx-auto"
+                    max-width="400"
+                    outlined
+                >
+                    <v-list-item three-line>
+                    <v-list-item-content>
+                        <v-list-item-title class="headline mb-1">Data Transaksi Layanan</v-list-item-title>
+                        <v-list-item-subtitle>Kelola data registerasi pemesanan layanan</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-avatar
+                    size="80"
+                    color="blue-grey lighten-2">
+                        <v-icon large dark>mdi-note-plus-outline</v-icon>
+                        </v-avatar>
+                    </v-list-item>
+
+                    <v-card-actions>
+                    <v-btn link to="daftarLayanan">Kelola</v-btn>
+                    </v-card-actions>
+                </v-card>
+                <v-card
+                    class="mx-auto"
+                    max-width="400"
+                    outlined
+                >
+                    <v-list-item three-line>
+                    <v-list-item-content>
+                        <v-list-item-title class="headline mb-1">Daftar Transaksi</v-list-item-title>
+                        <v-list-item-subtitle>Daftar Transaksi Layanan</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-avatar
+                    size="80"
+                    color="lime darken-3">
+                        <v-icon large dark>mdi-note-multiple-outline</v-icon>
+                        </v-avatar>
+                    </v-list-item>
+
+                    <v-card-actions>
+                    <v-btn link to="/">Kelola</v-btn>
+                    </v-card-actions>
+                </v-card>
+           </v-row>
+        </v-card>
         </v-container>
     <!-- </v-card> -->
 </div>
