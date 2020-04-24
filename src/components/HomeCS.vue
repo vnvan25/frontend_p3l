@@ -155,7 +155,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn link to="/">Kelola</v-btn>
+                    <v-btn link to="/historyLayanan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
            </v-row>

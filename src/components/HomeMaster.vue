@@ -1,6 +1,9 @@
 <template>
 <div>
-    <!-- <v-card> -->
+    <div id="app">
+        <!-- <h1>My app!</h1> -->
+        <vue-snotify></vue-snotify>
+    </div>
         <v-container grid-list-md mb-0>
             <h1 class="text-center">MENU DATA MASTER</h1>
             <h2 class="text-center">Pengelolaan Semua Data Administrasi Kouvee Pet Shop</h2>
@@ -410,15 +413,39 @@
 </div>
 </template>
 <script>
+import Snotify from 'vue-snotify';
   export default {
     data () {
       return {
           show1: false,
           show2: false,
           show3: false,
+          produk: [],
       }
     },
+    methods:{
+        getDataStok(){
+            var uri = this.$apiUrl + '/produk/stokHabis'
+            this.$http.get(uri).then( (response) =>{
+                this.produk=response.data
+                console.log(this.produk.length)
+                if(this.produk.length>"0"){
+                this.$snotify.confirm('Beberapa Stok produk Habis', 'Cek Sekarang!', {
+                timeout: 10000,
+                showProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: true,
+                buttons: [
+                    {text: 'Cek Produk', action: (toast) => {console.log('Clicked: Later'); this.$router.push({ name: "daftarStokHabis" });} },
+                    {text: 'Close', action: (toast) => {console.log('Clicked: No'); this.$snotify.remove(toast.id); }, bold: true},
+                ]
+                });
+            }
+            })
+        },
+    },
     mounted(){
+    this.getDataStok();
     if (localStorage.getItem("token") != null) {
         if(localStorage.getItem("peran")=="Kasir"){
               window.location.replace('/homeKasir')

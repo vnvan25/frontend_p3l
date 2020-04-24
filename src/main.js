@@ -6,7 +6,10 @@ import vuetify from './plugins/vuetify';
 import PictureInput from 'vue-picture-input';
 import VueSimpleAlert from "vue-simple-alert";
 import jsPDF from 'jspdf';
+import Snotify from 'vue-snotify';
+import 'vue-snotify/styles/material.css';
 
+Vue.use(Snotify);
 Vue.use(jsPDF);
 Vue.use(VueSimpleAlert);
 Vue.prototype.$http = Axios;

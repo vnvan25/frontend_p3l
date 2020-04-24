@@ -53,7 +53,6 @@
                     </v-card>
                     </v-col>
                     </v-row>
-                <!-- </tr> -->
                     </tbody>
                 </template>
                 </v-data-table>

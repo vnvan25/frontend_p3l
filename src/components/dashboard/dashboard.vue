@@ -110,14 +110,21 @@
                     </v-list-item-icon>
                     <v-list-item-title>Pengadaan</v-list-item-title>
                 </template>
-                        <v-list-item link to ="">
+                <v-list-item link to ="/daftarStokHabis">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>Daftar Pengadaan</v-list-item-title>
-                            <v-icon>mdi-gmail</v-icon>
+                            <v-list-item-title>List Stok Habis</v-list-item-title>
+                            <v-icon>mdi-alert</v-icon>
                         </v-list-item>
-                        <v-list-item link to ="">
+                        <v-list-item link to ="/tambahPengadaan">
+                            <v-list-item-icon>
+                                <v-icon></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>Tambah Pengadaan</v-list-item-title>
+                            <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
+                        </v-list-item>
+                        <v-list-item link to ="/historyPengadaan">
                             <v-list-item-icon>
                                 <v-icon></v-icon>
                             </v-list-item-icon>
@@ -152,7 +159,6 @@
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
             <VSpacer />
-            
 
             <v-toolbar-title
                 style="font-size: 21px;"

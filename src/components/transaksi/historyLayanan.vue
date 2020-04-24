@@ -175,7 +175,7 @@
                                             >
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
-                                        <v-btn v-if="item.layanan.includes('Grooming') && item.hewan!='Guest'"
+                                        <v-btn v-if="item.layanan.includes('Grooming') && formMaster.nama!='Guest'"
                                             color="indigo"
                                             light
                                             text
@@ -249,7 +249,7 @@
             <v-card>
                 <v-card-title>Update Jumlah Hari</v-card-title>
                 <v-card-subtitle>Masukkan Jumlah Hari</v-card-subtitle>
-                <v-text-field :hint="'Jumlah Sebelumnya : '+formEdit.jumlah+' hari'" v-model="jlhHari" class="ml-4 mr-4" placeholder="Jumlah Hari" outlined type="number"></v-text-field>
+                <v-text-field :hint="'Jumlah Sebelumnya : '+formEdit.jumlah+' hari'" :rules="rules.jumlah" v-model="jlhHari" class="ml-4 mr-4" placeholder="Jumlah Hari" outlined type="number"></v-text-field>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text @click="updateJumlah()">OK</v-btn>
@@ -261,7 +261,7 @@
             <v-card>
                 <v-card-title>Anda memilih Penitipan</v-card-title>
                 <v-card-subtitle>Masukkan Jumlah Hari</v-card-subtitle>
-                <v-text-field v-model="jlhPenitipan" class="ml-4 mr-4" placeholder="Jumlah Hari" outlined type="number"></v-text-field>
+                <v-text-field v-model="jlhPenitipan" :rules="rules.jumlah" class="ml-4 mr-4" placeholder="Jumlah Hari" outlined type="number"></v-text-field>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text @click="dialogHari=false; hari()">OK</v-btn>
@@ -383,6 +383,11 @@ export default {
                     value: 'null',
                 },
             ],
+            rules: {
+                jumlah: [
+                     v => v > 0  || 'Masukkan dengan benar',
+                ],
+            },
             //cari detail
             id_tl: 0,
             //form
@@ -447,7 +452,10 @@ export default {
             var uri = this.$apiUrl + '/transaksi_layanan/number?id_hewan='+this.formMaster.id_hewan
             this.$http.get(uri).then( (response) =>{
                 this.number=response.data[0].no_telp
-                console.log(this.number)
+                if(this.number.substring(0, 1)=="0"){
+                    this.number = this.number.replace('0','+62');
+                    console.log(this.number)
+                }
             })
         },
         getDetailLayanan(){
@@ -575,25 +583,31 @@ export default {
             })
         },
         updateJumlah(){
-            this.jumlah.append('id_detail_tl', this.formEdit.id_detail);
-            this.jumlah.append('jumlah', this.jlhHari);
-            this.jumlah.append('harga', this.formEdit.harga);
-            var uri =this.$apiUrl + '/tl_detail/changeJumlah'
-            this.load = true
-            this.$http.post(uri, this.jumlah).then( (response) =>{
-               this.snackbar = true;
-                this.color = 'Green';
-                this.text = "Data anda berhasil di update";
-                this.load = false;
-                this.dialogPenitipan = false;
-                this.getDetailLayanan();
-            }).catch(error =>{
-                this.errors = error
+            if(this.jlhHari<=0){
                 this.snackbar = true;
-                this.text = 'Try Again';
                 this.color = 'red';
-                this.load = false;
-            })
+                this.text = "Minimal Penitipan adalah 1 hari";
+            }else{
+                this.jumlah.append('id_detail_tl', this.formEdit.id_detail);
+                this.jumlah.append('jumlah', this.jlhHari);
+                this.jumlah.append('harga', this.formEdit.harga);
+                var uri =this.$apiUrl + '/tl_detail/changeJumlah'
+                this.load = true
+                this.$http.post(uri, this.jumlah).then( (response) =>{
+                this.snackbar = true;
+                    this.color = 'Green';
+                    this.text = "Data anda berhasil di update";
+                    this.load = false;
+                    this.dialogPenitipan = false;
+                    this.getDetailLayanan();
+                }).catch(error =>{
+                    this.errors = error
+                    this.snackbar = true;
+                    this.text = 'Try Again';
+                    this.color = 'red';
+                    this.load = false;
+                })
+            }
         },
         updateSubTotal(){
             this.total.append('id_tl', this.formMaster.id_tl);
@@ -615,13 +629,19 @@ export default {
             })  
         },
         hari(){
-            this.data.jumlah = this.jlhPenitipan,
-            this.state=1,
-            this.send=1,
-            this.swapSelectionStatus(this.rowTemp.id_layanan);
-            this.penitipanID = this.rowTemp.id_layanan
-            this.log(this.rowTemp);
-            this.dialogHari = false
+            if(this.jlhPenitipan<=0){
+                this.snackbar = true;
+                this.color = 'red';
+                this.text = "Minimal Penitipan adalah 1 hari";
+            }else{
+                this.data.jumlah = this.jlhPenitipan,
+                this.state=1,
+                this.send=1,
+                this.swapSelectionStatus(this.rowTemp.id_layanan);
+                this.penitipanID = this.rowTemp.id_layanan
+                this.log(this.rowTemp);
+                this.dialogHari = false
+            }
         },
         rowClicked(row) {
             this.data.tempIdLayanan = row.id_layanan;
@@ -659,14 +679,14 @@ export default {
             this.dtl.append('id_layanan', this.data.id_layanan);
             if(this.state==1 && this.send==1){
                 this.dtl.append('jumlah', this.data.jumlah);
-                this.send=0;
             }else{
-                this.dtl.append('jumlah', 0);
+                this.dtl.append('jumlah', 1);
             }
 
             if(this.state==1 && this.send==1){
                 this.dtl.append('total', this.data.harga*this.data.jumlah);
                 console.log(this.data.harga*this.data.jumlah)
+                this.send=0;
             }else{
                 this.dtl.append('total', this.data.harga);
             }
@@ -706,42 +726,13 @@ export default {
         },
         sendSMS(){
             var twilio = require('twilio');
-            var client = new twilio('AC301b8d616ad5fd2c962b71675ecae99a', 'e9c4c3d0b7ecd9f3ebaced7e989ba84d');
+            var client = new twilio('AC301b8d616ad5fd2c962b71675ecae99a', '29343d7c31b24d5899a5ecfef13fdd81');
             client.messages.create({
                 to: this.number.toString(),
                 from: '+14158708581',
                 body: 'Hello from Kouvee Pet Shop! Hewan peliharaan anda '+this.formMaster.nama+' layanan Gromming sudah selesai'
             });
         },
-        // sendSMS(){
-        //    var xhr = new XMLHttpRequest(),
-        //     body = JSON.stringify(
-        //         {
-        //             "messages": [
-        //                 // {
-        //                 //     "channel": "whatsapp",
-        //                 //     "to": "1234567890",
-        //                 //     "content": "Test WhatsApp Message Text"
-        //                 // },
-        //                 {
-        //                     "channel": "sms",
-        //                     "to": "+6285250807770",
-        //                     "content": "Test SMS Message Text"
-        //                 }
-        //             ]
-        //         }
-        //     );
-        //     xhr.open('POST', 'https://platform.clickatell.com/v1/message', true);
-        //     xhr.setRequestHeader('Content-Type', 'application/json');
-        //     xhr.setRequestHeader('Authorization', 'RbeVZqtiSGu7QD85dcalKw==');
-        //     xhr.onreadystatechange = function(){
-        //         if (xhr.readyState == 4 && xhr.status == 200) {
-        //             console.log('success');
-        //         }
-        //     };
-
-        //     xhr.send(body);
-        // },
     },
     mounted(){
         this.getLayanan();

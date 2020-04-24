@@ -160,7 +160,7 @@
             <v-card>
                 <v-card-title>Anda memilih Penitipan</v-card-title>
                 <v-card-subtitle>Masukkan Jumlah Hari</v-card-subtitle>
-                <v-text-field v-model="jlhHari" class="ml-4 mr-4" placeholder="Jumlah Hari" outlined type="number"></v-text-field>
+                <v-text-field v-model="jlhHari" class="ml-4 mr-4" :rules="rules.jumlah" min="1" placeholder="Jumlah Hari" outlined type="number"></v-text-field>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text @click="hari()">OK</v-btn>
@@ -206,7 +206,7 @@ export default {
             //kode transaksi layanan
             kode: "LY-"+new Date().getFullYear().toString().substr(-2)+("0" + (new Date().getMonth() + 1)).slice(-2)+("0" + (new Date().getDate())).slice(-2)+"-",
             kodelength: 0,
-            status: "Proses",
+            status: "Penjualan",
             id_transaksi: 0,
             id_hapus: 0,
             tempKode: 0,
@@ -244,6 +244,11 @@ export default {
                     value: 'null',
                 },
             ],
+            rules: {
+                jumlah: [
+                     v => v > 0  || 'Masukkan dengan benar',
+                ],
+            },
             //penitipan
             state: 0,
             send: 0,
@@ -334,7 +339,7 @@ export default {
             this.transaction.append('kode', this.kode+this.kodelength);
             this.transaction.append('status', this.status);
             this.transaction.append('sub_total', 0);
-            this.transaction.append('total', 0);
+            this.transaction.append('total_harga', 0);
             this.transaction.append('created_by', this.namaCS);
             this.tempKode = this.kode+this.kodelength;
             var uri =this.$apiUrl + '/transaksi_layanan'
@@ -381,27 +386,33 @@ export default {
                 }
         },
         hari(){
-            this.data.jumlah = this.jlhHari,
-            this.state=1,
-            this.send=1,
-            this.swapSelectionStatus(this.rowTemp.id_layanan);
-            this.penitipanID = this.rowTemp.id_layanan
-            this.log(this.rowTemp);
-            this.dialogPenitipan=false
+            if(this.jlhHari<=0){
+                this.snackbar = true;
+                this.color = 'red';
+                this.text = "Minimal Penitipan adalah 1 hari";
+            }else{
+                this.data.jumlah = this.jlhHari,
+                this.state=1,
+                this.send=1,
+                this.swapSelectionStatus(this.rowTemp.id_layanan);
+                this.penitipanID = this.rowTemp.id_layanan
+                this.log(this.rowTemp);
+                this.dialogPenitipan=false
+            }
         },
         sendDetail(){
             this.dtl.append('id_tl', this.id_transaksi);
             this.dtl.append('id_layanan', this.data.id_layanan);
             if(this.state==1 && this.send==1){
                 this.dtl.append('jumlah', this.data.jumlah);
-                this.send=0;
             }else{
-                this.dtl.append('jumlah', 0);
+                this.dtl.append('jumlah', 1);
             }
 
             if(this.state==1 && this.send==1){
                 this.dtl.append('total', this.data.harga*this.data.jumlah);
                 console.log(this.data.harga*this.data.jumlah)
+                this.send=0;
             }else{
                 this.dtl.append('total', this.data.harga);
             }
@@ -459,7 +470,6 @@ export default {
         finish(){
             this.grandTotalValue = this.grandTotal();
             this.updateData();
-            location.reload();
         },
         updateData(){
             if(this.checked=='true'){
@@ -474,12 +484,16 @@ export default {
             this.transaction.append('kode', this.tempKode);
             this.transaction.append('status', this.status);
             this.transaction.append('sub_total', this.grandTotalValue);
-            this.transaction.append('total', 0);
+            this.transaction.append('total_harga', 0);
             this.transaction.append('created_by', this.namaCS);
             var uri =this.$apiUrl + '/transaksi_layanan/' + this.id_transaksi;
+            this.snackbar = true;
+            this.color = 'green';
+            this.text = 'Pendaftaran Layanan Selesai';
             this.load = true
             this.$http.post(uri, this.transaction).then(response =>{
                 this.load = false;
+                location.reload();
             }).catch(error =>{
                 this.load = false;
             })

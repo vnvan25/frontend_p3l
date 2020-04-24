@@ -210,7 +210,7 @@ export default {
         konfirmasiTransaksi(data){
             this.$confirm("Yakin Ingin Return Transaksi No."+data.kode+"?").then(() => {
             this.return.append('id_tl', data.id_tl);
-            this.return.append('status', "Proses");
+            this.return.append('status', "Penjualan");
             var uri =this.$apiUrl + '/transaksi_layanan/changeStatus'
             this.load = true
             this.$http.post(uri, this.return).then( (response) =>{

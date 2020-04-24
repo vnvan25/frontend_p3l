@@ -1,0 +1,663 @@
+<template>
+    <v-container>
+        <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
+             <h2 class="mb-4 text-center font-weight-black black--text">History Pengadaan Produk Kouvee Pet Shop</h2>
+             <v-divider></v-divider>
+             <div v-if="this.pengadaan.length==0">
+                <v-data-table
+                hide-default-header
+                hide-default-footer
+                class="mt-5">
+                    <template v-slot:no-data>
+                        <v-alert :value="true" border="left" color="red lighten-2"  dense outlined dark>
+                            <v-icon>mdi-close-octagon</v-icon>
+                            Tidak ada transaksi pengadaan yang dilakukan
+                        </v-alert>
+                    </template>
+                </v-data-table>
+            </div>
+            <div v-else>
+             <v-data-table
+                    :headers="headers"
+                    :items="pengadaan"
+                    :search="keyword"
+                    :loading="load">
+                <template v-slot:body="{ items }">
+                    <tbody>
+                        <tr v-for="(item,index) in items" :key="item.id_pengadaan">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ item.supplier }}</td>
+                            <td>{{ item.kode }}</td>
+                            <td>{{ item.tanggal }}</td>
+                            <td>{{ item.total_harga }}</td>
+                            <td>
+                                <div>
+                                        <v-menu>
+                                        <template v-slot:activator="{ on: menu }">
+                                            <v-tooltip bottom>
+                                            <template v-slot:activator="{ on: tooltip }">
+                                                <v-btn
+                                                color="primary"
+                                                dark
+                                                text
+                                                v-on="{ ...tooltip, ...menu }"
+                                                >:</v-btn>
+                                            </template>
+                                            <span>Aksi Transaksi</span>
+                                            </v-tooltip>
+                                        </template>
+                                        <v-list>
+                                            <v-list-item>
+                                            <v-btn text @click="detailHandler(item); dialogDetail='true'">Details</v-btn>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-btn text @click="notaHandler(item);">Cetak Surat Pemesanan</v-btn>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-btn text @click="batalTransaksi(item)">Batal</v-btn>
+                                            </v-list-item>
+                                        </v-list>
+                                        </v-menu>
+                                    </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </template>
+                </v-data-table>
+            </div>
+        </v-card>
+        <v-card class="pa-md-4 mt-5 mx-lg-auto" color="#DEB887" max-width="900">
+            <v-card-title>Kelola History Pengadaan</v-card-title>
+            <v-card-actions>
+                <v-btn color="#FFA07A" link to="batalPengadaan">Pesanan Dibatalkan</v-btn>
+                <v-btn color="#FFFFE0" link to="pesananPengadaan">Pesanan Dalam Pemesanan</v-btn>
+                <v-btn color="#90EE90" link to="selesaiPengadaan">Pesanan Selesai</v-btn>
+            </v-card-actions>
+        </v-card>
+        <v-dialog v-model="dialogDetail" persistent max-width="600px">
+            <v-card>
+                <v-card-title>Detail Pengadaan No. {{this.form.kode}}</v-card-title>
+                <v-divider></v-divider>
+                <v-layout>
+                    <v-flex xs6>
+                        <v-btn
+                        depressed
+                        dark
+                        rounded
+                        style="text-transform: none !important;"
+                        color="green accent-3"
+                        class="ml-4 mt-4 mb-4"
+                        small
+                        @click="dialogTambah='true'"
+                        >
+                        <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
+                            Tambah
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+                <div v-if="this.pemesanan.length==0">
+                    <h3 class="red--text text-center ml-10 mt-5">Tidak ada produk yang dipesan</h3>
+                </div>
+                <div v-else>
+                        <v-data-table
+                        :items="pemesanan"
+                        :loading="load"
+                        hide-default-header
+                        hide-default-footer
+                        class="ml-4 mt-6">
+                            <template v-slot:body="{ items }">
+                                <tbody>
+                                    <tr v-for="(item,index) in items" :key="item.id_detail_p">
+                                        <td class="font-weight-bold brown-text">{{ index + 1 }}</td>
+                                        <td class="font-weight-bold brown-text">{{ item.nama }}</td>
+                                        <td>
+                                        <v-edit-dialog
+                                            :return-value.sync="item.jumlah"
+                                            large
+                                            persistent
+                                            @save="save(item)"
+                                            @cancel="cancel"
+                                            >
+                                            <div class="font-weight-bold brown-text">{{ item.jumlah }}</div>
+                                            <template v-slot:input>
+                                                <div class="mt-4 title">Update Jumlah</div>
+                                            </template>
+                                            <template v-slot:input>
+                                                <v-text-field
+                                                v-model="jlh"
+                                                label="Jumlah"
+                                                single-line
+                                                counter
+                                                autofocus
+                                                ></v-text-field>
+                                            </template>
+                                            </v-edit-dialog>
+                                        </td>
+                                        <td class="font-weight-bold brown-text">Rp. {{ item.total }}</td>
+                                        <td>
+                                            <v-btn icon color="error" @click="deleteHandler(item)">
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </template>                           
+                        </v-data-table>
+                </div>
+                        <br>
+                        <h4 class="ml-4 mb-4"> TOTAL TRANSAKSI : Rp.{{ total }}</h4>
+                        <v-divider></v-divider>
+                        <small v-if="this.pemesanan.length!=0" class="ml-4 mb-7 mt-2" color="grey">Note : Edit Jumlah dengan click kolom atau angka jumlah</small>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="mr-5 mb-4" color="primary" text @click="dialogDetail=false;updateHandler()">Close</v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogTambah" persistent max-width="700px">
+                <v-card>
+                    <v-card-title>Data Produk Pengadaan</v-card-title>
+                    <v-card-subtitle>Click produk yang diinginkan untuk menambahkan</v-card-subtitle>
+                    <v-divider></v-divider>
+                    <div v-if="this.produk.length==0">
+                        <h3 class="red--text text-center ml-10 mt-5">Tidak ada produk yang tersedia</h3>
+                    </div>
+                    <div v-else>
+                        <v-data-table
+                            :items="produk"
+                            :search="keyword"
+                            :loading="load"
+                            hide-default-header
+                            hide-default-footer
+                            class="mt-4 ml-4 mr-4">
+                            <template v-slot:body="{ items }">
+                                <tbody>
+                                    <tr v-for="item in items" :key="item.id_produk" :class="selectedRows.indexOf(item.id_produk)>-1?'brown lighten-4':''" @click="rowClicked(item)">
+                                        <td><img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="100px"></td>
+                                        <td>{{ item.nama }}</td>
+                                        <td>{{ item.harga }}</td>
+                                        <td>
+                                            <v-chip :color="getColor(item.stok, item.minimal)" dark>{{ item.stok }}</v-chip>
+                                        </td>
+                                        <!-- <td>{{ item.stok }} </td> -->
+                                        <td>{{ item.satuan }}</td>
+                                        <td>{{ item.minimal }}</td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </v-data-table>
+                    </div>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="dialogTambah=false">CLOSE</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogJumlah" persistent max-width="300px">
+                <v-card>
+                    <v-card-title>Masukkan Jumlah</v-card-title>
+                    <v-text-field v-model="sum" class="ml-4 mr-4" min="1" placeholder="Jumlah" outlined type="number"></v-text-field>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="simpan()">OK</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogKonfirmasi" persistent max-width="550px">
+                <v-card>
+                    <v-card-title>Form Konfirmasi</v-card-title>
+                    <v-card-text class="font-weight-black">Anda akan melakukan konfirmasi pemesanan untuk {{this.form.kode}}</v-card-text>
+                    <v-card-text>NB: Setelah melakukan konfirmasi dan mencetak surat pemesanan anda tidak bisa mengubah pemesanan lagi.</v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="#DEB887" class="mb-4" @click="cetak()">Cetak Surat Pemesanan</v-btn>
+                        <v-btn text color="red" class="mb-4" @click="dialogKonfirmasi=false">CLOSE</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-snackbar
+                v-model="snackbar"
+                :color="color"
+                :multi-line="true"
+                :timeout="3000"
+                >
+                {{ text }}
+                <v-btn
+                dark
+                text
+                @click="snackbar= false"
+                >
+                Close
+                </v-btn>
+            </v-snackbar>
+    </v-container>
+</template>
+<script>
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
+export default {
+    data() {
+        return {
+            tglTransaksi: new Date().toLocaleString(),
+            dialogDetail: false,
+            dialogTambah: false,
+            dialogJumlah: false,
+            dialogKonfirmasi: false,
+            pengadaan: [],
+            pemesanan: [],
+            produk: [],
+            selectedRows: [],
+            keyword: '',
+            status:'',
+            snackbar: false,
+            color: null,
+            text: '',
+            load: false,
+            batal : new FormData(),
+            transaction : new FormData(),
+            jumlah : new FormData(),
+            dtl : new FormData(),
+            konfirmasi : new FormData(),
+            headers: [
+                {
+                    text: 'No',
+                    value: 'no',
+                },
+                {
+                    text: 'Supplier',
+                    value: 'supplier',
+                },
+                {
+                    text: 'Kode',
+                    value: 'kode',
+                },
+                {
+                    text: 'Tanggal',
+                    value: 'Tanggal',
+                },
+                {
+                    text: 'Total Harga',
+                    value: 'total_harga',
+                },
+                {
+                    text: '',
+                    value: '',
+                },
+            ],
+            form: {
+                id_pengadaan: '',
+                supplier: 0,
+                kode: '',
+                no_telp: 0,
+                alamat: 0,
+                tanggal: '',
+                total_harga: '',
+                jumlah: '',
+                id_hapus: 0,
+            },
+            data:{
+                id_produk: '',
+                harga : '',
+                nama: '',
+                tempIdProduk: '',
+                minimal: 0,
+                stok: 0,
+                id_hapus: 0,
+                jumlah: 0,
+                id_supplier: 0,
+            },
+            sum: 0,
+        }
+    },
+    computed: {
+        total: function(){
+            return this.pemesanan.reduce((acc, item) => {
+            return acc + (item.total*1)
+            }, 0)
+        }
+    },
+    methods:{
+        getData(){
+            var uri = this.$apiUrl + '/pengadaan'
+            this.$http.get(uri).then( (response) =>{
+                this.pengadaan=response.data
+                console.log(this.pengadaan)
+            })
+        },
+        getPemesanan(){
+            var uri = this.$apiUrl + '/detail_pengadaan?id_pengadaan='+this.form.id_pengadaan;
+            this.$http.get(uri).then( (response) =>{
+                this.pemesanan=response.data
+            })
+        },
+        getDataProduk(){
+            var uri = this.$apiUrl + '/detail_pengadaan/getProduk?id_pengadaan='+this.form.id_pengadaan;
+            this.$http.get(uri).then( (response) =>{
+                this.produk=response.data
+                console.log(this.pengadaan)
+            })
+        },
+        batalTransaksi(data){
+            this.$confirm("Batalkan transaksi "+data.kode+"?").then(() => {
+            this.batal.append('id_pengadaan', data.id_pengadaan);
+            this.batal.append('status', "Batal");
+            var uri =this.$apiUrl + '/pengadaan/changeStatus'
+            this.load = true
+            this.$http.post(uri, this.batal).then( (response) =>{
+               this.snackbar = true;
+                this.color = 'Green';
+                this.text = "Transaksi "+data.kode+" berhasil dibatalkan";
+                this.load = false;
+                this.dialog = false;
+                this.getData();
+            }).catch(error =>{
+                this.errors = error
+                this.snackbar = true;
+                this.text = 'Try Again';
+                this.color = 'red';
+                this.load = false;
+            })
+            });
+        },
+        detailHandler(item){
+            this.form.id_pengadaan = item.id_pengadaan,
+            this.form.supplier = item.supplier,
+            this.form.no_telp = item.no_telp,
+            this.form.alamat = item.alamat,
+            this.form.kode = item.kode,
+            this.form.tanggal = item.tanggal,
+            this.form.total_harga = item.total_harga,
+            this.getPemesanan();
+            this.getDataProduk();
+        },
+        notaHandler(item){
+            this.form.id_pengadaan = item.id_pengadaan,
+            this.form.supplier = item.supplier,
+            this.form.no_telp = item.no_telp,
+            this.form.alamat = item.alamat,
+            this.form.kode = item.kode,
+            this.form.tanggal = item.tanggal,
+            this.form.total_harga = item.total_harga,
+            this.getPemesanan();
+            this.dialogKonfirmasi = true;
+            // this.createPDF();
+        },
+        cetak(){
+            this.$confirm("Cetak Surat Pemesanan?").then(() => {
+            this.konfirmasi.append('id_pengadaan', this.form.id_pengadaan);
+            this.konfirmasi.append('status', "Dipesan");
+            var uri =this.$apiUrl + '/pengadaan/changeStatus'
+            this.load = true
+            this.$http.post(uri, this.konfirmasi).then( (response) =>{
+               this.snackbar = true;
+                this.color = 'Green';
+                this.text = "Surat Berhasil di cetak";
+                this.load = false;
+                this.dialogKonfirmasi = false;
+                this.getData();
+                this.createPDF();
+            }).catch(error =>{
+                this.errors = error
+                this.snackbar = true;
+                this.text = 'Try Again';
+                this.color = 'red';
+                this.load = false;
+            })
+            });
+        },
+        grandTotal(){
+            return this.pemesanan.reduce((acc, item) => {
+            return acc + (item.total*1)
+            }, 0)
+        },
+        updateHandler(){
+            this.form.total_harga = this.grandTotal();
+            this.updateTotal();
+        },
+        updateTotal(){
+            this.transaction.append('id_pengadaan', this.form.id_pengadaan);
+            this.transaction.append('total_harga', this.form.total_harga);
+            var uri =this.$apiUrl + '/detail_pengadaan/changeTotal'
+            this.load = true
+            this.$http.post(uri, this.transaction).then(response =>{
+                this.load = false;
+                this.getData();
+            }).catch(error =>{
+                this.load = false;
+            })
+        },
+        updateJumlah(item){
+            if(this.jlh<=0){
+                this.snackbar = true;
+                this.color = 'red';
+                this.text = "Minimal Jumlah adalah 1";
+            }else{
+                this.jumlah.append('id_detail_p', item.id_detail_p);
+                this.jumlah.append('jumlah', this.jlh);
+                this.jumlah.append('harga', item.harga);
+                var uri =this.$apiUrl + '/detail_pengadaan/changeJumlah'
+                this.load = true
+                this.$http.post(uri, this.jumlah).then( (response) =>{
+                    this.load = false;
+                    this.snackbar = true
+                    this.color = 'success'
+                    this.text = 'Data saved'
+                    this.jlh = 0,
+                    this.getPemesanan();
+                }).catch(error =>{
+                    this.errors = error
+                    this.snackbar = true;
+                    this.text = 'Try Again';
+                    this.color = 'red';
+                    this.load = false;
+                })
+            }
+        },
+        save(item) {
+            console.log(item)
+            this.updateJumlah(item)
+        },
+        cancel () {
+            this.snackbar = true
+            this.color = 'error'
+            this.text = 'Canceled'
+        },
+        deleteHandler(item){
+            this.id_hapus = item.id_detail_p,
+            this.delDetail()
+        },
+        delDetail(){
+            var uri = this.$apiUrl + '/detail_pengadaan/' + this.id_hapus;
+            this.$http.delete(uri).then( response =>{
+                this.snackbar = true;
+                this.color = 'green';
+                this.text = 'Berhasil Menghapus data';
+                this.getPemesanan();
+            }).catch(error =>{
+                this.errors = error
+                this.snackbar = true;
+                this.text = 'Try Again';
+                this.color = 'red';
+            })
+        },
+        rowClicked(row) {
+            this.data.tempIdProduk = row.id_produk;
+                this.sendHandler(row);
+        },
+        sendHandler(row){
+            this.data.id_produk = row.id_produk,
+            this.data.harga = row.harga,
+            this.data.nama = row.nama,
+            this.data.stok = row.stok,
+            this.data.minimal = row.minimal,
+            this.swapSelectionStatus(row.id_produk);
+            this.log(row);
+        },
+        swapSelectionStatus(keyID) {
+            if (this.selectedRows.includes(keyID)) {
+                this.selectedRows = this.selectedRows.filter(
+                selectedKeyID => selectedKeyID !== keyID
+                );
+                if(keyID == this.penitipanID){
+                    this.state=0
+                }
+                this.detail_transaksi()
+            } else {
+                this.dialogJumlah = true;
+                this.selectedRows.push(keyID);
+            }
+        },
+        log(logItem){
+            console.log(logItem);
+        },
+        detail_transaksi(){
+            var uri = this.$apiUrl + '/detail_pengadaan/searchDetail?id_pengadaan='+this.form.id_pengadaan+'&id_produk='+this.data.tempIdProduk;
+            this.$http.get(uri).then( (response) =>{
+                this.id_hapus=response.data[0].id_detail_p
+                this.delDetail()
+            })  
+        },
+        simpan(){
+            this.sendDetail();
+        },
+        sendDetail(){
+            this.dialogJumlah = true;
+            if(this.sum<0){
+                this.snackbar = true;
+                this.color = 'red';
+                this.text = "Jumlah Tidak Boleh 0";
+            }else{
+                this.dtl.append('id_pengadaan', this.form.id_pengadaan);
+                this.dtl.append('id_produk', this.data.id_produk);
+                this.dtl.append('jumlah', this.sum);
+                this.dtl.append('total', this.data.harga*this.sum);
+                var uri =this.$apiUrl + '/detail_pengadaan'
+                this.load = true
+                this.$http.post(uri, this.dtl).then(response =>{
+                    this.snackbar = true;
+                    this.color = 'green';
+                    this.text = "Produk "+this.data.nama+" "+"berhasil ditambahkan";
+                    this.load = false;
+                    this.getPemesanan();
+                    this.dialogJumlah=false;
+                    this.sum=0;
+                    // this.resetFormDetail();
+                }).catch(error =>{
+                    this.errors = error
+                    this.snackbar = true;
+                    this.text = 'Try Again';
+                    this.color = 'red';
+                    this.load = false;
+                })
+            }
+        },
+        getColor(stok, minimal) {
+            if ((stok-minimal)<0) return 'red'
+            else return 'green'
+        },
+        createPDF () {
+            let pdfName = this.form.kode; 
+            var doc = new jsPDF('2', 'pt', 'a5', true);
+
+            var img = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4REsRXhpZgAATU0AKgAAAAgABwEaAAUAAAABAAAAYgEbAAUAAAABAAAAagEoAAMAAAABAAIAAAE7AAIAAAAQAAAAcodpAAQAAAABAAAIrpydAAEAAAAgAAAAguocAAcAAAgMAAAAogAAAAAAAABgAAAAAQAAAGAAAAABVmFuZXNzYSBBbmdlbGF+AFYAYQBuAGUAcwBzAGEAIABBAG4AZwBlAGwAYQB+AAAAHOoAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABZADAAIAAAAUAAAI8JAEAAIAAAAUAAAJBJKRAAIAAAADMjUAAJKSAAIAAAADMjUAAOocAAcAAAgMAAAJGAAAAAAyMDIwOjA0OjA4IDExOjQ5OjQ0ADIwMjA6MDQ6MDggMTE6NDk6NDQAHOoAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/4QsiaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49J++7vycgaWQ9J1c1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCc/Pg0KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyI+PHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0idXVpZDpmYWY1YmRkNS1iYTNkLTExZGEtYWQzMS1kMzNkNzUxODJmMWIiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIvPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIj48eG1wOkNyZWF0ZURhdGU+MjAyMC0wNC0wOFQxMTo0OTo0NC4yNDY8L3htcDpDcmVhdGVEYXRlPjwvcmRmOkRlc2NyaXB0aW9uPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48ZGM6Y3JlYXRvcj48cmRmOlNlcSB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPjxyZGY6bGk+VmFuZXNzYSBBbmdlbGF+PC9yZGY6bGk+PC9yZGY6U2VxPg0KCQkJPC9kYzpjcmVhdG9yPjwvcmRmOkRlc2NyaXB0aW9uPjwvcmRmOlJERj48L3g6eG1wbWV0YT4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg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'
+            doc.addImage(img, "JPEG", 2, 1, 130, 80);
+            
+            doc.setFontSize(20)
+            doc.text(180, 30, 'KOUVEE PET SHOP')
+            doc.setFontSize(11)
+            doc.text(150, 45, 'Jalan Moses GatotKaca No.22 Yogyakarta 55281')
+            doc.setFontSize(11)
+            doc.text(225, 60, 'Telp. (0274) 357735')
+            doc.setFontSize(11)
+            doc.text(195, 73, 'http://www.sayanghewan.com')
+            // urutan line(padding, titik awal garis, panjang, titik akhir)
+            doc.setLineWidth(0.5);
+            doc.line(0, 80, 420, 80);
+            doc.setFontSize(13)
+            doc.text(150, 100, 'SURAT PEMESANAN')
+            doc.setFontSize(10)
+            doc.text("No : "+this.form.kode, 391, 130, null, null, "right");
+            doc.setFontSize(10)
+            doc.text("Tanggal : "+this.form.tanggal, 380, 145, null, null, "right");
+            
+            doc.setLineDash([2.5]);
+            doc.setLineWidth(1);
+            doc.rect(40, 150, 140, 70);
+
+            doc.setFontSize(10)
+            doc.text(45, 165, 'Kepada Yth.')
+            doc.setFontSize(10)
+            doc.text(45, 180, this.form.supplier)
+            doc.setFontSize(10)
+            doc.text(45, 195, this.form.alamat)
+            doc.setFontSize(10)
+            doc.text(45, 210, this.form.no_telp)
+            doc.setFontSize(10)
+            doc.text(40, 240, "Mohon untuk disediakan produk-produk berikut ini :")
+
+            doc.setFontStyle("bold");
+            doc.text(50, 265 , "No")
+            doc.text(80, 265 , "Nama Produk")
+            doc.text(260, 265 , "Satuan")
+            doc.text(330, 265 , "Jumlah")
+            doc.setFontStyle("normal");
+            doc.setLineWidth(1);
+            doc.setLineDash();
+            doc.line(40, 275, 390, 275);
+
+            let k=10;
+            for (let i = 0, j = 1; i < this.pemesanan.length; i++) {
+                var split = doc.splitTextToSize(this.pemesanan[i].nama, 150);
+                doc.text(50, 285+k , j.toString())
+                doc.text(80, 285+k , split)
+                doc.text(260, 285+k , this.pemesanan[i].satuan)
+                doc.text(342, 285+k , this.pemesanan[i].jumlah)
+                j++;
+                k+=28;
+            }
+            doc.setLineWidth(1);
+            doc.setLineDash();
+            doc.rect(40, 250, 350, k+28);
+
+            doc.setLineWidth(1);
+            doc.setLineDash();
+            doc.line(70, 250, 70, 278+k);
+
+            doc.setLineWidth(1);
+            doc.setLineDash();
+            doc.line(250, 250, 250, 278+k);
+
+            doc.setLineWidth(1);
+            doc.setLineDash();
+            doc.line(315, 250, 315, 278+k);
+
+            doc.text(220, 320+k , "Dicetak tanggal "+this.tglTransaksi)
+            
+            doc.setProperties({
+                title: "Surat Pemesanan No."+this.form.kode
+            });
+            var string = doc.output('dataurlnewwindow');
+            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
+            var x = window.open();
+            x.document.open();
+            x.document.write(embed);
+            x.document.close();
+        },
+    },
+    mounted(){
+        this.getData();
+        if (localStorage.getItem("token") != null) {
+        if(localStorage.getItem("peran")=="Kasir"){
+              window.location.replace('/homeKasir')
+        }else if(localStorage.getItem("peran")=="Customer Service"){
+              window.location.replace('/homeCS')
+        }else if(localStorage.getItem("peran")=="Owner"){
+              next()
+        }
+    }
+    else{
+      window.location.replace('/home')
+    }
+    },
+}
+</script>

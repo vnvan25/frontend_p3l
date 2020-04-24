@@ -19,7 +19,15 @@ function userContent(view){
 }
 
 function transaksiContent(view){
-    return () => import(`../components/transaksi/${view}.vue`)
+    return () => {
+        return import(`../components/transaksi/${view}.vue`)
+    }
+}
+
+function pengadaanContent(view){
+    return () => {
+        return import(`../components/pengadaan/${view}.vue`)
+    }
 }
 
 const routes = [
@@ -69,6 +77,11 @@ const routes = [
                 component : transaksiContent('transaksiProduk')
             },
             {
+                name: 'daftartransaksiProduk',
+                path: '/daftarTransaksiProduk',
+                component : transaksiContent('daftarTransaksiProduk')
+            },
+            {
                 name: 'historyProduk',
                 path: '/historyProduk',
                 component : transaksiContent('historyProduk')
@@ -88,6 +101,26 @@ const routes = [
                 path: '/profileCS',
                 component : loadContent('profileCS')
             },
+            {
+                name: 'listBatalProduk',
+                path: '/listBatalProduk',
+                component : transaksiContent('listBatalProduk')
+            },
+            {
+                name: 'daftarLayanan',
+                path: '/daftarLayanan',
+                component : transaksiContent('daftarLayanan')
+            },
+            {
+                name: 'historyLayanan',
+                path: '/historyLayanan',
+                component : transaksiContent('historyLayanan')
+            },
+            {
+                name: 'listBatalLayanan',
+                path: '/listBatalLayanan',
+                component : transaksiContent('listBatalLayanan')
+            },
         ]
     },
     {
@@ -104,6 +137,26 @@ const routes = [
                 path: '/profileKasir',
                 component : loadContent('profileKasir')
             },
+            {
+                name: 'pembayaranProduk',
+                path: '/pembayaranProduk',
+                component : transaksiContent('pembayaranProduk')
+            },
+            {
+                name: 'selesaiPage',
+                path: '/selesaiPage',
+                component : transaksiContent('selesaiPage')
+            },
+            {
+                name: 'cetakNotaLayanan',
+                path: '/cetakNotaLayanan',
+                component : transaksiContent('cetakNotaLayanan')
+            },
+            {
+                name: 'pembayaranLayanan',
+                path: '/pembayaranLayanan',
+                component : transaksiContent('pembayaranLayanan')
+            },
         ]
     },
     {
@@ -114,6 +167,16 @@ const routes = [
                 name: 'produkController',
                 path: '/produk',
                 component : loadView('produkController')
+            },
+            {
+                name: 'customerMaster',
+                path: '/datacustomer',
+                component : loadView('customerMaster')
+            },
+            {
+                name: 'hewanMaster',
+                path: '/datahewan',
+                component : loadView('hewanMaster')
             },
             {
                 name: 'homeMaster',
@@ -149,6 +212,41 @@ const routes = [
                 name: 'profileMaster',
                 path: '/profileMaster',
                 component : loadContent('profileMaster')
+            },
+            {
+                name: 'daftarStokHabis',
+                path: '/daftarStokHabis',
+                component : pengadaanContent('tampilProduk')
+            },
+            {
+                name: 'tambahPengadaan',
+                path: '/tambahPengadaan',
+                component : pengadaanContent('tambahPengadaan')
+            },
+            {
+                name: 'historyPengadaan',
+                path: '/historyPengadaan',
+                component : pengadaanContent('historyPengadaan')
+            },
+            {
+                name: 'semuaProduk',
+                path: '/semuaProduk',
+                component : pengadaanContent('semuaProduk')
+            },
+            {
+                name: 'batalPengadaan',
+                path: '/batalPengadaan',
+                component : pengadaanContent('batalPengadaan')
+            },
+            {
+                name: 'pesananPengadaan',
+                path: '/pesananPengadaan',
+                component : pengadaanContent('pesananPengadaan')
+            },
+            {
+                name: 'selesaiPengadaan',
+                path: '/selesaiPengadaan',
+                component : pengadaanContent('selesaiPengadaan')
             },
         ]
     },
