@@ -30,6 +30,12 @@ function pengadaanContent(view){
     }
 }
 
+function laporanContent(view){
+    return () => {
+        return import(`../components/laporan/${view}.vue`)
+    }
+}
+
 const routes = [
     {
         name: 'landingPage',
@@ -247,6 +253,26 @@ const routes = [
                 name: 'selesaiPengadaan',
                 path: '/selesaiPengadaan',
                 component : pengadaanContent('selesaiPengadaan')
+            },
+            {
+                name: 'pendapatanTahunan',
+                path: '/pendapatanTahunan',
+                component : laporanContent('pendapatanTahunan')
+            },
+            {
+                name: 'produkTerlaris',
+                path: '/produkTerlaris',
+                component : laporanContent('produkTerlaris')
+            },
+            {
+                name: 'pengadaanTahunan',
+                path: '/pengadaanTahunan',
+                component : laporanContent('pengadaanTahunan')
+            },
+            {
+                name: 'pengadaanBulanan',
+                path: '/pengadaanBulanan',
+                component : laporanContent('pengadaanBulanan')
             },
         ]
     },

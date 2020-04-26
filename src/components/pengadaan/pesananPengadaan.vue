@@ -124,7 +124,7 @@
                 </v-card-title>
                 
                 <v-card-actions>
-                    <v-btn class="ml-4 mb-4 mt-4" color="primary" @click="update()">Konfirmasi Barang Datang</v-btn>
+                    <v-btn class="ml-4 mb-4 mt-4 mr-10" small color="primary" @click="update()">Konfirmasi Barang Datang</v-btn>
                 </v-card-actions>
             </v-card>
             </v-dialog>
@@ -166,6 +166,7 @@ export default {
             dialogKonfirmasi: false,
             return: new FormData,
             jumlah: new FormData,
+            konfirmasi: new FormData,
             headers: [
                 {
                     text: 'No',
@@ -376,23 +377,57 @@ export default {
             
         },
         update(){
+            this.$confirm("Konfirmasi Barang Sudah Datang?").then(() => {
             var i =0;
-            for(i ; i<this.pemesanan.length;){
+            for(i ; i<this.pemesanan.length;i++){
                 this.updateJumlah(i);
-                i++;
-                // break;
             }
+            this.konfirmasiStatus();
             this.dialogKonfirmasi=false;
+            });
         },
         updateJumlah(i){
             // this.jumlah.append('id_produk', this.pemesanan[i].id_produk);
-            this.jumlah.append('stok', this.pemesanan[i].jumlah);
-            var uri =this.$apiUrl + '/produk/changeJumlah/'+this.pemesanan[i].id_produk;
+            // this.jumlah.append('stok', this.pemesanan[i].jumlah);
+            // var uri =this.$apiUrl + '/produk/changeJumlah'
+            // this.load = true
+            // this.$http.post(uri, this.jumlah).then( (response) =>{
+            //     this.load = false;
+            //     // this.pemesanan[i].jumlah=0;
+            // }).catch(error =>{
+            //     this.load = false;
+            // })
+
+            var xhr = new XMLHttpRequest();
+            var url = this.$apiUrl + '/produk/changeJumlah';
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    console.log(json.email + ", " + json.password);
+                }
+            };
+            var data = JSON.stringify({"id_produk": this.pemesanan[i].id_produk, "stok":  this.pemesanan[i].jumlah});
+            xhr.send(data);
+        },
+        konfirmasiStatus(){
+            this.konfirmasi.append('id_pengadaan', this.form.id_pengadaan);
+            this.konfirmasi.append('status', "Selesai");
+            var uri =this.$apiUrl + '/pengadaan/changeStatus'
             this.load = true
-            this.$http.post(uri, this.jumlah).then( (response) =>{
+            this.$http.post(uri, this.konfirmasi).then( (response) =>{
+               this.snackbar = true;
+                this.color = 'Green';
+                this.text = "Transaksi "+this.form.kode+" Selesai Dikonfirmasi";
                 this.load = false;
-                // this.pemesanan[i].jumlah=0;
+                this.dialog = false;
+                this.getData();
             }).catch(error =>{
+                this.errors = error
+                this.snackbar = true;
+                this.text = 'Try Again';
+                this.color = 'red';
                 this.load = false;
             })
         },

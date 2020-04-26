@@ -206,13 +206,34 @@
         </v-card>
         <br>
         <v-card class="pa-md-4 mx-lg-auto brown lighten-3">
-            <div>
+           
            <v-card-title>Data Pengadaan Produk Kouvee Pet Shop</v-card-title>
-            </div>
+            
            <v-row>
-               <v-col>
                <v-card
-                    class="mx-auto"
+                    class="mx-auto ml-6 mr-5"
+                    max-width="344"
+                    outlined
+                >
+                    <v-list-item three-line>
+                    <v-list-item-content>
+                        <v-list-item-title class="headline mb-1">List Stok Habis</v-list-item-title>
+                        <v-list-item-subtitle>Menampilkan semua produk yang memiliki stok minimum</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-avatar
+                    size="75"
+                    color="#CD5C5C">
+                        <v-icon large dark>mdi-cart-off</v-icon>
+                        </v-avatar>
+                    </v-list-item>
+
+                    <v-card-actions>
+                    <v-btn link to="daftarStokHabis">Kelola</v-btn>
+                    </v-card-actions>
+                </v-card>
+               <v-card
+                    class="mx-auto ml-5 mr-5"
                     max-width="344"
                     outlined
                 >
@@ -230,13 +251,12 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="tambahPengadaan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
-               </v-col>
-               <v-col>
+
                 <v-card
-                    class="mx-auto"
+                    class="mx-auto ml-5"
                     max-width="344"
                     outlined
                 >
@@ -254,10 +274,10 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn >Kelola</v-btn>
+                    <v-btn link to="historyPengadaan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
-               </v-col>
+               
                <v-col>
                </v-col>
            </v-row>
@@ -286,7 +306,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn >Kelola</v-btn>
+                    <v-btn link to="produkTerlaris" >Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
 
@@ -332,7 +352,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="pendapatanTahunan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
            </v-row>
@@ -379,7 +399,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="pengadaanBulanan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
                 <v-card
@@ -401,7 +421,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="pengadaanTahunan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
            </v-row>

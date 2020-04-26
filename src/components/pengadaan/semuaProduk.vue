@@ -98,7 +98,7 @@ export default {
             })
         },
         getColor(stok, minimal) {
-            if ((stok-minimal)<0) return 'red'
+            if ((stok-minimal)<0 || stok==minimal) return 'red'
             else return 'green'
         },
     },

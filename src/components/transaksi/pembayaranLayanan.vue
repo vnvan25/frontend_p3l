@@ -668,11 +668,7 @@ export default {
             doc.setFontStyle("normal");
             let k=10;
             for (let i = 0, j = 1; i < this.detailLayanan.length; i++) {
-                if(this.detailLayanan[i].layanan.includes('Penitipan')){
-                    var splitLayanan = doc.splitTextToSize(this.detailLayanan[i].layanan+' '+this.detailLayanan[i].ukuran+' '+this.detailLayanan[i].jumlah+' hari', 180);
-                }else{
-                    var splitLayanan = doc.splitTextToSize(this.detailLayanan[i].layanan+' '+this.detailLayanan[i].ukuran, 180);
-                }
+                var splitLayanan = doc.splitTextToSize(this.detailLayanan[i].layanan+' '+this.detailLayanan[i].ukuran, 180);
                 doc.text(22, 210+k , j.toString())
                 doc.text(60, 210+k , splitLayanan)
                 doc.text(240, 210+k , this.detailLayanan[i].harga)

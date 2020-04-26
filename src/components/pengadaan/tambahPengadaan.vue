@@ -6,6 +6,9 @@
                 <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
                     <h3 class="mb-4 text-center font-weight-black black--text">List Produk Untuk Pengadaan</h3>
                     <v-divider></v-divider>
+                    <div v-if="click==false">
+                            <v-btn class="mt-5" small rounded color="#F4A460" @click="dialog='true'"><v-icon>mdi-plus</v-icon> Tambah Pengadaan</v-btn>
+                        </div>
                     <div v-if="this.products.length==0">
                         <v-data-table
                         hide-default-header
@@ -20,9 +23,6 @@
                         </v-data-table>
                     </div>
                     <div v-else>
-                        <div v-if="click==false">
-                            <v-btn class="mt-5" small rounded color="#F4A460" @click="dialog='true'"><v-icon>mdi-plus</v-icon> Tambah Pengadaan</v-btn>
-                        </div>
                         <div class="red lighten-2">
                             <h3 class="mb-4 mt-5 ml-4 white--text">Prioritas Pengadaan</h3>
                         </div>
@@ -60,7 +60,7 @@
                             </tbody>
                         </template>
                         </v-data-table>
-
+                        </div>
                         <div class="green lighten-2">
                             <h3 class="mb-4 mt-5 ml-4 white--text">Seluruh Produk</h3>
                         </div>
@@ -99,7 +99,6 @@
                         </template>
                         </v-data-table>
 
-                    </div>
                 </v-card>
             </v-col>
             <v-col cols="13" sm="12" md="4">
