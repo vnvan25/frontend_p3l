@@ -265,6 +265,11 @@ const routes = [
                 component : laporanContent('produkTerlaris')
             },
             {
+                name: 'layananTerlaris',
+                path: '/layananTerlaris',
+                component : laporanContent('layananTerlaris')
+            },
+            {
                 name: 'pengadaanTahunan',
                 path: '/pengadaanTahunan',
                 component : laporanContent('pengadaanTahunan')
@@ -273,6 +278,11 @@ const routes = [
                 name: 'pengadaanBulanan',
                 path: '/pengadaanBulanan',
                 component : laporanContent('pengadaanBulanan')
+            },
+            {
+                name: 'pendapatanBulanan',
+                path: '/pendapatanBulanan',
+                component : laporanContent('pendapatanBulanan')
             },
         ]
     },

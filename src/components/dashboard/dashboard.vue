@@ -111,33 +111,80 @@
                     <v-list-item-title>Pengadaan</v-list-item-title>
                 </template>
                 <v-list-item link to ="/daftarStokHabis">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>List Stok Habis</v-list-item-title>
-                            <v-icon>mdi-alert</v-icon>
-                        </v-list-item>
-                        <v-list-item link to ="/tambahPengadaan">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Tambah Pengadaan</v-list-item-title>
-                            <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
-                        </v-list-item>
-                        <v-list-item link to ="/historyPengadaan">
-                            <v-list-item-icon>
-                                <v-icon></v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>History Pengadaan</v-list-item-title>
-                            <v-icon>mdi-note-multiple-outline</v-icon>
-                        </v-list-item>
-                 </v-list-group>
-                 <v-list-item link to ="">
                     <v-list-item-icon>
-                        <v-icon>mdi-file-chart</v-icon>
+                        <v-icon></v-icon>
                     </v-list-item-icon>
-                <v-list-item-title>Laporan Data</v-list-item-title>
+                    <v-list-item-title>List Stok Habis</v-list-item-title>
+                    <v-icon>mdi-alert</v-icon>
                 </v-list-item>
+                <v-list-item link to ="/tambahPengadaan">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Tambah Pengadaan</v-list-item-title>
+                    <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
+                </v-list-item>
+                <v-list-item link to ="/historyPengadaan">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>History Pengadaan</v-list-item-title>
+                    <v-icon>mdi-note-multiple-outline</v-icon>
+                </v-list-item>
+                 </v-list-group>
+
+                 
+                 <v-list-group>
+                <template v-slot:activator>
+                    <v-list-item-icon>
+                            <v-icon>mdi-cart</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Laporan Data</v-list-item-title>
+                </template>
+                <v-list-item link to ="/produkTerlaris">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Produk terlaris</v-list-item-title>
+                    <v-icon small>mdi-cube-outline</v-icon>
+                </v-list-item>
+                <v-list-item link to ="/layananTerlaris">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Layanan Terlaris</v-list-item-title>
+                    <v-icon small>mdi-star</v-icon>
+                </v-list-item>
+                <v-list-item link to ="/pendapatanTahunan">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Pendapatan Tahunan</v-list-item-title>
+                    <v-icon small>mdi-decimal-increase</v-icon>
+                </v-list-item>
+                <v-list-item link to ="/pendapatanBulanan">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Pendapatan Bulanan</v-list-item-title>
+                    <v-icon small>mdi-decimal-increase</v-icon>
+                </v-list-item>
+                <v-list-item link to ="/pengadaanTahunan">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Pengadaan Tahunan</v-list-item-title>
+                    <v-icon small>mdi-cube-send</v-icon>
+                </v-list-item>
+                <v-list-item link to ="/pengadaanBulanan">
+                    <v-list-item-icon>
+                        <v-icon></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Pengadaan Bulanan</v-list-item-title>
+                    <v-icon small>mdi-cube-send</v-icon>
+                </v-list-item>
+                 </v-list-group>
+                 
             </v-list>
         <template v-slot:append>
             <div class="pa-2">

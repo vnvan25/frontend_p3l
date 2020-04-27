@@ -329,7 +329,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="layananTerlaris">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
 
@@ -377,7 +377,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn>Kelola</v-btn>
+                    <v-btn link to="pendapatanBulanan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
                 <v-card
