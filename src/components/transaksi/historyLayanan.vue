@@ -104,7 +104,7 @@
                     </v-flex>
             </v-layout>
         </v-card>
-        <v-dialog v-model="dialogDetail" persistent max-width="600px">
+        <v-dialog v-model="dialogDetail" persistent max-width="700px">
                     <v-card>
                         <v-card-title>
                             <span class="headline">Detail Pesanan Layanan</span>
@@ -179,7 +179,7 @@
                                             color="indigo"
                                             light
                                             text
-                                            @click="sendSMS()"
+                                            @click="totalGromming(item.total); tanggal(); kirimsms()"
                                             >
                                             <v-icon class="mr-2">mdi-email-outline</v-icon>
                                             SMS
@@ -397,6 +397,10 @@ export default {
                 hewan: '',
                 id_hewan: '',
                 id_ukuran_hewan: '',
+                tanggal:'',
+                customer: '',
+                total: '',
+                totalGrooming: 0,
             },
             formEdit: {
                 id_detail: 0,
@@ -416,6 +420,7 @@ export default {
             jumlah : new FormData(),
             dtl : new FormData(),
             total : new FormData(),
+            sms : new FormData(),
             //update
             selectedHewan: 0,
             jlhHari: 0,
@@ -426,6 +431,7 @@ export default {
             penitipanID: 0,
             id_hapus: 0,
             ukuranGuest: 0,
+            customer: '',
             
         }   
     },
@@ -452,10 +458,10 @@ export default {
             var uri = this.$apiUrl + '/transaksi_layanan/number?id_hewan='+this.formMaster.id_hewan
             this.$http.get(uri).then( (response) =>{
                 this.number=response.data[0].no_telp
-                if(this.number.substring(0, 1)=="0"){
-                    this.number = this.number.replace('0','+62');
-                    console.log(this.number)
-                }
+                // if(this.number.substring(0, 1)=="0"){
+                //     this.number = this.number.replace('0','+62');
+                //     console.log(this.number)
+                // }
             })
         },
         getDetailLayanan(){
@@ -489,9 +495,13 @@ export default {
             this.formMaster.id_tl = data.id_tl,
             this.formMaster.id_ukuran_hewan = data.id_ukuran_hewan,
             this.formMaster.id_hewan = data.id_hewan,
+            this.formMaster.tanggal= data.tanggal,
+            this.formMaster.kode = data.kode,
+            this.formMaster.total = this.hitungTotal(),
             this.getNumber();
             this.getDetailLayanan();
             this.getDataLayanan();
+            this.getCustomer();
         },
         deleteDetail(deleteId){
             var uri = this.$apiUrl + '/tl_detail/' + deleteId;
@@ -730,8 +740,73 @@ export default {
             client.messages.create({
                 to: this.number.toString(),
                 from: '+14158708581',
-                body: 'Hello from Kouvee Pet Shop! Hewan peliharaan anda '+this.formMaster.nama+' layanan Gromming sudah selesai'
+                body: 'Hallo Kami dari Kouvee Pet Shop! Transaksi layanan anda dengan kode '+this.formMaster.kode+' pada tanggal '+this.formMaster.tanggal+' dengan hewan bernama '+this.formMaster.nama+' layanan Gromming sudah selesai. Terimakasih!'
             });
+        },
+        tanggal(){
+            var x  = new Date(this.formMaster.tanggal);
+            var dd = x.getDate();
+            var mm = x.getMonth()+1;
+            var yy = x.getFullYear();
+            if(mm==1){
+                mm="January"
+            }else if(mm==2){
+                mm="February"
+            }else if(mm==3){
+                mm="Maret"
+            }else if(mm==4){
+                mm="April"
+            }else if(mm==5){
+                mm="Mei"
+            }else if(mm==6){
+                mm="Juni"
+            }else if(mm==7){
+                mm="July"
+            }else if(mm==8){
+                mm="Agustus"
+            }else if(mm==9){
+                mm="September"
+            }else if(mm==10){
+                mm="Oktober"
+            }else if(mm==11){
+                mm="November"
+            }else if(mm==12){
+                mm="Desember"
+            }
+            this.formMaster.tanggal = dd + " " + mm + " " + yy
+            console.log(this.formMaster.tanggal)
+        },
+        rubah(angka){
+            var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan;
+        },
+        totalGromming(item){
+            this.formMaster.totalGrooming=this.rubah(item);
+            this.formMaster.total=this.rubah(this.hitungTotal())
+            this.formMaster.customer = this.customer
+        },
+        kirimsms(){
+            this.sms.append('no_hp', this.number);
+            this.sms.append('pesan', "Hallo Kami dari Kouvee Pet Shop! Transaksi layanan anda dengan kode "+this.formMaster.kode+" pada tanggal "+this.formMaster.tanggal+" dan hewan bernama "+this.formMaster.nama+" dengan customer bernama "+this.formMaster.customer+" layanan Gromming sudah selesai. Biaya Grooming Rp. "+this.formMaster.totalGrooming+" dan Total Transaksi Anda Rp."+this.formMaster.total+" Terimakasih!");
+            var uri =this.$apiUrl + '/layanan/kirimsms'
+            this.load = true
+            this.$http.post(uri, this.sms).then( (response) =>{
+                this.load = false;
+                this.snackbar = true;
+                this.color = 'green';
+                this.text = 'Berhasil Mengirim SMS';
+            }).catch(error =>{
+                this.load = false;
+            })
+        },
+        getCustomer(){
+            var uri = this.$apiUrl + '/hewan?id_hewan='+this.formMaster.id_hewan
+            this.$http.get(uri).then( (response) =>{
+                this.formMaster.customer=response.data[0].nama
+                this.customer = response.data[0].nama
+            })
         },
     },
     mounted(){

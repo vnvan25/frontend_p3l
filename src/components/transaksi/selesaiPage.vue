@@ -52,7 +52,7 @@
                                         </template>
                                         <v-list>
                                             <v-list-item>
-                                            <v-btn text @click="showHandler(item); tempHandler(item)">Details</v-btn>
+                                            <v-btn text @click="showHandler(item)">Details</v-btn>
                                             </v-list-item>
                                             <v-list-item>
                                             <v-btn text @click="selesaiHandler(item);">Cetak Ulang Nota</v-btn>
@@ -109,7 +109,7 @@
                 <h4 class="ml-5"> TOTAL PEMBELIAN : Rp.{{ totalBeli }}</h4>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialog = false; selected()">Close</v-btn>
+                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -197,6 +197,20 @@ export default {
                     value: 'konfirmasi',
                 }
             ],
+            temp: {
+                hewan: '',
+                id_hewan: '',
+                id_pegawai_k: '',
+                id_pegawai_cs: '',
+                kode: '',
+                tanggal: '',
+                sub_total: '',
+                total_harga: '',
+                status: '',
+                created_by: '',
+                updated_by: '',
+                jumlah: '',
+            },
             data: {
                 hewan: '',
                 id_hewan: '',
@@ -257,6 +271,21 @@ export default {
                 this.hewan=response.data
             })
         },
+        tempHandler(item){
+            this.temp.hewan = item.hewan,
+            this.temp.id_hewan = item.id_hewan,
+            this.temp.kode = item.kode,
+            this.temp.id_pegawai_k = item.id_pegawai_k,
+            this.temp.id_pegawai_cs = item.id_pegawai_cs,
+            this.temp.tanggal = item.tanggal,
+            this.temp.sub_total = item.sub_total,
+            this.temp.total_harga = item.total_harga,
+            this.temp.status = item.status,
+            this.temp.created_by = item.created_by,
+            this.temp.updated_by = item.created_by,
+            this.updatedTemp = item.id_tp;
+            // this.updateDataTemp();
+        },
         loadHewanById(){
             var uri = this.$apiUrl + '/hewan?id_hewan='+this.data.id_hewan
             this.$http.get(uri).then( (response) =>{
@@ -286,6 +315,7 @@ export default {
           console.log(uri)
             this.$http.get(uri).then( (response) =>{
                 this.detailsTp=response.data
+                console.log(this.detailsTp)
             })
         },
         showHandler(id){

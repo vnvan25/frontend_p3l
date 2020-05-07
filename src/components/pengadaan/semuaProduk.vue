@@ -4,7 +4,7 @@
              <h2 class="mb-4 text-center font-weight-black black--text">Bagian Pengadaan Produk Kouvee Pet Shop</h2>
              <v-divider></v-divider>
              <h2 class="mb-4 mt-4 text-center font-weight-black red--text">Daftar Semua Stok Kouvee Pet Shop</h2>
-             <div v-if="this.products.length==0">
+             <div v-if="this.allproduk.length==0">
                 <v-data-table
                 hide-default-header
                 hide-default-footer>
@@ -19,7 +19,7 @@
             <div v-else>
              <v-data-table
                     :headers="headers"
-                    :items="products"
+                    :items="allproduk"
                     :search="keyword"
                     :loading="load">
                 <template v-slot:body="{ items }">
@@ -50,7 +50,7 @@
 export default {
     data() {
         return {
-            products: [],
+            allproduk: [],
             keyword: '',
             status:'',
             snackbar: false,
@@ -93,8 +93,8 @@ export default {
         getData(){
             var uri = this.$apiUrl + '/produk'
             this.$http.get(uri).then( (response) =>{
-                this.products=response.data
-                console.log(this.products)
+                this.allproduk=response.data
+                console.log(this.allproduk)
             })
         },
         getColor(stok, minimal) {

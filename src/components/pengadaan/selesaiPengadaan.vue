@@ -1,8 +1,6 @@
 <template>
     <v-container>
-        <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
-             <h2 class="mb-4 text-center font-weight-black black--text">History Pengadaan Produk Kouvee Pet Shop</h2>
-             <v-divider></v-divider>
+        <v-card class="pa-md-4 mt-n12 mx-lg-auto" max-width="900">
              <div v-if="this.pengadaan.length==0">
                 <v-data-table
                 hide-default-header

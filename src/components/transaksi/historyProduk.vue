@@ -205,7 +205,7 @@
                                         <v-btn color="orange darken-3"> Stok Tersisa Produk : {{selectedProduk.stok}} {{selectedProduk.satuan}} </v-btn>
                                     </div>
                                     <div v-else>
-                                        <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}}</v-btn>
+                                        <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}} {{valuesatuan}}</v-btn>
                                     </div>
                                 </v-col>
                                  <v-col cols="12">
@@ -217,17 +217,30 @@
                                     </div>
                                 </v-col>
                                 <v-col cols="12">
-                                    <!-- <v-text-field label="Jumlah*" v-model="form.jumlah"  required></v-text-field> -->
-                                    <v-slider
-                                            v-model="form.jumlah"
-                                            :rules="rules.age"
-                                            color="orange"
-                                            label="Jumlah Beli"
-                                            hint="Pilih Jumlah Pembelian"
-                                            min="0"
-                                            :max = selectedProduk.stok
-                                            thumb-label
-                                            ></v-slider>
+                                     <div v-if="type == 'new'">
+                                        <v-slider
+                                        v-model="form.jumlah"
+                                        :rules="rules.age"
+                                        color="orange"
+                                        label="Jumlah Beli"
+                                        hint="Pilih Jumlah Pembelian"
+                                        min="0"
+                                        :max = selectedProduk.stok
+                                        thumb-label
+                                    ></v-slider>
+                                    </div>
+                                    <div v-else>
+                                        <v-slider
+                                        v-model="form.jumlah"
+                                        :rules="rules.age"
+                                        color="orange"
+                                        label="Jumlah Beli"
+                                        hint="Pilih Jumlah Pembelian"
+                                        min="0"
+                                        :max = valuestok
+                                        thumb-label
+                                    ></v-slider>
+                                    </div>
                                 </v-col>
                                
                                     
@@ -454,6 +467,7 @@ export default {
             valueID: '',
             valueharga: '',
             valuestok: '',
+            valuesatuan:'',
             hew: '',
         }
     },
@@ -829,6 +843,7 @@ export default {
             this.valueID = item.id_produk;
             this.valueharga = item.harga;
             this.valuestok = item.stok;
+            this.valuesatuan = item.satuan;
             this.form.total = this.form.jumlah*item.harga;
             console.log(this.selectedProduk)
             this.form.jumlah = item.jumlah;

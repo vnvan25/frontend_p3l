@@ -251,7 +251,7 @@
                     </v-list-item>
 
                     <v-card-actions>
-                    <v-btn link to="tambahPengadaan">Kelola</v-btn>
+                    <v-btn link to="addPengadaan">Kelola</v-btn>
                     </v-card-actions>
                 </v-card>
 

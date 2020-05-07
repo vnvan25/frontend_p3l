@@ -144,7 +144,7 @@
                                             </template>
                                             <template v-slot:input>
                                                 <v-text-field
-                                                v-model="data.jumlah"
+                                                v-model="jumlah"
                                                 label="Edit"
                                                 single-line
                                                 counter
@@ -243,14 +243,14 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" class="mb-3" @click="updateSupplier()">Update</v-btn>
-                    <v-btn color="blue darken-1" class="mb-3 mr-4" text @click="dialog = false">Close</v-btn>
+                    <v-btn color="blue darken-1" class="mb-3 mr-4" text @click="dialogUpdate = false">Close</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
         <v-dialog v-model="dialogJumlah" persistent max-width="300px">
             <v-card>
                 <v-card-title>Masukkan Jumlah</v-card-title>
-                <v-text-field v-model="data.jumlah" class="ml-4 mr-4" :rules="rules.jumlah" min="1" placeholder="Jumlah" outlined type="number"></v-text-field>
+                <v-text-field v-model="jumlah" class="ml-4 mr-4" :rules="rules.jumlah" min="1" placeholder="Jumlah" outlined type="number"></v-text-field>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text @click="simpan()">OK</v-btn>
@@ -357,6 +357,7 @@ export default {
             },
             grandTotalValue: 0,
             min: 0,
+            jumlah: 0,
         }
     },
     computed: {
@@ -471,7 +472,13 @@ export default {
             this.sendHandler(this.rowTemp);
         },
         simpan(){
-            this.sendDetail();
+            if(this.jumlah<=0){
+                this.snackbar = true;
+                this.text = 'Jumlah tidak boleh 0';
+                this.color = 'red';
+            }else{
+                this.sendDetail();
+            }
         },
         sendHandler(row){
                 this.data.id_produk = row.id_produk,
@@ -526,15 +533,15 @@ export default {
         },
         sendDetail(){
             this.dialogJumlah = true;
-            if(this.data.jumlah<0){
+            if(this.jumlah<=0){
                 this.snackbar = true;
                 this.color = 'red';
                 this.text = "Jumlah Tidak Boleh 0";
             }else{
                 this.dtl.append('id_pengadaan', this.id_pengadaan);
                 this.dtl.append('id_produk', this.data.id_produk);
-                this.dtl.append('jumlah', this.data.jumlah);
-                this.dtl.append('total', this.data.harga*this.data.jumlah);
+                this.dtl.append('jumlah', this.jumlah);
+                this.dtl.append('total', this.data.harga*this.jumlah);
                 var uri =this.$apiUrl + '/detail_pengadaan'
                 this.load = true
                 this.$http.post(uri, this.dtl).then(response =>{
@@ -544,7 +551,7 @@ export default {
                     this.load = false;
                     this.getPemesanan();
                     this.dialogJumlah=false;
-                    this.data.jumlah=0;
+                    this.jumlah=0;
                     // this.resetFormDetail();
                 }).catch(error =>{
                     this.errors = error
@@ -588,13 +595,13 @@ export default {
         });
         },
         updateJumlah(item){
-            if(this.data.jumlah<=0){
+            if(this.jumlah<=0){
                 this.snackbar = true;
                 this.color = 'red';
                 this.text = "Minimal Jumlah adalah 1";
             }else{
                 this.jumlah.append('id_detail_p', item.id_detail_p);
-                this.jumlah.append('jumlah', this.data.jumlah);
+                this.jumlah.append('jumlah', this.jumlah);
                 this.jumlah.append('harga', item.harga);
                 var uri =this.$apiUrl + '/detail_pengadaan/changeJumlah'
                 this.load = true
@@ -603,7 +610,7 @@ export default {
                     this.snackbar = true
                     this.color = 'success'
                     this.text = 'Data saved'
-                    this.data.jumlah = 0,
+                    this.jumlah = 0,
                     this.getPemesanan();
                 }).catch(error =>{
                     this.errors = error

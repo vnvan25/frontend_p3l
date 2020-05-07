@@ -6,6 +6,8 @@ const UserDashboardLayout = () => import('../components/dashboard/userDashboard.
 const CSDashboardLayout = () => import('../components/dashboard/dashboardCS.vue')
 const KasirDashboardLayout = () => import('../components/dashboard/dashboardKasir.vue')
 const LandingLayout = () => import('../components/landingPage.vue')
+const HistoryLayout = () => import('../components/pengadaan/historyLayout.vue')
+const LaporanLayout = () => import('../components/laporan/laporanLayout.vue')
 function loadView(view){
     return () => import(`../components/content/${view}.vue`)
 }
@@ -225,64 +227,71 @@ const routes = [
                 component : pengadaanContent('tampilProduk')
             },
             {
-                name: 'tambahPengadaan',
-                path: '/tambahPengadaan',
-                component : pengadaanContent('tambahPengadaan')
+                name: 'addPengadaan',
+                path: '/addPengadaan',
+                component : pengadaanContent('addPengadaan')
             },
             {
-                name: 'historyPengadaan',
-                path: '/historyPengadaan',
-                component : pengadaanContent('historyPengadaan')
+                path : '/layoutHistory',
+                component : HistoryLayout,
+                children: [
+                    {
+                        name: 'historyPengadaan',
+                        path: '/historyPengadaan',
+                        component : pengadaanContent('historyPengadaan')
+                    },
+                    {
+                        name: 'batalPengadaan',
+                        path: '/batalPengadaan',
+                        component : pengadaanContent('batalPengadaan')
+                    },
+                    {
+                        name: 'pesananPengadaan',
+                        path: '/pesananPengadaan',
+                        component : pengadaanContent('pesananPengadaan')
+                    },
+                    {
+                        name: 'selesaiPengadaan',
+                        path: '/selesaiPengadaan',
+                        component : pengadaanContent('selesaiPengadaan')
+                    },
+                ]
             },
             {
-                name: 'semuaProduk',
-                path: '/semuaProduk',
-                component : pengadaanContent('semuaProduk')
-            },
-            {
-                name: 'batalPengadaan',
-                path: '/batalPengadaan',
-                component : pengadaanContent('batalPengadaan')
-            },
-            {
-                name: 'pesananPengadaan',
-                path: '/pesananPengadaan',
-                component : pengadaanContent('pesananPengadaan')
-            },
-            {
-                name: 'selesaiPengadaan',
-                path: '/selesaiPengadaan',
-                component : pengadaanContent('selesaiPengadaan')
-            },
-            {
-                name: 'pendapatanTahunan',
-                path: '/pendapatanTahunan',
-                component : laporanContent('pendapatanTahunan')
-            },
-            {
-                name: 'produkTerlaris',
-                path: '/produkTerlaris',
-                component : laporanContent('produkTerlaris')
-            },
-            {
-                name: 'layananTerlaris',
-                path: '/layananTerlaris',
-                component : laporanContent('layananTerlaris')
-            },
-            {
-                name: 'pengadaanTahunan',
-                path: '/pengadaanTahunan',
-                component : laporanContent('pengadaanTahunan')
-            },
-            {
-                name: 'pengadaanBulanan',
-                path: '/pengadaanBulanan',
-                component : laporanContent('pengadaanBulanan')
-            },
-            {
-                name: 'pendapatanBulanan',
-                path: '/pendapatanBulanan',
-                component : laporanContent('pendapatanBulanan')
+                path : '/laporanLayout',
+                component : LaporanLayout,
+                children: [
+                    {
+                        name: 'pendapatanTahunan',
+                        path: '/pendapatanTahunan',
+                        component : laporanContent('pendapatanTahunan')
+                    },
+                    {
+                        name: 'produkTerlaris',
+                        path: '/produkTerlaris',
+                        component : laporanContent('produkTerlaris')
+                    },
+                    {
+                        name: 'layananTerlaris',
+                        path: '/layananTerlaris',
+                        component : laporanContent('layananTerlaris')
+                    },
+                    {
+                        name: 'pengadaanTahunan',
+                        path: '/pengadaanTahunan',
+                        component : laporanContent('pengadaanTahunan')
+                    },
+                    {
+                        name: 'pengadaanBulanan',
+                        path: '/pengadaanBulanan',
+                        component : laporanContent('pengadaanBulanan')
+                    },
+                    {
+                        name: 'pendapatanBulanan',
+                        path: '/pendapatanBulanan',
+                        component : laporanContent('pendapatanBulanan')
+                    },
+                ]
             },
         ]
     },

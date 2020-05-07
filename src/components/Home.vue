@@ -30,70 +30,116 @@
                     <br>Sabtu 10am - 9pm
             </p>
 
-            <v-col cols="12">
-                <!-- kolom card -->
-                <v-row row="6">
-                    <v-card
-                            class="mx-auto"
-                            max-width="400"
-                        >
-                            <v-img
-                            class="white--text align-end"
-                            height="200px"
-                            src="https://5.imimg.com/data5/FA/MM/DE/ANDROID-46184468/images-2019-09-08t203011-003-jpeg-500x500.jpeg"
-                            >
-                            </v-img>
-                            <v-card-title>Produk Kouvee Pet Shop</v-card-title>
+            <v-sheet
+              class="mx-auto"
+              elevation="8"
+              max-width="1000"
+            >
+            <br>
+            <div class="text-right mr-8"><a href="listProduk">Show All</a></div>
+            <div class="text-left ml-12">
+              <br>
+              <h2>Produk Kouvee Pet Shop</h2>
+              <div>Menyediakan semua kebutuhan peliharaan anda dengan berbagai produk pilihan</div>
+              <div>Tersedia makanan, aksesoris, perlengkapan gromming, dan produk berkualitas lainnya</div>
+            </div>
+              <v-slide-group
+                v-model="model"
+                class="pa-4"
+                active-class="success"
+                show-arrows
+              >
+                <v-slide-item
+                  v-for="item in allproduk"
+                  :key="item.id_produk"
+                  v-slot:default="{ active, toggle }"
+                >
+                  <v-card
+                    :color="active ? undefined : 'grey lighten-1'"
+                    class="ma-4"
+                    height="200"
+                    width="200"
+                    @click="toggle"
+                    
+                  >
+                  <v-img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="200px" height="200">
+                  <br><br><br><br><br><br><br>
+                    <v-card-title class="white body-2 font-weight-black mb-2">{{ item.nama }}</v-card-title>
+                  </v-img>
+                    <v-row
+                      class="fill-height"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-scale-transition>
+                        <v-icon
+                          v-if="active"
+                          color="white"
+                          size="48"
+                          v-text="'mdi-close-circle-outline'"
+                        ></v-icon>
+                      </v-scale-transition>
+                    </v-row>
+                  </v-card>
+                </v-slide-item>
+              </v-slide-group>
+            </v-sheet>
 
-                            <v-card-text class="text--primary">
-                            <div>Menyediakan semua kebutuhan peliharaan anda dengan berbagai produk pilihan</div>
+            <v-sheet
+              class="mx-auto mt-10"
+              elevation="8"
+              max-width="1000"
+            >
+            <br>
+            <div class="text-right mr-8"><a href="listLayanan">Show All</a></div>
+            <div class="text-left ml-12">
+              <br>
+              <h2>Layanan Kouvee Pet Shop</h2>
+              <div>Menawarkan berbagai macam jasa untuk memanjakan hewan peliharaan anda</div>
+              <div>Menyediakan jasa penitipan, gromming, dan perawatan lainnya</div>
+            </div>
+              <v-slide-group
+                v-model="model"
+                class="pa-4"
+                active-class="success"
+                show-arrows
+              >
+                <v-slide-item
+                  v-for="item in layanans"
+                  :key="item.id_layanan"
+                  v-slot:default="{ active, toggle }"
+                >
+                  <v-card
+                    :color="active ? undefined : 'grey lighten-1'"
+                    class="ma-4"
+                    height="200"
+                    width="200"
+                    @click="toggle"
+                    
+                  >
+                  <v-img src="https://previews.123rf.com/images/ddmhzr/ddmhzr1408/ddmhzr140800007/30682583-bone-for-dog-seamless-texture.jpg" width="200px" height="200">
+                  <br><br>
+                    <v-card-title class="white font-weight-black mb-2">{{ item.layanan }}<br> {{ item.ukuran }}</v-card-title>
+                  </v-img>
+                    <v-row
+                      class="fill-height"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-scale-transition>
+                        <v-icon
+                          v-if="active"
+                          color="white"
+                          size="48"
+                          v-text="'mdi-close-circle-outline'"
+                        ></v-icon>
+                      </v-scale-transition>
+                    </v-row>
+                  </v-card>
+                </v-slide-item>
+              </v-slide-group>
+            </v-sheet>
 
-                            <div>Tersedia makanan, aksesoris, perlengkapan gromming, dan produk berkualitas lainnya</div>
-                            </v-card-text>
-
-                            <v-card-actions>
-                            <v-btn
-                                color="orange"
-                                text
-                                link to ="/listProduk"
-                            >
-                                Lihat Semua >>
-                            </v-btn>
-
-                            </v-card-actions>
-                        </v-card>
-
-                        <v-card
-                            class="mx-auto"
-                            max-width="400"
-                        >
-                            <v-img
-                            class="white--text align-end"
-                            height="200px"
-                            src="https://petable.care/wp-content/uploads/2016/03/unnamed3-2-1-1140x642.jpg"
-                            >
-                            
-                            </v-img>
-                            <v-card-title>Layanan Kouvee Pet Shop</v-card-title>
-
-                            <v-card-text class="text--primary">
-                            <div>Menawarkan berbagai macam jasa untuk memanjakan hewan peliharaan anda</div>
-
-                            <div>Menyediakan jasa penitipan, gromming, dan perawatan lainnya</div>
-                            </v-card-text>
-
-                            <v-card-actions>
-                            <v-btn
-                                color="orange"
-                                text
-                                link to ="/listLayanan"
-                            >
-                                Lihat Semua >>
-                            </v-btn>
-                            </v-card-actions>
-                        </v-card>
-                </v-row>
-            </v-col>
             <v-spacer></v-spacer>
             <br>
             <h1 class="display-2 text-center mb-4">Staff Kouvee Pet Shop</h1>
@@ -205,6 +251,9 @@
   export default {
     data () {
       return {
+        model: null,
+        allproduk: [],
+        layanans: [],
         items: [
           {
             src: 'http://www.radiopetlady.com/wp-content/uploads/bfi_thumb/RPLN-Dogs-and-Cats-6s5vrhb4qouxhsoksc2w5wtwm0tsiwvbgyrdl32jru4.jpg',
@@ -221,7 +270,24 @@
         ],
       }
     },
+    methods:{
+      getDataAll(){
+            var uri = this.$apiUrl + '/produk'
+            this.$http.get(uri).then( (response) =>{
+                this.allproduk=response.data
+                console.log(this.allproduk)
+            })
+      },
+      getData(){
+          var uri = this.$apiUrl + '/layanan'
+          this.$http.get(uri).then( (response) =>{
+              this.layanans=response.data
+          })
+      },
+    },
     mounted(){
+    this.getData();
+    this.getDataAll();
     if (localStorage.getItem("token") != null) {
         if(localStorage.getItem("peran")=="Kasir"){
               window.location.replace('/homeKasir')

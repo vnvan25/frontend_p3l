@@ -1,9 +1,28 @@
 <template>
-    <v-container>
-        <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
-             <h2 class="mb-4 text-center font-weight-black black--text">Bagian Pengadaan Produk Kouvee Pet Shop</h2>
-             <v-divider></v-divider>
-             <h2 class="mb-4 mt-4 text-center font-weight-black red--text">Daftar Stok Habis</h2>
+<v-container>
+  <v-card class="mt-5 mx-lg-auto" max-width="1000">
+    <v-toolbar flat color="#DEB887" dark>
+      <v-toolbar-title>Daftar Produk Kouvee Pet Shop</v-toolbar-title>
+    </v-toolbar>
+    <v-tabs grow>
+      <v-tab>
+          <v-badge
+          color="red"
+          :content="this.products.length"
+          inline
+          class="ml-2"
+        >
+          Stok Habis
+        </v-badge>
+      </v-tab>
+      <v-tab>
+        Semua Stok
+      </v-tab>
+
+      <v-tab-item>
+        <h2 class="mb-4 mt-4 font-weight-black red--text text-center">Daftar Stok Habis</h2>
+        <v-divider></v-divider>
+        <v-card class="mt-5" flat>
              <div v-if="this.products.length==0">
                 <v-data-table
                 hide-default-header
@@ -20,51 +39,82 @@
              <v-data-table
                     :headers="headers" 
                     :items="products"
-                    :search="keyword"
-                    :loading="load"
                      hide-default-header
                      hide-default-footer
                      class="elevation-1"
                      >
-                    <template v-slot:body="{ items }">
+                   <template v-slot:body="{ items }">
                     <tbody>
-                    <v-row>
-                    <v-col
-                        v-for="item in items"
-                        :key="item.id_produk"
-                        cols="10"
-                        md="4"
-                        >
-                    <v-card class="mx-auto" max-width="500" outlined hover>
-                    <v-list-item three-line>
-                        <v-list-item-content>
-                        <v-list-item-title class="headline mb-2 text-center font-weight-black">{{ item.nama }}</v-list-item-title>
-                        <img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="200px"  height="200px">
-                        <v-list-item-subtitle class="headline mb-0 font-weight-medium text-center red--text">Sisa Stok : {{ item.stok }} {{ item.satuan }}</v-list-item-subtitle>
-                        <div>
-                             <v-list-item-subtitle class="text-center subtitle-1"> Rp.{{ item.harga }}</v-list-item-subtitle>
-                        </div>
-                        </v-list-item-content>
-                    </v-list-item>
-                    </v-card>
-                    </v-col>
-                    </v-row>
+                        <tr v-for="(item,index) in items" :key="item.id_produk">
+                            <td>{{ index + 1 }}</td>
+                            <td><img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="100px"></td>
+                            <td>{{ item.nama }}</td>
+                            <td>{{ item.harga }}</td>
+                            <td>
+                                 <v-chip color="red" dark>{{ item.stok }}</v-chip>
+                            </td>
+                            <td>{{ item.satuan }}</td>
+                            <td>{{ item.minimal }}</td>
+                        </tr>
                     </tbody>
                 </template>
                 </v-data-table>
             </div>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn class="mb-5 ml-1 mt-5" color="green lighten-1" link to="semuaProduk">Lihat Semua Produk</v-btn>
-                    <v-btn class="mb-5 ml-1 mt-5" color="green lighten-1" link to="tambahPengadaan">Lakukan Pengadaan</v-btn>
-                </v-card-actions>
         </v-card>
-    </v-container>
+      </v-tab-item>
+      <!-- semua stok -->
+      <v-tab-item>
+            <h2 class="mb-4 mt-4 font-weight-black red--text text-center">Semua Stok Produk Kouvee Pet Shop</h2>
+            <v-divider></v-divider>
+        <v-card flat>
+            <div v-if="this.allproduk.length==0">
+                <v-data-table
+                hide-default-header
+                hide-default-footer>
+                    <template v-slot:no-data>
+                        <v-alert :value="true" border="left" color="red lighten-2"  dense outlined dark>
+                            <v-icon>mdi-close-octagon</v-icon>
+                            Tidak ada produk
+                        </v-alert>
+                    </template>
+                </v-data-table>
+            </div>
+            <div v-else>
+             <v-data-table
+                    hide-default-footer
+                    hide-default-header
+                    :items="allproduk"
+                    :loading="load">
+                <template v-slot:body="{ items }">
+                    <tbody>
+                        <tr v-for="(item,index) in items" :key="item.id_produk">
+                            <td>{{ index + 1 }}</td>
+                            <td><img :src="'https://kouvee.modifierisme.com/upload/' + item.gambar" width="100px"></td>
+                            <td>{{ item.nama }}</td>
+                            <td>{{ item.harga }}</td>
+                            <td>
+                                 <v-chip :color="getColor(item.stok, item.minimal)" dark>{{ item.stok }}</v-chip>
+                            </td>
+                            <td>{{ item.satuan }}</td>
+                            <td>{{ item.minimal }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+                </v-data-table>
+            </div>
+        </v-card>
+      </v-tab-item>
+    </v-tabs>
+  </v-card>
+</v-container>
 </template>
 <script>
 export default {
     data() {
         return {
+            allproduk: [],
+            keyword: '',
+            status:'',
             products: [],
             keyword: '',
             status:'',
@@ -100,9 +150,21 @@ export default {
                 console.log(this.products)
             })
         },
+        getDataAll(){
+            var uri = this.$apiUrl + '/produk'
+            this.$http.get(uri).then( (response) =>{
+                this.allproduk=response.data
+                console.log(this.allproduk)
+            })
+        },
+        getColor(stok, minimal) {
+            if ((stok-minimal)<0 || stok==minimal) return 'red'
+            else return 'green'
+        },
     },
     mounted(){
         this.getData();
+        this.getDataAll();
         if (localStorage.getItem("token") != null) {
         if(localStorage.getItem("peran")=="Kasir"){
               window.location.replace('/homeKasir')

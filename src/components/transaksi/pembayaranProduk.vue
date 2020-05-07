@@ -170,7 +170,7 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <!-- checkpoint -->
-                                    <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}}  </v-btn>
+                                    <v-btn color="orange darken-3"> Stok Tersisa Produk : {{valuestok}} {{valuesatuan}} </v-btn>
                                 </v-col>
                                  <v-col cols="12">
                                     <v-input v-model="form.total">  Harga Satuan : {{valueharga}}</v-input>
@@ -183,7 +183,7 @@
                                             label="Jumlah Beli"
                                             hint="Pilih Jumlah Pembelian"
                                             min="0"
-                                            :max = selectedProduk.stok
+                                            :max = valuestok
                                             thumb-label
                                             ></v-slider>
                                 </v-col>
@@ -290,11 +290,11 @@
                                 <span class="title">Kelola Diskon Member</span>
                                 <br>
                             <div v-if="this.bayar.hewan=='Guest'">
-                                <v-text-field v-model="percent" label="Input Diskon" placeholder="% - Percent" disabled></v-text-field>
+                                <v-text-field v-model="percent" label="Input Diskon" placeholder="Rupiah" disabled></v-text-field>
                                 <small class="text-weight-black">*Diskon hanya untuk member</small>
                             </div>
                             <div v-else>
-                                <v-text-field v-model="percent" label="Input Diskon" placeholder="% - Percent" type="number" :rules="rules.number"></v-text-field>
+                                <v-text-field v-model="percent" label="Input Diskon" placeholder="Rupiah" type="number" :rules="rules.number"></v-text-field>
                             </div>
                             </v-card>
                             <br>
@@ -315,11 +315,11 @@
                                 </tr>
                                 <tr v-else>
                                     <td>Total</td>
-                                    <td> : Rp.{{ totalBeli-(totalBeli*percent/100)}} </td>
+                                    <td> : Rp.{{ totalBeli-percent}} </td>
                                 </tr>
                                 <tr>
                                     <td>Diskon</td>
-                                    <td> : Rp.{{ (totalBeli*percent/100) }} </td>
+                                    <td> : Rp.{{ percent }} </td>
                                 </tr>
                                 </div>
                             </v-card>
@@ -331,7 +331,7 @@
                                 <span class="title">Uang Pembayaran</span>
                                 <br>
                                 <v-text-field v-model="uang" label="Input Uang Pembayaran" placeholder="Rp. XXXXXX" type="number" :rules="rules.uang"></v-text-field>
-                                <p>Kembalian : Rp.{{uang-(totalBeli-(totalBeli*percent/100))}}</p>
+                                <p>Kembalian : Rp.{{kembalian}}</p>
                             </v-card>
                             <br>
                         <v-card-actions>
@@ -380,6 +380,7 @@ export default {
             value: '',
             valueID: '',
             valuestok: '',
+            valuesatuan: '',
             valueharga: '',
             selectedProduk: 0,
             selectedHewan: 0,
@@ -433,7 +434,7 @@ export default {
                     val => val < this.selectedProduk.stok || 'Sesuai Stok',
                 ],
                 number: [
-                     v => v < 100 && v > 0  || 'Rannge hanya max. 100',
+                     v => v > 0 && v < this.totalBeli || 'Melebihi total Beli',
                 ],
                 uang: [
                      v => v > 0  || 'Tidak boleh minus',
@@ -567,6 +568,7 @@ export default {
             totalBayar: 0,
             data: '',
             jenis: '',
+            percentTemp: 0,
         }
     },
     computed: {
@@ -584,6 +586,9 @@ export default {
             return acc + (item.total*1)
             }, 0)
         },
+        kembalian(){
+            return this.uang-(this.totalBeli-this.percent)
+        }
     },
     methods:{
         Cek2(){
@@ -712,6 +717,10 @@ export default {
                 this.snackbar = true;
                 this.color = 'red';
                 this.text = "Uang Pembayaran Kurang";
+        }else if(this.totalBeli < this.percent){
+                this.snackbar = true;
+                this.color = 'red';
+                this.text = "Input Diskon Salah";
         }else{
             this.$confirm("Yakin Menyelesaikan Pembayaran?").then(() => {
                 this.tp.append('id_hewan', this.selesai.id_hewan);
@@ -728,6 +737,7 @@ export default {
                 this.$http.post(uri, this.tp).then( (response) =>{
                     this.load = false;
                     this.dialogBayar = false
+                    this.percentTemp=this.percent,
                     this.uang=0,
                     this.percent=0,
                     this.createPDF()
@@ -918,7 +928,7 @@ export default {
             if(this.bayar.hewan == 'Guest'){
                 this.selesai.total_harga = this.temp.sub_total;
             }else{
-                this.selesai.total_harga = this.temp.sub_total-(this.temp.sub_total*this.percent/100);
+                this.selesai.total_harga = this.temp.sub_total-(this.percent);
             }
             this.selesai.status = 'Selesai',
             this.selesaiId = this.bayar.id_tp;
@@ -946,6 +956,7 @@ export default {
             this.valueID = item.id_produk;
             this.valueharga = item.harga;
             this.valuestok = item.stok;
+            this.valuesatuan = item.satuan;
             this.form.total = this.form.jumlah*item.harga;
             this.form.jumlah = item.jumlah;
             this.tempKode = this.tempKode;
@@ -1119,7 +1130,7 @@ export default {
             doc.line(20, 210+k-21, 400, 210+k-21);
             doc.text(280, 210+k, "Sub Total")
             doc.text(345, 210+k, "Rp."+this.temp.sub_total.toString())
-            var diskon = this.temp.sub_total*this.percent/100
+            var diskon = this.percentTemp
             doc.text(280, 210+k+22, "Diskon")
             doc.text(345, 210+k+22, "Rp."+diskon.toString())
             doc.setFontStyle("bold");

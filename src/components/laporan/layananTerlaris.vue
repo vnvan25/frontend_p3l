@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
+        <v-card class="pa-md-4 mt-n12 mx-lg-auto" max-width="900">
              <h2 class="mb-4 text-center font-weight-black black--text">Laporan Layanan Terlaris</h2>
              <v-divider></v-divider>
              <v-col class="d-flex" cols="12" sm="6">
@@ -15,7 +15,9 @@
             </v-col>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="#DEB887" @click="cetak()"><v-icon class="mr-4">mdi-printer</v-icon> Cetak Laporan</v-btn>
+                <v-btn color="#DEB887" fab large @click="cetak()">
+                    <v-icon color="white">mdi-printer</v-icon>
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-container>
@@ -236,7 +238,7 @@ export default {
             doc.text(143, 467, this.november.nama+" "+this.november.jenis+" "+this.november.ukuran);
             doc.text(143, 495, this.desember.nama+" "+this.desember.jenis+" "+this.desember.ukuran);
 
-             doc.setFontSize(11)
+            doc.setFontSize(11)
             doc.text(340, 186, this.januari.jumlah);
             doc.text(340, 215, this.februari.jumlah);
             doc.text(340, 242, this.maret.jumlah);

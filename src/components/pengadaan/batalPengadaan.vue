@@ -1,8 +1,7 @@
 <template>
     <v-container>
-        <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
-             <h2 class="mb-4 text-center font-weight-black black--text">History Pengadaan Produk Kouvee Pet Shop</h2>
-             <v-divider></v-divider>
+        <v-card class="pa-md-4 mt-n12 mx-lg-auto" max-width="900">
+             <!-- <h2 class="mb-4 text-center font-weight-black black--text">History Pembatalan Pengadaan Produk Kouvee Pet Shop</h2> -->
              <div v-if="this.pengadaan.length==0">
                 <v-data-table
                 hide-default-header
@@ -52,6 +51,9 @@
                                             </v-list-item>
                                             <v-list-item>
                                             <v-btn text @click="returnData(item)">Return</v-btn>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-btn text @click="hapusData(item.id_pengadaan)">Hapus Data Pengadaan</v-btn>
                                             </v-list-item>
                                         </v-list>
                                         </v-menu>
@@ -218,6 +220,33 @@ export default {
                 this.load = false;
             })
             });
+        },
+        hapusData(item){
+            this.$confirm("Yakin ingin menghapus data pengadaan?").then(() => {
+            var uri = this.$apiUrl + '/pengadaan/' + item;
+            this.$http.delete(uri).then( response =>{
+                this.hapusDetail(item);
+                this.getData();
+            }).catch(error =>{
+                this.errors = error
+                this.snackbar = true;
+                this.text = 'Try Again';
+                this.color = 'red';
+            })
+            });
+        },
+        hapusDetail(item){
+            var uri = this.$apiUrl + '/detail_pengadaan/deletePengadaan/' + item;
+            this.$http.delete(uri).then( response =>{
+                this.snackbar = true;
+                this.color = 'green';
+                this.text = "Berhasil Menghapus Data Pengadaan";
+            }).catch(error =>{
+                this.errors = error
+                this.snackbar = true;
+                this.text = 'Try Again';
+                this.color = 'red';
+            })
         },
     },
     mounted(){

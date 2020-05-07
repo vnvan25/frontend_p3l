@@ -117,7 +117,7 @@
                     <v-list-item-title>List Stok Habis</v-list-item-title>
                     <v-icon>mdi-alert</v-icon>
                 </v-list-item>
-                <v-list-item link to ="/tambahPengadaan">
+                <v-list-item link to ="/addPengadaan">
                     <v-list-item-icon>
                         <v-icon></v-icon>
                     </v-list-item-icon>
@@ -133,8 +133,14 @@
                 </v-list-item>
                  </v-list-group>
 
+                <v-list-item link to ="laporanLayout">
+                    <v-list-item-icon>
+                        <v-icon>mdi-file-chart</v-icon>
+                    </v-list-item-icon>
+                <v-list-item-title>Laporan Data</v-list-item-title>
+                </v-list-item>
                  
-                 <v-list-group>
+                 <!-- <v-list-group>
                 <template v-slot:activator>
                     <v-list-item-icon>
                             <v-icon>mdi-cart</v-icon>
@@ -183,7 +189,7 @@
                     <v-list-item-title>Pengadaan Bulanan</v-list-item-title>
                     <v-icon small>mdi-cube-send</v-icon>
                 </v-list-item>
-                 </v-list-group>
+                 </v-list-group> -->
                  
             </v-list>
         <template v-slot:append>

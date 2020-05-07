@@ -1,8 +1,7 @@
 <template>
     <v-container>
-        <v-card class="pa-md-4 mt-5 mx-lg-auto" max-width="900">
-             <h2 class="mb-4 text-center font-weight-black black--text">History Pengadaan Produk Kouvee Pet Shop</h2>
-             <v-divider></v-divider>
+        <v-card class="pa-md-4 mt-n12 mx-lg-auto" max-width="900">
+             <!-- <h2 class="mb-4 text-center font-weight-black black--text">History Pengadaan Produk Kouvee Pet Shop</h2> -->
              <div v-if="this.pengadaan.length==0">
                 <v-data-table
                 hide-default-header
@@ -66,14 +65,9 @@
                 </v-data-table>
             </div>
         </v-card>
-        <v-card class="pa-md-4 mt-5 mx-lg-auto" color="#DEB887" max-width="900">
+        <!-- <v-card class="pa-md-4 mt-5 mx-lg-auto" color="#DEB887" max-width="900">
             <v-card-title>Kelola History Pengadaan</v-card-title>
-            <v-card-actions>
-                <v-btn color="#FFA07A" link to="batalPengadaan">Pesanan Dibatalkan</v-btn>
-                <v-btn color="#FFFFE0" link to="pesananPengadaan">Pesanan Dalam Pemesanan</v-btn>
-                <v-btn color="#90EE90" link to="selesaiPengadaan">Pesanan Selesai</v-btn>
-            </v-card-actions>
-        </v-card>
+        </v-card> -->
         <v-dialog v-model="dialogDetail" persistent max-width="600px">
             <v-card>
                 <v-card-title>Detail Pengadaan No. {{this.form.kode}}</v-card-title>

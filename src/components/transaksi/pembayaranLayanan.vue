@@ -245,11 +245,11 @@
                         <span class="title">Kelola Diskon Member</span>
                         <br>
                         <div v-if="this.formBayar.hewan=='Guest'">
-                            <v-text-field v-model="percent" label="Input Diskon" placeholder="% - Percent" disabled></v-text-field>
+                            <v-text-field v-model="percent" label="Input Diskon" placeholder="Rupiah" disabled></v-text-field>
                             <small class="text-weight-black">*Diskon hanya untuk member</small>
                         </div>
                         <div v-else>
-                            <v-text-field v-model="percent" label="Input Diskon" placeholder="% - Percent" type="number" :rules="rules.number"></v-text-field>
+                            <v-text-field v-model="percent" label="Input Diskon" placeholder="Rupiah" type="number" :rules="rules.number"></v-text-field>
                         </div>
                     </v-card>
 
@@ -270,11 +270,11 @@
                         </tr>
                         <tr v-else>
                             <td>Total</td>
-                            <td> : Rp.{{ totalBeli-(totalBeli*percent/100)}} </td>
+                            <td> : Rp.{{ totalBeli-percent}} </td>
                         </tr>
                         <tr>
                             <td>Diskon</td>
-                            <td> : Rp.{{ (totalBeli*percent/100) }} </td>
+                            <td> : Rp.{{ percent }} </td>
                         </tr>
                         </div>
                     </v-card>
@@ -286,7 +286,7 @@
                         <span class="title">Uang Pembayaran</span>
                         <br>
                         <v-text-field v-model="uang" label="Input Uang Pembayaran" placeholder="Rp. XXXXXX" type="number" :rules="rules.uang"></v-text-field>
-                        <p>Kembalian : Rp.{{uang-(totalBeli-(totalBeli*percent/100))}}</p>
+                        <p>Kembalian : Rp.{{uang-(totalBeli-percent)}}</p>
                     </v-card>
 
                 <v-card-actions>
@@ -335,6 +335,7 @@ export default {
             return: new FormData(),
             jlhHari: 0,
             percent: 0,
+            percentTemp: 0,
             uang: 0,
             //untuk get data
             layanan: [],
@@ -392,7 +393,7 @@ export default {
             ],
             rules: {
                 number: [
-                     v => v < 100 && v > 0  || 'Range hanya max. 100',
+                     v => v > 0 && v < this.totalBeli || 'Melebihi total Beli',
                 ],
                 jumlah: [
                      v => v > 0  || 'Masukkan dengan benar',
@@ -555,7 +556,7 @@ export default {
             if(this.formBayar.hewan == 'Guest'){
                 this.formBayar.total = this.formBayar.sub_total;
             }else{
-                this.formBayar.total = this.formBayar.sub_total-(this.formBayar.sub_total*this.percent/100);
+                this.formBayar.total = this.formBayar.sub_total-this.percent;
             }
             this.pembayaran();
         },
@@ -564,6 +565,10 @@ export default {
                 this.snackbar = true;
                 this.color = 'red';
                 this.text = "Uang Pembayaran Kurang";
+        }else if(this.totalBeli < this.percent){
+                this.snackbar = true;
+                this.color = 'red';
+                this.text = "Input Diskon Salah";
         }else{
             this.$confirm("Yakin Menyelesaikan Pembayaran?").then(() => {
                 this.bayar.append('id_tl', this.formMaster.id_tl);
@@ -574,6 +579,7 @@ export default {
                 this.$http.post(uri, this.bayar).then( (response) =>{
                     this.load = false;
                     this.uang=0,
+                    this.percentTemp = this.percent;
                     this.percent=0,
                     this.dialogBayar = false
                     this.getDataBayar();
@@ -681,13 +687,16 @@ export default {
             doc.setLineWidth(0.2);
             doc.line(20, 210+k-21, 400, 210+k-21);
             doc.text(280, 210+k, "Sub Total")
-            doc.text(345, 210+k, "Rp."+this.formBayar.sub_total.toString())
-            var diskon = this.formBayar.sub_total*this.percent/100
+            var subtotal = this.rubah(this.formBayar.sub_total)
+            doc.text(345, 210+k, "Rp."+subtotal.toString())
+            var diskon = this.percentTemp
+            var diskon = this.rubah(diskon)
             doc.text(280, 210+k+22, "Diskon")
             doc.text(345, 210+k+22, "Rp."+diskon.toString())
             doc.setFontStyle("bold");
             doc.setFontSize(12)
-            var total = this.formBayar.sub_total-diskon
+            var total = this.formBayar.sub_total-this.percentTemp
+            var total = this.rubah(total)
             doc.text(280, 210+k+44, "Total")
             doc.text(345, 210+k+44, "Rp."+total.toString())
 
@@ -701,6 +710,12 @@ export default {
             x.document.write(embed);
             x.document.close();
 
+        },
+        rubah(angka){
+            var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan;
         },
     },
     mounted(){
