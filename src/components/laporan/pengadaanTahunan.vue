@@ -52,6 +52,12 @@ export default {
                 this.createPDF();
             });
         },
+        rubah(angka){
+            var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan;
+        },
         createPDF () {
             let pdfName = "Laporan Pengadaan Produk Tahunan"; 
             var doc = new jsPDF('2', 'pt', 'a5', true);
@@ -131,22 +137,22 @@ export default {
             doc.text(68, 495, 'Desember');
 
             doc.setFontSize(11)
-            doc.text(143, 186, 'Rp. '+this.pengadaan.januari);
-            doc.text(143, 215, 'Rp. '+this.pengadaan.februari);
-            doc.text(143, 242, 'Rp. '+this.pengadaan.maret);
-            doc.text(143, 270, 'Rp. '+this.pengadaan.april);
-            doc.text(143, 298, 'Rp. '+this.pengadaan.mei);
-            doc.text(143, 328, 'Rp. '+this.pengadaan.juni);
-            doc.text(143, 355, 'Rp. '+this.pengadaan.july);
-            doc.text(143, 382, 'Rp. '+this.pengadaan.agustus);
-            doc.text(143, 410, 'Rp. '+this.pengadaan.september);
-            doc.text(143, 439, 'Rp. '+this.pengadaan.oktober);
-            doc.text(143, 467, 'Rp. '+this.pengadaan.november);
-            doc.text(143, 495, 'Rp. '+this.pengadaan.desember);
+            doc.text(143, 186, 'Rp. '+this.rubah(this.pengadaan.januari));
+            doc.text(143, 215, 'Rp. '+this.rubah(this.pengadaan.februari));
+            doc.text(143, 242, 'Rp. '+this.rubah(this.pengadaan.maret));
+            doc.text(143, 270, 'Rp. '+this.rubah(this.pengadaan.april));
+            doc.text(143, 298, 'Rp. '+this.rubah(this.pengadaan.mei));
+            doc.text(143, 328, 'Rp. '+this.rubah(this.pengadaan.juni));
+            doc.text(143, 355, 'Rp. '+this.rubah(this.pengadaan.july));
+            doc.text(143, 382, 'Rp. '+this.rubah(this.pengadaan.agustus));
+            doc.text(143, 410, 'Rp. '+this.rubah(this.pengadaan.september));
+            doc.text(143, 439, 'Rp. '+this.rubah(this.pengadaan.oktober));
+            doc.text(143, 467, 'Rp. '+this.rubah(this.pengadaan.november));
+            doc.text(143, 495, 'Rp. '+this.rubah(this.pengadaan.desember));
 
             doc.setFontStyle("bold")
             doc.setFontSize(13)
-            doc.text("Total Transaksi : Rp. "+this.pengadaan.total, 361, 520, null, null, "right");
+            doc.text("Total Transaksi : Rp. "+this.rubah(this.pengadaan.total), 361, 520, null, null, "right");
             doc.setFontStyle("normal")
             doc.setFontSize(10)
             doc.text("Tanggal Cetak : "+this.tglTransaksi, 391, 570, null, null, "right");

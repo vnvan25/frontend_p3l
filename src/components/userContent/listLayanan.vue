@@ -1,162 +1,201 @@
 <template>
-    <v-container>
-        <!-- <v-card> -->
-            <v-container grid-list-md mb-0>
-                <v-card>
-                     <v-carousel>
-                            <v-carousel-item
-                            v-for="(item,i) in items"
-                            :key="i"
-                            :src="item.src"
-                            reverse-transition="fade-transition"
-                            transition="fade-transition"
-                            ></v-carousel-item>
-                        </v-carousel>
-                        <br>
-                    <h1 class="text-md-center">LAYANAN KOUVEE PET SHOP</h1>
-                    <br>
-                    <h4 class="text-center">
-                    <v-icon x-large>mdi-format-quote-open</v-icon>"Di Kouvee Pet Shop, kami memahami bahwa setiap Hewan Peliharaan adalah khusus dan unik 
-                    <br>dengan kebutuhan dan persyaratan mereka. 
-                    Adalah tanggung jawab kita untuk membantu dan memungkinkan 
-                    <br>setiap Pawrent untuk menjaga Hewan kesayangan mereka sehat dan bahagia seumur hidup."<v-icon x-large>mdi-format-quote-close</v-icon></h4>
-                    <br>
-                    <h5 class="text-center">Dengan komitmen "one stop service" kami, Kouvee Pet Shop menyediakan layanan multiservice yang lengkap dan menyeluruh. 
-                        <br>Dengan dukungan profesional yang andal dan berpengalaman, Kouvee Pet Shop adalah rumah kedua yang nyaman untuk Hewan Peliharaan Anda.</h5>
-                        <br>
-                </v-card>
-                <v-card>
-                <v-layout row wrap style="margin:10px">
-                    <v-flex xs6 class="text-right">
-                        <v-text-field
-                        v-model="keyword"
-                        append-icon="mdi-search"
-                        label="Search Layanan"
-                        hide-details
-                    ></v-text-field>
-                    </v-flex>
-                </v-layout>
-                
-                <v-data-table
-                    :headers="headers"
-                    :items="layanans"
-                    :search="keyword"
-                    :loading="load">
-                <template :items="layanas" v-slot:body="{ items }">
-                    <tbody>
-                <!-- <tr v-for="item in items" :key="item.id_layanan"> -->
-                    <v-row>
-                    <v-col
-                        v-for="item in items"
-                        :key="item.id_layanan"
-                        cols="18"
-                        md="6"
-                        >
-                    <v-card class="mx-auto" max-width="500" color="#DEB887" hover>
-                    <v-list-item five-line>
-                        <v-list-item-content>
-                        <v-list-item-title class="title text-center" multiline>{{ item.layanan }}</v-list-item-title>
-                        <v-list-item-subtitle class="subtitle text-center"> Ukuran :  {{item.ukuran}}</v-list-item-subtitle>
-                         <v-divider class="mx-3"></v-divider>
-                        <v-card-text class="black--text font-weight-black text-center subtitle-1">Harga : {{ item.harga }}</v-card-text>
-                        </v-list-item-content>
-                    </v-list-item>
-                    </v-card>
-                    </v-col>
-                    </v-row>
-                <!-- </tr> -->
-                    </tbody>
-                </template>
-                </v-data-table>
-                </v-card>
-            </v-container>
-        <!-- </v-card> -->
-        <v-dialog v-model="dialog" persistent max-width="600px">
-            <v-card>
-                <v-card-title>
-                    <span class="headline">Detail Data layanan</span>
-                </v-card-title>
-                <v-card-text>
-                <v-container>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-text-field label="Nama*"></v-text-field>
-                        </v-col>
-                    </v-row>
-                </v-container>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <v-snackbar
-        v-model="snackbar"
-        :color="color"
-        :multi-line="true"
-        :timeout="3000"
-        >
-        {{ text }}
-        <v-btn
-        dark
-        text
-        @click="snackbar= false"
-        >
-        Close
-        </v-btn>
-        </v-snackbar>
+  <v-container fluid>
+    <v-container class="justify-center">
+        <div class="ml-12">
+            <div class="ml-12">
+                <div class="ml-12">
+                    <div class="ml-12">
+                    <v-img src="https://kouvee.modifierisme.com/upload/web/layananWeb.png" max-width="700" max-height="500" class="ml-12"></v-img>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4 class="text-center mt-4">"Di Kouvee Pet Shop, kami memahami bahwa setiap Hewan Peliharaan adalah khusus dan unik 
+        <br>dengan kebutuhan dan persyaratan mereka. 
+        Adalah tanggung jawab kita untuk membantu dan memungkinkan 
+        <br>setiap Pawrent untuk menjaga Hewan kesayangan mereka sehat dan bahagia seumur hidup."</h4>
+        <br>
+        <h5 class="text-center">Dengan komitmen "one stop service" kami, Kouvee Pet Shop menyediakan layanan multiservice yang lengkap dan menyeluruh. 
+            <br>Dengan dukungan profesional yang andal dan berpengalaman, Kouvee Pet Shop adalah rumah kedua yang nyaman untuk Hewan Peliharaan Anda.</h5>
+            <br>
     </v-container>
+      <v-divider></v-divider>
+    <v-data-iterator
+      :items="layanans"
+      :items-per-page.sync="itemsPerPage"
+      :page="page"
+      :search="search"
+      :sort-by="sortBy.toLowerCase()"
+      :sort-desc="sortDesc"
+      hide-default-footer
+    >
+      <template v-slot:header>
+        <v-row class="ml-12 mr-12 mb-7 mt-8">
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-search"
+            label="Search Layanan"
+            hide-details
+          ></v-text-field>
+          <template v-if="$vuetify.breakpoint.mdAndUp">
+            <v-spacer></v-spacer> <v-spacer></v-spacer> <v-spacer></v-spacer> <v-spacer></v-spacer> <v-spacer></v-spacer>
+            <v-select
+              v-model="sortBy"
+              flat
+              solo-inverted
+              hide-details
+              :items="keys"
+              prepend-inner-icon="mdi-search"
+              label="Sort by"
+              class="mr-5"
+            ></v-select>
+            <v-btn-toggle
+              v-model="sortDesc"
+              mandatory
+            >
+              <v-btn
+                large
+                depressed
+                color="brown lighten-3"
+                :value="false"
+              >
+                <v-icon>mdi-arrow-up</v-icon>
+              </v-btn>
+              <v-btn
+                large
+                depressed
+                color="brown lighten-3"
+                :value="true"
+              >
+                <v-icon>mdi-arrow-down</v-icon>
+              </v-btn>
+            </v-btn-toggle>
+          </template>
+        </v-row>
+      </template>
+
+      <template v-slot:default="layanans">
+        <v-row class="ml-8 mr-8">
+          <v-col
+            v-for="item in layanans.items"
+            :key="item.id_layanan"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
+            <v-card>
+                <v-img
+                src="https://kouvee.modifierisme.com/upload/web/back.png"
+                height="80px"
+                >
+                <v-card-title class="headline font-weight-bold">{{ item.layanan }} </v-card-title>
+                <v-card-subtitle class="subheading font-weight-bold">{{item.ukuran}}</v-card-subtitle>
+                </v-img>
+
+              <v-divider></v-divider>
+
+              <v-list dense>
+                <v-list-item :class="{ 'blue--text': sortBy === item.harga }">
+                    Harga : <v-chip class="font-weight-black mt-2 ml-5 mr-1 mb-2 subtitle-1" color="#DEB887">Rp. {{ item.harga }},-</v-chip>
+                </v-list-item>
+                  <!-- <v-list-item-content class="align-end" :class="{ 'blue--text': sortBy === key }">{{ item[key.toLowerCase()] }}</v-list-item-content> -->
+                
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
+      </template>
+
+      <template v-slot:footer>
+        <v-row class="mt-9 ml-12 mr-12" align="center" justify="center">
+          <span class="grey--text">Items per page</span>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                dark
+                text
+                color="#DEB887"
+                class="ml-2"
+                v-on="on"
+              >
+                {{ itemsPerPage }}
+                <v-icon>mdi-chevron-down</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(number, index) in itemsPerPageArray"
+                :key="index"
+                @click="updateItemsPerPage(number)"
+              >
+                <v-list-item-title>{{ number }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
+          <v-spacer></v-spacer>
+
+          <span
+            class="mr-4
+            black--text"
+          >
+            Page {{ page }} of {{ numberOfPages }}
+          </span>
+          <v-btn
+            fab
+            dark
+            color="#DEB887"
+            class="mr-1"
+            small
+            @click="formerPage"
+          >
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn
+            fab
+            dark
+            color="#DEB887"
+            class="ml-1"
+            small
+            @click="nextPage"
+          >
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </v-row>
+      </template>
+    </v-data-iterator>
+  </v-container>
 </template>
 <script>
-export default {
-    data() {
-        return {
-            items: [
-            {
-                src: 'https://www.villagevetsformby.co.uk/wp-content/uploads/2017/02/pet-dental-check-up-teeth-cleaning-village-vets-formby.jpg',
-            },
-            {
-                src: 'https://d26bwjyd9l0e3m.cloudfront.net/wp-content/uploads/2017/01/Pet-Grooming-Ilustrasi.jpg',
-            },
-            {
-                src: 'https://petscaretip.com/wp-content/uploads/2018/01/the-how-to-manual-on-pet-dog-health-and-fitness-grooming-660x330.jpg',
-            },
-            {
-                src: 'http://www.techubnews.com/wp-content/uploads/2019/09/Dog-Grooming111-800x445.jpg',
-            },
-            ],
-            dialog: false,
-            keyword: '',
-            selectedUkuran: 0,
-            selectedJenis: 0,
-            ukuranHewan: [{
-                id_ukuran_hewan: 0,
-                nama: ''
-            }],
-            jenisHewan: [],
-            headers: [
-                {
-                    text: 'Urutkan berdasarkan nama layanan',
-                    value: 'layanan',
-                },
-            ],
-            layanans: [],
-            snackbar: false,
-            color: null,
-            text: '',
-            load: false,
-            form: {
-                nama: '',
-                harga:''
-            },
-            layanan : new FormData,
-            typeInput: 'new',
-            errors : '',
-            updatedId : '',
-        }
+  export default {
+    data () {
+      return {
+        itemsPerPageArray: [4, 8, 12],
+        search: '',
+        filter: {},
+        sortDesc: false,
+        page: 1,
+        itemsPerPage: 4,
+        layanans: [],
+        jenisHewan: [],
+        ukuranHewan: [],
+        sortBy: 'layanan',
+        keys: [
+          'Layanan',
+          'Harga',
+        ],
+      }
     },
-    methods:{
+    computed: {
+      numberOfPages () {
+        return Math.ceil(this.layanans.length / this.itemsPerPage)
+      },
+      filteredKeys () {
+        return this.layanans.filter(layanans => layanans !== 'layanan')
+      },
+    },
+    methods: {
         loadUkuranHewan(){
              var uri = this.$apiUrl + '/ukuranHewan'
             this.$http.get(uri).then( (response) =>{
@@ -179,96 +218,15 @@ export default {
             })
             // console.log(response.getData)
         },
-        sendData(){
-            this.layanan.append('nama', this.form.nama);
-            this.layanan.append('harga', this.form.harga);
-            this.layanan.append('id_ukuran_hewan', this.selectedUkuran);
-            this.layanan.append('id_jenis_hewan', this.selectedJenis);
-            var uri =this.$apiUrl + '/layanan'
-            this.load = true
-            this.$http.post(uri, this.layanan).then( (response) =>{
-                this.snackbar = true;
-                this.color = 'green';
-                this.text = response.data.message;
-
-                this.load = false;
-                this.dialog = false
-                this.getData();
-                this.resetForm();
-            }).catch(error =>{
-                this.errors = error
-                this.snackbar = true;
-                this.text = 'Try Again';
-                this.color = 'red';
-                this.load = false;
-            })
-        },
-        updateData(){
-            this.layanan.append('nama', this.form.nama);
-            this.layanan.append('harga', this.form.harga);
-            this.layanan.append('id_ukuran_hewan', this.selectedUkuran);
-            this.layanan.append('id_jenis_hewan', this.selectedJenis);
-            var uri = this.$apiUrl + '/layanan/' + this.updatedId;
-            this.load = true
-            this.$http.post(uri, this.layanan).then( (response) =>{
-                this.snackbar = true;
-                this.color = 'green';
-                this.text = response.data.message;
-
-                this.load = false;
-                this.dialog = false
-                this.getData();
-                this.resetForm();
-                this.typeInput = 'new';
-            }).catch( error =>{
-                this.errors = error
-                this.snackbar = true;
-                this.text = 'Try Again';
-                this.color = 'red';
-                this.load = false;
-                this.typeInput = 'new';
-            })
-        },
-        editHandler(item){
-            this.typeInput = 'edit';
-            this.dialog = true;
-            this.form.nama = item.nama;
-            this.form.harga = item.harga;
-            this.selectedUkuran = item.ukuran_hewan;
-            this.selectedJenis = item.jenis_hewan;
-            this.updatedId = item.id_layanan;
-        },
-        delData(deleteId){
-            var uri = this.$apiUrl + '/layanan/' + deleteId;
-            this.$http.delete(uri).then( response =>{
-                this.snackbar = true;
-                this.color = 'green';
-                this.text = response.data.message;
-                this.deleteDialog = false
-                this.getData();
-            }).catch(error =>{
-                this.errors = error
-                this.snackbar = true;
-                this.text = 'Try Again';
-                this.color = 'red';
-            })
-        },
-        setForm(){
-            if(this.typeInput == 'new'){
-                this.sendData()
-            }else{
-                //console.log("dddd")
-                this.updateData()
-            }
-        },
-        resetForm(){
-            this.form = {
-                nama : '',
-                harga: '',
-                selectedUkuran: 0,
-                selectedJenis: 0
-            }
-        }
+      nextPage () {
+        if (this.page + 1 <= this.numberOfPages) this.page += 1
+      },
+      formerPage () {
+        if (this.page - 1 >= 1) this.page -= 1
+      },
+      updateItemsPerPage (number) {
+        this.itemsPerPage = number
+      },
     },
     mounted(){
         this.getData();
@@ -282,10 +240,10 @@ export default {
         }else if(localStorage.getItem("peran")=="Owner"){
               window.location.replace('/homeMaster')
         }
-        }
-        else{
-         next()
-        }
+    }
+    else{
+      next()
+    }
     },
-}
+  }
 </script>

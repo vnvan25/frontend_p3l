@@ -66,6 +66,12 @@ export default {
                 this.createPDF();
             });
         },
+        rubah(angka){
+            var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan;
+        },
         createPDF () {
             let pdfName = "Laporan Pendapatan Tahunan"; 
             var doc = new jsPDF('2', 'pt', 'a5', true);
@@ -151,63 +157,76 @@ export default {
             doc.text(68, 495, 'Desember');
 
             doc.setFontSize(11)
-            doc.text(143, 186, 'Rp. '+this.layanan.januari);
-            doc.text(143, 215, 'Rp. '+this.layanan.februari);
-            doc.text(143, 242, 'Rp. '+this.layanan.maret);
-            doc.text(143, 270, 'Rp. '+this.layanan.april);
-            doc.text(143, 298, 'Rp. '+this.layanan.mei);
-            doc.text(143, 328, 'Rp. '+this.layanan.juni);
-            doc.text(143, 355, 'Rp. '+this.layanan.july);
-            doc.text(143, 382, 'Rp. '+this.layanan.agustus);
-            doc.text(143, 410, 'Rp. '+this.layanan.september);
-            doc.text(143, 439, 'Rp. '+this.layanan.oktober);
-            doc.text(143, 467, 'Rp. '+this.layanan.november);
-            doc.text(143, 495, 'Rp. '+this.layanan.desember);
+            doc.text(143, 186, 'Rp. '+this.rubah(this.layanan.januari));
+            doc.text(143, 215, 'Rp. '+this.rubah(this.layanan.februari));
+            doc.text(143, 242, 'Rp. '+this.rubah(this.layanan.maret));
+            doc.text(143, 270, 'Rp. '+this.rubah(this.layanan.april));
+            doc.text(143, 298, 'Rp. '+this.rubah(this.layanan.mei));
+            doc.text(143, 328, 'Rp. '+this.rubah(this.layanan.juni));
+            doc.text(143, 355, 'Rp. '+this.rubah(this.layanan.july));
+            doc.text(143, 382, 'Rp. '+this.rubah(this.layanan.agustus));
+            doc.text(143, 410, 'Rp. '+this.rubah(this.layanan.september));
+            doc.text(143, 439, 'Rp. '+this.rubah(this.layanan.oktober));
+            doc.text(143, 467, 'Rp. '+this.rubah(this.layanan.november));
+            doc.text(143, 495, 'Rp. '+this.rubah(this.layanan.desember));
 
             doc.setFontSize(11)
-            doc.text(240, 186, 'Rp. '+this.products.januari);
-            doc.text(240, 215, 'Rp. '+this.products.februari);
-            doc.text(240, 242, 'Rp. '+this.products.maret);
-            doc.text(240, 270, 'Rp. '+this.products.april);
-            doc.text(240, 298, 'Rp. '+this.products.mei);
-            doc.text(240, 328, 'Rp. '+this.products.juni);
-            doc.text(240, 355, 'Rp. '+this.products.july);
-            doc.text(240, 382, 'Rp. '+this.products.agustus);
-            doc.text(240, 410, 'Rp. '+this.products.september);
-            doc.text(240, 439, 'Rp. '+this.products.oktober);
-            doc.text(240, 467, 'Rp. '+this.products.november);
-            doc.text(240, 495, 'Rp. '+this.products.desember);
+            doc.text(240, 186, 'Rp. '+this.rubah(this.products.januari));
+            doc.text(240, 215, 'Rp. '+this.rubah(this.products.februari));
+            doc.text(240, 242, 'Rp. '+this.rubah(this.products.maret));
+            doc.text(240, 270, 'Rp. '+this.rubah(this.products.april));
+            doc.text(240, 298, 'Rp. '+this.rubah(this.products.mei));
+            doc.text(240, 328, 'Rp. '+this.rubah(this.products.juni));
+            doc.text(240, 355, 'Rp. '+this.rubah(this.products.july));
+            doc.text(240, 382, 'Rp. '+this.rubah(this.products.agustus));
+            doc.text(240, 410, 'Rp. '+this.rubah(this.products.september));
+            doc.text(240, 439, 'Rp. '+this.rubah(this.products.oktober));
+            doc.text(240, 467, 'Rp. '+this.rubah(this.products.november));
+            doc.text(240, 495, 'Rp. '+this.rubah(this.products.desember));
 
             doc.setFontSize(11)
             var januari = parseInt(this.layanan.januari,10)+parseInt(this.products.januari,10)
-            doc.text(320, 186, 'Rp. '+januari);
+            var januari = this.rubah(januari)
+            doc.text(318, 186, 'Rp. '+januari);
             var feb = parseInt(this.layanan.februari,10)+parseInt(this.products.februari,10)
-            doc.text(320, 215, 'Rp. '+feb);
+            var feb = this.rubah(feb)
+            doc.text(318, 215, 'Rp. '+feb);
             var maret = parseInt(this.layanan.maret,10)+parseInt(this.products.maret,10)
-            doc.text(320, 242, 'Rp. '+maret);
+            var maret = this.rubah(maret)
+            doc.text(318, 242, 'Rp. '+maret);
             var april = parseInt(this.layanan.april,10)+parseInt(this.products.april,10)
-            doc.text(320, 270, 'Rp. '+april);
+            var april = this.rubah(april)
+            doc.text(318, 270, 'Rp. '+april);
             var mei = parseInt(this.layanan.mei,10)+parseInt(this.products.mei,10)
-            doc.text(320, 298, 'Rp. '+mei);
+            var mei = this.rubah(mei)
+            doc.text(318, 298, 'Rp. '+mei);
             var juni = parseInt(this.layanan.juni,10)+parseInt(this.products.juni,10)
-            doc.text(320, 328, 'Rp. '+juni);
+            var juni = this.rubah(juni)
+            doc.text(318, 328, 'Rp. '+juni);
             var july = parseInt(this.layanan.july,10)+parseInt(this.products.july,10)
-            doc.text(320, 355, 'Rp. '+july);
+            var july = this.rubah(july)
+            doc.text(318, 355, 'Rp. '+july);
             var agustus = parseInt(this.layanan.agustus,10)+parseInt(this.products.agustus,10)
-            doc.text(320, 382, 'Rp. '+agustus);
+            var agustus = this.rubah(agustus)
+            doc.text(318, 382, 'Rp. '+agustus);
             var september = parseInt(this.layanan.september,10)+parseInt(this.products.september,10)
-            doc.text(320, 410, 'Rp. '+september);
+            var september = this.rubah(september)
+            doc.text(318, 410, 'Rp. '+september);
             var oktober = parseInt(this.layanan.oktober,10)+parseInt(this.products.oktober,10)
-            doc.text(320, 439, 'Rp. '+oktober);
+            var oktober = this.rubah(oktober)
+            doc.text(318, 439, 'Rp. '+oktober);
             var november = parseInt(this.layanan.november,10)+parseInt(this.products.november,10)
-            doc.text(320, 467, 'Rp. '+november);
+            var november = this.rubah(november)
+            doc.text(318, 467, 'Rp. '+november);
             var desember = parseInt(this.layanan.desember,10)+parseInt(this.products.desember,10)
-            doc.text(320, 495, 'Rp. '+desember);
+            var desember = this.rubah(desember)
+            doc.text(318, 495, 'Rp. '+desember);
 
             doc.setFontStyle("bold")
             doc.setFontSize(13)
             var total = parseInt(this.layanan.total,10)+parseInt(this.products.total,10)
-            doc.text("Total Transaksi : Rp. "+total, 361, 520, null, null, "right");
+            var total2 = this.rubah(total)
+            doc.text("Total Transaksi : Rp. "+total2+",-", 361, 520, null, null, "right");
             doc.setFontStyle("normal")
             doc.setFontSize(10)
             doc.text("Tanggal Cetak : "+this.tglTransaksi, 391, 570, null, null, "right");

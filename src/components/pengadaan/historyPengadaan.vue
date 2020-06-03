@@ -26,6 +26,7 @@
                         <tr v-for="(item,index) in items" :key="item.id_pengadaan">
                             <td>{{ index + 1 }}</td>
                             <td>{{ item.supplier }}</td>
+                            <td>{{ item.no_telp }}</td>
                             <td>{{ item.kode }}</td>
                             <td>{{ item.tanggal }}</td>
                             <td>{{ item.total_harga }}</td>
@@ -119,6 +120,7 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                 v-model="jlh"
+                                                :hint="'Jumlah sebelumnya : '+item.jumlah+' item'"
                                                 label="Jumlah"
                                                 single-line
                                                 counter
@@ -262,6 +264,10 @@ export default {
                     value: 'supplier',
                 },
                 {
+                    text: 'Kontak',
+                    value: 'no_telp',
+                },
+                {
                     text: 'Kode',
                     value: 'kode',
                 },
@@ -393,7 +399,7 @@ export default {
             }).catch(error =>{
                 this.errors = error
                 this.snackbar = true;
-                this.text = 'Try Again';
+                this.text = this.errors;
                 this.color = 'red';
                 this.load = false;
             })
@@ -572,7 +578,37 @@ export default {
             doc.setFontSize(10)
             doc.text("No : "+this.form.kode, 391, 130, null, null, "right");
             doc.setFontSize(10)
-            doc.text("Tanggal : "+this.form.tanggal, 380, 145, null, null, "right");
+            var date = this.form.tanggal;
+            var hari = date.substring(8,10);
+            var bulan = date.substring(5,7);
+            if(bulan=='01'){
+                bulan = "january";
+            }else if(bulan=='02'){
+                bulan = "februari";
+            }else if(bulan=='03'){
+                bulan = "Maret";
+            }else if(bulan=='04'){
+                bulan = "April";
+            }else if(bulan=='05'){
+                bulan = "Mei";
+            }else if(bulan=='06'){
+                bulan = "Juni";
+            }else if(bulan=='07'){
+                bulan = "July";
+            }else if(bulan=='08'){
+                bulan = "Agustus";
+            }else if(bulan=='09'){
+                bulan = "September";
+            }else if(bulan=='10'){
+                bulan = "Oktober";
+            }else if(bulan=='11'){
+                bulan = "November";
+            }else if(bulan=='12'){
+                bulan = "Desember";
+            }
+            var year = date.substring(0,4);
+            doc.text("Tanggal : "+hari+" "+bulan+" "+year, 384, 145, null, null, "right");
+            // doc.text("Tanggal : "+this.form.tanggal, 380, 145, null, null, "right");
             
             doc.setLineDash([2.5]);
             doc.setLineWidth(1);

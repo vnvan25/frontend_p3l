@@ -1,15 +1,15 @@
 <template>
 <div>
-    <!-- <v-card> -->
         <v-container grid-list-md mb-0>
-           <v-card class="pa-md-10 mx-lg-auto" max-width="600px">
-             <v-img :src="'https://kouvee.modifierisme.com/upload/logo.jpg'" aspect-ratio="2.5" contain></v-img>
-               <h1 class="text-center">KOUVEE PET SHOP</h1>
+          <v-parallax src="https://kouvee.modifierisme.com/upload/web/back.png" height="550">
+           <v-card class="pa-md-10 mx-lg-auto" max-width="400px">
+             <v-img :src="'https://kouvee.modifierisme.com/upload/logo.jpg'" aspect-ratio="2.5" contain class="ml-n2"></v-img>
+             <v-img src="https://kouvee.modifierisme.com/upload/web/Kouvee.png" max-width="500" max-height="500" class="ml-8"></v-img>
                <h2 class="text-center">Halaman Login</h2>
                 <v-layout>
                 <v-row>
                     <v-col cols="12">
-                        <v-text-field v-model="username" label="Username*"></v-text-field>
+                        <v-text-field v-model="username" label="Username*" outlined></v-text-field>
                     </v-col>
                     <v-col cols="12">
                        <v-text-field
@@ -22,14 +22,16 @@
                                 hint="At least 5 characters"
                                 counter
                                 @click:append="show1 = !show1"
+                                outlined
+                                class="mt-n10"
                             ></v-text-field>
                     </v-col>
                 </v-row>
              </v-layout>
             <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" @click="login()" >LOGIN</v-btn>
-                    <v-btn color="red darken-1" @click="resetform()" >CANCEL</v-btn>
+                    <v-btn color="red darken-1" text @click="resetform()" >CANCEL</v-btn>
+                    <v-btn color="#DEB887" class="pa-md-2"  dense @click="login()" >LOGIN</v-btn>
             </v-card-actions>
                
            </v-card> 
@@ -38,6 +40,7 @@
                      {{ text }}
             <v-btn dark text @click="snackbar = false">Close</v-btn>
             </v-snackbar>
+            </v-parallax>
         </v-container>
         
     <!-- </v-card> -->

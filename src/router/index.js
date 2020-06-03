@@ -7,6 +7,8 @@ const CSDashboardLayout = () => import('../components/dashboard/dashboardCS.vue'
 const KasirDashboardLayout = () => import('../components/dashboard/dashboardKasir.vue')
 const LandingLayout = () => import('../components/landingPage.vue')
 const HistoryLayout = () => import('../components/pengadaan/historyLayout.vue')
+const DataMasterLog = () => import('../components/history/datamaster.vue')
+const DataTransaksiLog = () => import('../components/history/transaksilog.vue')
 const LaporanLayout = () => import('../components/laporan/laporanLayout.vue')
 function loadView(view){
     return () => import(`../components/content/${view}.vue`)
@@ -38,11 +40,22 @@ function laporanContent(view){
     }
 }
 
+function logContent(view){
+    return () => {
+        return import(`../components/history/${view}.vue`)
+    }
+}
+
 const routes = [
     {
         name: 'landingPage',
         path: '/',
         component : LandingLayout
+    },
+    {
+        name: 'newDashboard',
+        path: '/new',
+        component : loadContent('newDashboard')
     },
     {
         path: '/user',
@@ -67,7 +80,7 @@ const routes = [
                 name: 'loginPage',
                 path: '/login',
                 component : loadContent('loginPage')
-            }
+            },
         ]
     },
     {
@@ -229,10 +242,77 @@ const routes = [
             {
                 name: 'addPengadaan',
                 path: '/addPengadaan',
-                component : pengadaanContent('addPengadaan')
+                component : pengadaanContent('tambahPengadaan')
             },
             {
-                path : '/layoutHistory',
+                path : '/dataMasterLog',
+                component : DataMasterLog,
+                children: [
+                    {
+                        name: 'customerLog',
+                        path: '/customerLog',
+                        component : logContent('customer')
+                    },
+                    {
+                        name: 'hewanLog',
+                        path: '/hewanLog',
+                        component : logContent('hewan')
+                    },
+                    {
+                        name: 'produkLog',
+                        path: '/produkLog',
+                        component : logContent('produk')
+                    },
+                    {
+                        name: 'layananLog',
+                        path: '/layananLog',
+                        component : logContent('layanan')
+                    },
+                    {
+                        name: 'pegawaiLog',
+                        path: '/pegawaiLog',
+                        component : logContent('pegawai')
+                    },
+                    {
+                        name: 'supplierLog',
+                        path: '/supplierLog',
+                        component : logContent('supplier')
+                    },
+                    {
+                        name: 'ukuranLog',
+                        path: '/ukuranLog',
+                        component : logContent('ukuran_hewan')
+                    },
+                    {
+                        name: 'jenisLog',
+                        path: '/jenisLog',
+                        component : logContent('jenis_hewan')
+                    },
+                ]
+            },
+            {
+                path : '/transaksiLog',
+                component : DataTransaksiLog,
+                children: [
+                    {
+                        name: 'tpLog',
+                        path: '/tpLog',
+                        component : logContent('transaksi_produk')
+                    },
+                    {
+                        name: 'tlLog',
+                        path: '/tlLog',
+                        component : logContent('transaksi_layanan')
+                    },
+                    {
+                        name: 'pengadaanLog',
+                        path: '/pengadaanLog',
+                        component : logContent('pengadaan')
+                    },
+                ]
+             },
+            {
+                path : '/logAktifitas',
                 component : HistoryLayout,
                 children: [
                     {

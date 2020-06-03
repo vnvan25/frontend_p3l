@@ -14,8 +14,8 @@ Vue.use(jsPDF);
 Vue.use(VueSimpleAlert);
 Vue.prototype.$http = Axios;
 Vue.prototype.$axios = Axios;
-// Vue.prototype.$apiUrl = 'http://127.0.0.1:5002/API2/index.php';
-Vue.prototype.$apiUrl = 'https://kouvee.modifierisme.com/WebAPI/index.php'
+Vue.prototype.$apiUrl = 'http://127.0.0.1:5002/API2/index.php';
+// Vue.prototype.$apiUrl = 'https://kouvee.modifierisme.com/WebAPI/index.php'
 
 Vue.config.productionTip = false
 

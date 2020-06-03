@@ -2,39 +2,45 @@
 <template>
 <div>
   <v-card color="white">
-    <!-- <v-card-title class="text-center justify-center py-6">
-      <h1 class="font-weight-bold headline brown--text">Laporan Kouvee Pet Shop</h1>
-    </v-card-title> -->
+    <v-card-title class="text-center justify-center py-6">
+      <h3 class="font-weight-bold headline brown--text">Log Aktiftas Kouvee Pet Shop</h3>
+    </v-card-title>
 
     <v-tabs
       background-color="transparent"
       color="#DEB887"
-      grow
+      centered
     >
-      <v-tab link to="produkTerlaris">
-          Produk Terlaris
+      <v-tab link to="produkLog">
+          Produk
       </v-tab>
-      <v-tab link to="layananTerlaris">
-          Layanan Terlaris
+      <v-tab link to="layananLog">
+          Layanan
       </v-tab>
-      <v-tab link to="pendapatanBulanan">
-          Pendapatan Bulanan
+      <v-tab link to="customerLog">
+          Customer
       </v-tab>
-      <v-tab link to="pendapatanTahunan">
-          Pendapatan Tahunan
+      <v-tab link to="hewanLog">
+          Hewan
       </v-tab>
-      <v-tab link to="pengadaanBulanan">
-          Pengadaan Bulanan
+      <v-tab link to="pegawaiLog">
+          Pegawai
       </v-tab>
-      <v-tab link to="pengadaanTahunan">
-          Pengadaan Tahunan
+      <v-tab link to="supplierLog">
+          Supplier
+      </v-tab>
+      <v-tab link to="ukuranLog">
+          Ukuran Hewan
+      </v-tab>
+      <v-tab link to="jenisLog">
+          Jenis Hewan
       </v-tab>
     </v-tabs>
   </v-card>
   <VContent >
       <router-view />
   </VContent>
-  </div>
+</div>
 </template>
 
 <script>
@@ -64,9 +70,9 @@ export default {
 <style>
 /* Helper classes */
 .basil {
-  background-color:	#FFF8DC !important;
+  background-color: #FFFBE6 !important;
 }
 .basil--text {
-  color: #DEB887 !important;
+  color: #356859 !important;
 }
 </style>

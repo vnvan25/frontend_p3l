@@ -81,6 +81,12 @@ export default {
                 this.createPDF();
             });
         },
+        rubah(angka){
+            var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan;
+        },
         createPDF () {
             let pdfName = "Laporan Pengadaan Produk Bulanan"; 
             var doc = new jsPDF('2', 'pt', 'a5', true);
@@ -120,16 +126,18 @@ export default {
 
             let k=5;
             for (let i = 0, j = 1; i < this.pengadaan.length; i++) {
-                var split = doc.splitTextToSize(this.pengadaan[i].nama, 150);
-                doc.text(40, 186+k , j.toString())
-                doc.text(80, 186+k , split)
-                doc.text(250, 186+k , "Rp. "+this.pengadaan[i].total)
-                if(j<this.pengadaan.length){
-                    doc.line(30, 195+k, 390, 195+k);
+                if(this.pengadaan[i].nama!='-'){
+                    var split = doc.splitTextToSize(this.pengadaan[i].nama, 150);
+                    doc.text(40, 186+k , j.toString())
+                    doc.text(80, 186+k , split)
+                    doc.text(250, 186+k , "Rp. "+this.rubah(this.pengadaan[i].total))
+                    if(j<this.pengadaan.length){
+                        doc.line(30, 195+k, 390, 195+k);
+                    }
+                    this.total = this.total+parseInt(this.pengadaan[i].total,10)
+                    j++;
+                    k+=28;
                 }
-                this.total = this.total+parseInt(this.pengadaan[i].total,10)
-                j++;
-                k+=28;
             }
             //garis horixontal
             doc.setLineWidth(0.5);
@@ -142,9 +150,10 @@ export default {
             doc.setLineWidth(1);
             doc.line(235, 150, 235, 167+k);
             
+
             doc.setFontStyle("bold")
             doc.setFontSize(13)
-            doc.text("Total Transaksi : Rp. "+this.total, 361, 200+k, null, null, "right");
+            doc.text("Total Transaksi : Rp. "+this.rubah(this.total)+",-", 361, 200+k, null, null, "right");
             doc.setFontStyle("normal")
             doc.setFontSize(10)
             doc.text("Tanggal Cetak : "+this.tglTransaksi, 391, 570, null, null, "right");
@@ -153,6 +162,7 @@ export default {
             doc.setProperties({
                 title: "Laporan Pengadaan Bulanan "+ this.bulan.name+" - "+this.tahun
             });
+            this.total=0;
             var string = doc.output('dataurlnewwindow');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
             var x = window.open();

@@ -25,6 +25,7 @@
                         <tr v-for="(item,index) in items" :key="item.id_pengadaan">
                             <td>{{ index + 1 }}</td>
                             <td>{{ item.supplier }}</td>
+                            <td>{{ item.no_telp }}</td>
                             <td>{{ item.kode }}</td>
                             <td>{{ item.tanggal }}</td>
                             <td>{{ item.total_harga }}</td>
@@ -131,6 +132,10 @@ export default {
                 {
                     text: 'Supplier',
                     value: 'supplier',
+                },
+                {
+                    text: 'Kontak',
+                    value: 'no_telp',
                 },
                 {
                     text: 'Kode',

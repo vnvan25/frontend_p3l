@@ -1,14 +1,14 @@
 
 <template>
 <div>
-  <v-card color="basil">
+  <v-card color="white">
     <v-card-title class="text-center justify-center py-6">
-      <h3 class="font-weight-bold headline basil--text">History Pengadaan Kouvee Pet Shop</h3>
+      <h3 class="font-weight-bold headline brown--text">History Pengadaan Kouvee Pet Shop</h3>
     </v-card-title>
 
     <v-tabs
       background-color="transparent"
-      color="basil"
+      color="#DEB887"
       centered
     >
       <v-tab link to="historyPengadaan">

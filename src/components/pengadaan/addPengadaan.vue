@@ -1,6 +1,6 @@
 <template>
 <v-container>
-    <h2 class="mb-4 mt-4 text-center font-weight-black black--text">Bagian Pengadaan Produk Kouvee Pet Shop</h2>
+    <h2 class="mb-4 mt-4 text-center font-weight-black brown--text">Bagian Pengadaan Produk Kouvee Pet Shop</h2>
         <v-card class="mt-5 ml-9 mr-9 mx-lg-auto" max-width="1000">
         <v-stepper v-model="e6" vertical>
             <div class="ml-7 mt-5 mb-5"><h3><v-icon class="mr-3 mt-n2"> mdi-dark mdi-36px mdi-shape-square-plus</v-icon>Pengadaan No. {{kode}}{{kodelength}}</h3></div>

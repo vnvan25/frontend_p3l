@@ -91,6 +91,12 @@ export default {
                 this.createPDF();
             });
         },
+        rubah(angka){
+            var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan;
+        },
         createPDF () {
             let pdfName = "Laporan Pengadaan Produk Bulanan"; 
             var doc = new jsPDF('2', 'pt', 'a5', true);
@@ -130,16 +136,18 @@ export default {
 
             let k=5;
             for (let i = 0, j = 1; i < this.layanan.length; i++) {
+                if(this.layanan[i].nama!='-'){
                 var split = doc.splitTextToSize(this.layanan[i].nama+" "+this.layanan[i].jenis+" "+this.layanan[i].ukuran, 180);
                 doc.text(40, 186+k , j.toString())
                 doc.text(80, 186+k , split)
-                doc.text(290, 186+k , "Rp. "+this.layanan[i].total)
+                doc.text(290, 186+k , "Rp. "+this.rubah(this.layanan[i].total))
                 if(j<this.layanan.length){
                     doc.line(30, 195+k, 390, 195+k);
                 }
                 this.total = this.total+parseInt(this.layanan[i].total,10)
                 j++;
                 k+=28;
+                }
             }
             //garis horixontal
             doc.setLineWidth(0.5);
@@ -154,7 +162,7 @@ export default {
             
             doc.setFontStyle("bold")
             doc.setFontSize(13)
-            doc.text("Total Transaksi : Rp. "+this.total, 361, 200+k, null, null, "right");
+            doc.text("Total Transaksi : Rp. "+this.rubah(this.total)+",-", 361, 200+k, null, null, "right");
             doc.setFontStyle("normal")
 
             doc.addPage();
@@ -170,16 +178,18 @@ export default {
 
             let n=5;
             for (let i = 0, j = 1; i < this.produk.length; i++) {
+                if(this.produk[i].nama!='-'){
                 var split = doc.splitTextToSize(this.produk[i].nama, 180);
                 doc.text(40, 70+n , j.toString())
                 doc.text(80, 70+n , split)
-                doc.text(290, 70+n , "Rp. "+this.produk[i].total)
+                doc.text(290, 70+n , "Rp. "+this.rubah(this.produk[i].total))
                 if(j<this.produk.length){
                     doc.line(30, 80+n, 390, 80+n);
                 }
-                this.totalProduk = this.total+parseInt(this.produk[i].total,10)
+                this.totalProduk = this.totalProduk+parseInt(this.produk[i].total,10)
                 j++;
                 n+=28;
+                }
             }
             //garis horixontal
             doc.setLineWidth(0.5);
@@ -194,7 +204,8 @@ export default {
             
             doc.setFontStyle("bold")
             doc.setFontSize(13)
-            doc.text("Total Transaksi : Rp. "+this.totalProduk, 361, 70+n, null, null, "right");
+            var total = this.rubah(this.totalProduk)
+            doc.text("Total Transaksi : Rp. "+total+",-", 361, 70+n, null, null, "right");
             doc.setFontStyle("normal")
 
 

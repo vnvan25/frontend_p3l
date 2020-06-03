@@ -1,9 +1,6 @@
 <template>
 <v-container>
   <v-card class="mt-5 mx-lg-auto" max-width="1000">
-    <v-toolbar flat color="#DEB887" dark>
-      <v-toolbar-title>Daftar Produk Kouvee Pet Shop</v-toolbar-title>
-    </v-toolbar>
     <v-tabs grow>
       <v-tab>
           <v-badge
@@ -81,7 +78,6 @@
             </div>
             <div v-else>
              <v-data-table
-                    hide-default-footer
                     hide-default-header
                     :items="allproduk"
                     :loading="load">

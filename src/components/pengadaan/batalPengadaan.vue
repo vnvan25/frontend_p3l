@@ -26,6 +26,7 @@
                         <tr v-for="(item,index) in items" :key="item.id_pengadaan">
                             <td>{{ index + 1 }}</td>
                             <td>{{ item.supplier }}</td>
+                            <td>{{ item.no_telp }}</td>
                             <td>{{ item.kode }}</td>
                             <td>{{ item.tanggal }}</td>
                             <td>{{ item.total_harga }}</td>
@@ -51,9 +52,6 @@
                                             </v-list-item>
                                             <v-list-item>
                                             <v-btn text @click="returnData(item)">Return</v-btn>
-                                            </v-list-item>
-                                            <v-list-item>
-                                            <v-btn text @click="hapusData(item.id_pengadaan)">Hapus Data Pengadaan</v-btn>
                                             </v-list-item>
                                         </v-list>
                                         </v-menu>
@@ -138,6 +136,10 @@ export default {
                 {
                     text: 'Supplier',
                     value: 'supplier',
+                },
+                {
+                    text: 'Kontak',
+                    value: 'no_telp',
                 },
                 {
                     text: 'Kode',
